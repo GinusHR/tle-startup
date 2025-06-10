@@ -12,6 +12,7 @@ import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
 import ScanScreen from './screens/ScanScreen';
 import AccountScreen from './screens/AccountScreen';
+import DbTestScreen from "./screens/test-screen/DbTestScreen";
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -53,6 +54,7 @@ const AppTabs = () => (
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Scan" component={ScanScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
+        <Tab.Screen name="DbTest" component={DbTestScreen} />
     </Tab.Navigator>
 );
 
