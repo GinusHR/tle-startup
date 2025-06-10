@@ -1,8 +1,8 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "react-native-screens/native-stack";
-import { View, Text } from "react-native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { View, StyleSheet, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import LoginScreen from './screens/LoginScreen';
@@ -15,7 +15,7 @@ import AccountScreen from './screens/AccountScreen';
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
-const Nav = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
 const AuthNavigator = () => (
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
@@ -33,7 +33,7 @@ const HomeNavigator = () => (
 );
 
 const AppTabs = () => (
-    <Nav.Navigator
+    <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ color, size }) => {
@@ -43,14 +43,17 @@ const AppTabs = () => (
             else if (route.name === 'Account') iconName = 'person-outline';
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: '#597364',
-          tabBarInactiveTintColor: '#FDFDFD',
+            tabBarStyle: {
+              backgroundColor: '#2F4538'
+            },
+            tabBarActiveTintColor: '#597364',
+            tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Scan" component={ScanScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
-    </Nav.Navigator>
+    </Tab.Navigator>
 );
 
 
@@ -67,7 +70,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FDFDFD',
     alignItems: 'center',
     justifyContent: 'center',
   },
