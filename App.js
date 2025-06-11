@@ -1,8 +1,10 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { View, StyleSheet, Text } from "react-native";
+import { useFonts } from 'expo-font';
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, StyleSheet, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import LoginScreen from './screens/LoginScreen';
@@ -58,6 +60,15 @@ const AppTabs = () => (
 
 
 export default function App() {
+    const [fontsLoaded] = useFonts({
+        'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+        'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+    });
+
+    if (!fontsLoaded) {
+        return null; // Of een <Loading /> component
+    }
+
   const userIsLoggedIn = true; // ← veranderen dit later naar een echte auth-check
 
   return (

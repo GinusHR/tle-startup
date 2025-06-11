@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 26,
-        fontWeight: 'bold',
+        fontFamily: 'montserrat-bold',
         marginBottom: 16,
     },
     card: {
@@ -112,13 +112,13 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     label: {
-        fontWeight: 'bold',
+        fontFamily: 'montserrat-bold',
         marginBottom: 4,
     },
     placeholder: {
         color: '#7D8893',
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'montserrat-bold',
     },
     row: {
         flexDirection: 'row',
@@ -128,16 +128,18 @@ const styles = StyleSheet.create({
     toggleContainer: {
         flexDirection: 'row',
         backgroundColor: '#2F4538',
-        borderRadius: 25,
+        borderRadius: 999,
         padding: 4,
         marginBottom: 16,
+        overflow: 'hidden',
     },
     toggleButton: {
         flex: 1,
         paddingVertical: 10,
         alignItems: 'center',
+        justifyContent: 'center',
         borderRadius: 20,
-        borderWidth: 2,
+        borderWidth: 3,
         borderColor: '#2F4538',
     },
     toggleSelected: {
@@ -145,25 +147,28 @@ const styles = StyleSheet.create({
     },
     toggleText: {
         color: '#fff',
-        fontWeight: 'bold',
+        fontFamily: 'montserrat-bold',
     },
     toggleTextSelected: {
         color: '#2F4538',
+        fontFamily: 'montserrat-bold',
     },
     disclaimer: {
         fontSize: 12,
         color: '#777',
         marginBottom: 10,
+        fontFamily: 'montserrat-regular',
     },
     link: {
         color: '#2F4538',
-        fontWeight: 'bold',
+        fontFamily: 'montserrat-bold',
         textDecorationLine: 'underline',
     },
     paragraph: {
         fontSize: 12,
         color: '#444',
         marginBottom: 20,
+        fontFamily: 'montserrat-regular',
     },
     button: {
         backgroundColor: '#2F4538',
@@ -174,7 +179,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: '#fff',
-        fontWeight: 'bold',
         fontSize: 16,
+        fontFamily: 'montserrat-bold',
     },
 });
+
