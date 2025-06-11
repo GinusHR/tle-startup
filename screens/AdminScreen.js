@@ -4,7 +4,9 @@ import { View, StyleSheet, Text } from 'react-native';
 export default function AdminScreen() {
     return (
         <View>
-            <Text>admin</Text>
+            <QRCode
+      value="http://awesome.link.qr"
+    />
         </View>
     );
 }
