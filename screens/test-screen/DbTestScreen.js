@@ -1,30 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, TextInput, FlatList, StyleSheet } from 'react-native';
-import { initDatabase, insertItem, getItems, deleteItem } from '../../database';
+import { initDatabase, insertItem, getItems, deleteItem, getAllUsers, insertUser, deleteUser } from '../../database';
 
 export default function DbTestScreen() {
     const [items, setItems] = useState([]);
-    const [title, setTitle] = useState('');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [users, setUsers] = useState('')
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     useEffect(() => {
         (async () => {
             await initDatabase();
-            const data = await getItems();
-            setItems(data);
+            console.log("Database is geinitialiseerd")
+            const itemData = await getItems();
+            const userData = await getAllUsers();
+            console.log("Items uit DB:", itemData);
+            setItems(itemData);
+            set
         })();
     }, []);
 
     const showItems = async () => {
-        const data = await getItems();
-        setItems(data);
+        const itemData = await getItems();
+        setItems(itemData);
+    }
+
+    const showUsers = async () => {
+
     }
 
     const handleAdd = async () => {
-        if (!title.trim()) return;
-        await insertItem(title);
+        if (!name.trim()) return;
+        await insertItem(name);
         const data = await getItems();
         setItems(data);
-        setTitle('');
+        setName('');
     };
 
     const handleDelete = async (id) => {
@@ -33,6 +45,7 @@ export default function DbTestScreen() {
         setItems(data);
     };
     showItems();
+    showUsers();
     return (
         <View style={styles.container}>
             <Text style={styles.header}>SQLite Async</Text>
@@ -48,7 +61,7 @@ export default function DbTestScreen() {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.item}>
-                        <Text>{item.title}</Text>
+                        <Text>{item.name}</Text>
                         <Button title="X" onPress={() => handleDelete(item.id)} />
                     </View>
                 )}

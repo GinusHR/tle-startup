@@ -1,10 +1,10 @@
-import {openDatabaseAsync} from "expo-sqlite";
+import { openDatabaseAsync } from "expo-sqlite";
 import bcrypt from 'bcryptjs';
 
 let db;
 
 export const initDatabase = async () => {
-    db = await openDatabaseAsync('mijndatabase');
+    db = await openDatabaseAsync('mijndatabase.db');
 
     await db.execAsync(`PRAGMA foreign_keys = ON;`);
 
@@ -18,7 +18,7 @@ export const initDatabase = async () => {
                     lng INTEGER NULL, 
                     lat INTEGER NULL,
                     wallet INTEGER NULL,
-                    total  INTEGER NULL, 
+                    total  INTEGER NULL
                 );`
     );
 
@@ -26,8 +26,9 @@ export const initDatabase = async () => {
         `CREATE TABLE iF NOT EXISTS lists 
                 (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    user_id INTEGER NOT NULL FOREIGN KEY REFERENCES users(id) ON DELETE CASCADE,
-                    done BOOLEAN NOT NULL DEFAULT 0,
+                    user_id INTEGER NOT NULL,
+                    FOREIGN KEY REFERENCES users(id) ON DELETE CASCADE,
+                    done BOOLEAN NOT NULL DEFAULT 0
          );`
     );
 
@@ -35,9 +36,11 @@ export const initDatabase = async () => {
         `CREATE TABLE IF NOT EXISTS list_items 
                 (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    list_id INTEGER NOT NULL FOREIGN KEY REFERENCES lists(id) ON DELETE CASCADE,
-                    item_id INTEGER NOT NULL FOREIGN KEY REFERENCES items(id) ON DELETE CASCADE,
-                    quantity INTEGER NOT NULL DEFAULT 1,
+                    list_id INTEGER NOT NULL,
+                    FOREIGN KEY REFERENCES lists(id) ON DELETE CASCADE,
+                    item_id INTEGER NOT NULL,
+                    FOREIGN KEY REFERENCES items(id) ON DELETE CASCADE,
+                    quantity INTEGER NOT NULL DEFAULT 1
                 );`
     )
 
@@ -47,7 +50,7 @@ export const initDatabase = async () => {
                 (
                     id INTEGER PRIMARY KEY AUTOINCREMENT, 
                     name TEXT NOT NULL,
-                    value INTEGER NOT NULL DEFAULT 0,
+                    value INTEGER NULL DEFAULT 0
                 );`
     );
 };
@@ -70,14 +73,25 @@ export const getUser = async (email, password) => {
 
 }
 
+export const getAllUsers = async () => {
+    if (!db) return [];
+    try {
+        return await db.getAllAsync('SELECT id, name, email FROM users;');
+    } catch (err) {
+        console.error("Fout bij ophalen gebruikers:", err);
+        return [];
+    }
+};
+
+
 export const deleteUser = async (id) => {
     if (!db) return;
     await db.runAsync('DELETE FROM users WHERE id = ?;', id);
 };
 
-export const insertItem = async (title) => {
+export const insertItem = async (name) => {
     if (!db) return;
-    await db.runAsync('INSERT INTO items (name) VALUES (?);', title);
+    await db.runAsync('INSERT INTO items (name) VALUES (?);', name);
 };
 
 export const getItems = async () => {
