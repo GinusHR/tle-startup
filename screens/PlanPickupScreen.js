@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    ScrollView,
-    SafeAreaView,
-    Platform
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Platform} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function PlanPickupScreen() {
