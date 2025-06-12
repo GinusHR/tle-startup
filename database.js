@@ -1,5 +1,14 @@
-import { openDatabaseAsync } from "expo-sqlite";
+import {openDatabaseAsync} from "expo-sqlite";
 import bcrypt from 'bcryptjs';
+
+bcrypt.setRandomFallback((len) => {
+    // alleen voor test, NIET productie, niet veilig
+    const random = [];
+    for (let i = 0; i < len; i++) {
+        random.push(Math.floor(Math.random() * 256));
+    }
+    return random;
+});
 
 let db;
 
@@ -8,58 +17,64 @@ export const initDatabase = async () => {
 
     await db.execAsync(`PRAGMA foreign_keys = ON;`);
 
-    await db.execAsync(
-        `CREATE TABLE IF NOT EXISTS users 
-                (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
-                    email TEXT NOT NULL, 
-                    password TEXT NOT NULL, 
-                    lng INTEGER NULL, 
-                    lat INTEGER NULL,
-                    wallet INTEGER NULL,
-                    total  INTEGER NULL
-                );`
-    );
+    await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS users
+        (
+            id       INTEGER PRIMARY KEY AUTOINCREMENT,
+            name     TEXT    NOT NULL,
+            email    TEXT    NOT NULL,
+            password TEXT    NOT NULL,
+            lng      INTEGER NULL,
+            lat      INTEGER NULL,
+            wallet   INTEGER NULL,
+            total    INTEGER NULL
+        );
+    `);
 
-    await db.execAsync(
-        `CREATE TABLE iF NOT EXISTS lists 
-                (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    user_id INTEGER NOT NULL,
-                    FOREIGN KEY REFERENCES users(id) ON DELETE CASCADE,
-                    done BOOLEAN NOT NULL DEFAULT 0
-         );`
-    );
+    await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS items
+        (
+            id    INTEGER PRIMARY KEY AUTOINCREMENT,
+            name  TEXT    NOT NULL,
+            value INTEGER NULL DEFAULT 0
+        );
+    `);
 
-    await db.execAsync(
-        `CREATE TABLE IF NOT EXISTS list_items 
-                (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    list_id INTEGER NOT NULL,
-                    FOREIGN KEY REFERENCES lists(id) ON DELETE CASCADE,
-                    item_id INTEGER NOT NULL,
-                    FOREIGN KEY REFERENCES items(id) ON DELETE CASCADE,
-                    quantity INTEGER NOT NULL DEFAULT 1
-                );`
-    )
+    await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS lists
+        (
+            id      INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            done    BOOLEAN NOT NULL DEFAULT 0,
+            FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+        );
+    `);
 
+    await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS list_items
+        (
+            id       INTEGER PRIMARY KEY AUTOINCREMENT,
+            list_id  INTEGER NOT NULL,
+            item_id  INTEGER NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 1,
+            FOREIGN KEY (list_id) REFERENCES lists (id) ON DELETE CASCADE,
+            FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE
+        );
+    `);
 
-    await db.execAsync(
-        `CREATE TABLE IF NOT EXISTS items 
-                (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                    name TEXT NOT NULL,
-                    value INTEGER NULL DEFAULT 0
-                );`
-    );
 };
 
 export const insertUser = async (name, email, plainPassword) => {
-    const salt = bcrypt.genSaltSync(10);
-    const passwordHash = bcrypt.hashSync(plainPassword, salt);
-    if (!db) return;
-    await db.runAsync('INSERT INTO users (name, email, password) VALUES (?, ?, ?);', name, email, passwordHash);
+    try{
+        const salt = bcrypt.genSaltSync(10);
+        const passwordHash = bcrypt.hashSync(plainPassword, salt);
+        if (!db) return;
+        await db.runAsync('INSERT INTO users (name, email, password) VALUES (?, ?, ?);', name, email, passwordHash);
+        console.log("User toegevoegd:", name, email, passwordHash)
+    } catch(error) {
+        console.log("Kon user niet toevoegen:", error);
+    }
+
 };
 export const getUser = async (email, password) => {
     if (!db) return null;
@@ -85,8 +100,15 @@ export const getAllUsers = async () => {
 
 
 export const deleteUser = async (id) => {
-    if (!db) return;
-    await db.runAsync('DELETE FROM users WHERE id = ?;', id);
+    try{
+        if (!db) return;
+        await db.runAsync('DELETE FROM users WHERE id = ?;', id);
+        console.log("User deleted")
+    } catch (error) {
+        console.log("Couldn't delete User", error);
+    }
+
+
 };
 
 export const insertItem = async (name) => {
