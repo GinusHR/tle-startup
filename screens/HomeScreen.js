@@ -1,10 +1,28 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Pressable } from 'react-native';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
     return (
         <View>
-            <Text>Home</Text>
+           <Pressable onPress={
+                   () => {
+                     navigation.navigate('Admin')
+                   }
+                 } style={[styleSheet.mainBtn, styleSheet.btnYellow]}  >
+                   <Text>To Admin</Text>
+                 </Pressable>
         </View>
     );
 }
+
+const styleSheet = StyleSheet.create({
+    mainBtn: {
+    width: 200,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  btnYellow: {
+    backgroundColor: "yellow",
+  },
+})

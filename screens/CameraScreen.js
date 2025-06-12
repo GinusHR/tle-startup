@@ -14,7 +14,8 @@ export default function CameraScreen() {
                 facing="back"
                 barcodeScannerSettings={
                     {
-                        barcodeTypes: 'qr',j
+                        barcodeTypes: 'qr',
+
                     }
                 }
 

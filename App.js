@@ -31,8 +31,8 @@ const HomeNavigator = () => (
       <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home' }} />
       <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
       <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
-      <HomeStack.Screen name="Admin" component={AdminScreen} options={{ title: 'Afspraak maken' }} />
-      <HomeStack.Screen name="Camera" component={CameraScreen} options={{ title: 'Afspraak maken' }} />
+      <HomeStack.Screen name="Admin" component={AdminScreen}/>
+      <HomeStack.Screen name="Camera" component={CameraScreen}/>
     </HomeStack.Navigator>
 );
 
@@ -57,7 +57,6 @@ const AppTabs = () => (
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Scan" component={ScanScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
-      <Tab.Screen name="Admin" component={AdminScreen} />
     </Tab.Navigator>
 );
 
