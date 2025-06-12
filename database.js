@@ -57,8 +57,8 @@ export const initDatabase = async () => {
             list_id  INTEGER NOT NULL,
             item_id  INTEGER NOT NULL,
             quantity INTEGER NOT NULL DEFAULT 1,
-            FOREIGN KEY (list_id) REFERENCES lists (id) ON DELETE CASCADE,
-            FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE
+            FOREIGN KEY (list_id) REFERENCES lists (id),
+            FOREIGN KEY (item_id) REFERENCES items (id)
         );
     `);
 
@@ -92,8 +92,8 @@ export const getAllUsers = async () => {
     if (!db) return [];
     try {
         return await db.getAllAsync('SELECT id, name, email FROM users;');
-    } catch (err) {
-        console.error("Fout bij ophalen gebruikers:", err);
+    } catch (error) {
+        console.error("Fout bij ophalen gebruikers:", error);
         return [];
     }
 };
@@ -103,25 +103,74 @@ export const deleteUser = async (id) => {
     try{
         if (!db) return;
         await db.runAsync('DELETE FROM users WHERE id = ?;', id);
-        console.log("User deleted")
+        console.log("User verwijderd")
     } catch (error) {
-        console.log("Couldn't delete User", error);
+        console.log("Kon user niet verwijderen", error);
     }
 
 
 };
 
-export const insertItem = async (name) => {
-    if (!db) return;
-    await db.runAsync('INSERT INTO items (name) VALUES (?);', name);
+export const insertItem = async (name, value) => {
+    try {
+        if (!db) return;
+        await db.runAsync('INSERT INTO items (name, value) VALUES (?, ?);', name, value);
+        console.log("Item toegevoegd aan database")
+    } catch (error) {
+        console.log("Item kon niet worden toegevoegd", error)
+    }
+
 };
 
 export const getItems = async () => {
-    if (!db) return [];
-    return await db.getAllAsync('SELECT * FROM items;');
+    try {
+        if (!db) return [];
+        await db.getAllAsync('SELECT * FROM items;');
+        console.log("Items succesvol opgehaald")
+    } catch (error) {
+        console.log("Kon items niet ophalen", error);
+    }
+
 };
 
 export const deleteItem = async (id) => {
-    if (!db) return;
-    await db.runAsync('DELETE FROM items WHERE id = ?;', id);
+    try {
+        if (!db) return;
+        await db.runAsync('DELETE FROM items WHERE id = ?;', id);
+        console.log("Item succesvol verwijderd")
+    } catch (error) {
+        console.log("Kon item niet verwijderen:", error)
+    }
+
 };
+
+export const getList = async (id) => {
+    try {
+        if(!db) return;
+        await db.getAllAsync('SELECT * FROM lists WHERE user_id =?', id)
+        console.log("Lijst(en) succesvol opgehaald")
+    } catch (error) {
+        console.log("Kon de lijst(en) niet ophalen:", error)
+    }
+
+}
+
+export const insertList = async (listId, itemId, quantity) => {
+    try {
+        if(!db) return;
+        await db.runAsync('INSERT INTO list_item (list_id, item_id, quantity) VALUES (?, ?, ?);', listId, itemId, quantity)
+        console.log("Item succesvol toegevoegd aan de lijst")
+    } catch (error) {
+        console.log("Kon item niet toevoegen aan de lijst", error);
+    }
+}
+
+export const deleteList = async (id) => {
+    try {
+        if(!db) return;
+        await db.runAsync('DELETE FROM list_item WHERE id =?', id);
+        console.log("Item succesvol verwijderd uit de lijst")
+    } catch (e) {
+        console.log("Kon item niet verwijderen uit de lijst:", error)
+    }
+}
