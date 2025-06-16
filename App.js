@@ -54,7 +54,6 @@ const AppTabs = () => (
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Scan" component={ScanScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
-        <Tab.Screen name="DbTest" component={DbTestScreen} />
     </Tab.Navigator>
 );
 
