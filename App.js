@@ -1,5 +1,8 @@
 import React, {useState} from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { View, StyleSheet, Text } from "react-native";
+import { useFonts } from 'expo-font';
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {View, StyleSheet, Text, Button} from "react-native";
@@ -12,6 +15,7 @@ import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
 import ScanScreen from './screens/ScanScreen';
 import AccountScreen from './screens/AccountScreen';
+import DbTestScreen from "./screens/test-screen/DbTestScreen";
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -67,8 +71,17 @@ const AppTabs = ({ onLogout }) => (
     </Tab.Navigator>
 );
 
+
 export default function App() {
     const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+    const [fontsLoaded] = useFonts({
+        'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+        'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+    });
+
+    if (!fontsLoaded) {
+        return null; // Of een <Loading /> component
+    }
 
     return (
         <NavigationContainer>
