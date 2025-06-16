@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import QRCode from 'react-native-qrcode-svg';
 
 export default function QRDetailsScreen() {
     const navigation = useNavigation();
-
     const backgroundColor = '#fff';
     const textColor = '#1D1F21';
 
@@ -20,7 +20,12 @@ export default function QRDetailsScreen() {
             </View>
 
             {/* QR-code Placeholder */}
-            <View style={styles.qrPlaceholder} />
+            {/* <View style={styles.qrPlaceholder} /> */}
+            <QRCode
+      value="Just some string value"
+      size={310}
+    />
+
         </View>
     );
 }
