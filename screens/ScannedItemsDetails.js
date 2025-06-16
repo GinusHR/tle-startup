@@ -10,7 +10,7 @@ const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 export default function ScannedItemsDetails () {
     return (
         <SafeAreaView>
-            <View style={{ paddingHorizontal: 30 }}>
+            <View style={{ paddingHorizontal: 30, paddingTop: 30 }}>
                 <View style={styles.header}>
                     <Entypo name="chevron-left" size={35} color="#212529" onPress={ useNavigation().goBack} />
                     <Text style={styles.pageTitle}>Details</Text>

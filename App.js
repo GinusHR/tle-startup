@@ -31,12 +31,21 @@ const AuthNavigator = () => (
 );
 
 const HomeNavigator = () => (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
       <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
       <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
       <HomeStack.Screen name="Admin" component={AdminScreen}/>
       <HomeStack.Screen name="Camera" component={CameraScreen}/>
+      <HomeStack.Screen
+            name="details"
+            component={ScannedItemsDetails}
+            options={{
+                title: 'Details',
+                presentation: 'modal',
+                animation: 'slide_from_right',
+            }}
+      />
     </HomeStack.Navigator>
 );
 
@@ -52,13 +61,13 @@ const AppTabs = () => (
             return <Ionicons name={iconName} size={size} color={color} />;
           },
             tabBarStyle: {
-              backgroundColor: '#2F4538'
+              backgroundColor: '#2F4538',
             },
             tabBarActiveTintColor: '#597364',
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-      <Tab.Screen name="Home" options={{ headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
+      <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
       <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
       <Tab.Screen name="Account" options={{ headerTitle: '' , headerShadowVisible: false}}  component={AccountScreen} />
     </Tab.Navigator>
