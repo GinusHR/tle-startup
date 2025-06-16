@@ -84,7 +84,7 @@ export default function RegisterScreen() {
             <TextInput
                 style={styles.input}
                 placeholder="Naam"
-                placeholderTextColor="#999"
+                placeholderTextColor="#8E8E8E"
                 value={formData.naam}
                 onChangeText={(text) => updateFormData('naam', text)}
             />
@@ -92,7 +92,7 @@ export default function RegisterScreen() {
             <TextInput
                 style={styles.input}
                 placeholder="Achternaam"
-                placeholderTextColor="#999"
+                placeholderTextColor="#8E8E8E"
                 value={formData.achternaam}
                 onChangeText={(text) => updateFormData('achternaam', text)}
             />
@@ -104,7 +104,7 @@ export default function RegisterScreen() {
                 <TextInput
                     style={[styles.input, styles.phoneInput]}
                     placeholder="Telefoon"
-                    placeholderTextColor="#999"
+                    placeholderTextColor="#8E8E8E"
                     keyboardType="phone-pad"
                     value={formData.telefoon}
                     onChangeText={(text) => updateFormData('telefoon', text)}
@@ -130,7 +130,7 @@ export default function RegisterScreen() {
             <TextInput
                 style={styles.input}
                 placeholder="Email"
-                placeholderTextColor="#999"
+                placeholderTextColor="#8E8E8E"
                 keyboardType="email-address"
                 autoCapitalize="none"
                 value={formData.email}
@@ -140,7 +140,7 @@ export default function RegisterScreen() {
             <TextInput
                 style={styles.input}
                 placeholder="Wachtwoord"
-                placeholderTextColor="#999"
+                placeholderTextColor="#8E8E8E"
                 secureTextEntry
                 value={formData.wachtwoord}
                 onChangeText={(text) => updateFormData('wachtwoord', text)}
@@ -149,7 +149,7 @@ export default function RegisterScreen() {
             <TextInput
                 style={styles.input}
                 placeholder="Wachtwoord bevestigen"
-                placeholderTextColor="#999"
+                placeholderTextColor="#8E8E8E"
                 secureTextEntry
                 value={formData.wachtwoordBevestigen}
                 onChangeText={(text) => updateFormData('wachtwoordBevestigen', text)}
@@ -202,27 +202,28 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#2d5016',
+        backgroundColor: '#2F4538',
         paddingHorizontal: 20,
-    },
+
+},
     header: {
         alignItems: 'center',
         paddingVertical: 30,
     },
     headerText: {
         fontSize: 18,
-        color: 'rgba(255, 255, 255, 0.3)',
+        color: '#FDFDFD',
         fontWeight: '300',
         letterSpacing: 2,
     },
     headerTextBold: {
         fontSize: 18,
-        color: '#ffffff',
+        color: '#FDFDFD',
         fontWeight: 'bold',
         letterSpacing: 2,
     },
     card: {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#FDFDFD',
         borderRadius: 20,
         padding: 30,
         marginBottom: 30,
@@ -237,24 +238,24 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
         borderRadius: 15,
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#FDFDFD',
         alignItems: 'center',
         justifyContent: 'center',
     },
     stepActive: {
-        backgroundColor: '#2d5016',
+        backgroundColor: '#2B3D25',
     },
     stepText: {
         color: '#999',
         fontWeight: 'bold',
     },
     stepTextActive: {
-        color: '#ffffff',
+        color: '#FDFDFD',
     },
     stepLine: {
         width: 50,
         height: 2,
-        backgroundColor: '#e0e0e0',
+        backgroundColor: '#2F4538',
         marginHorizontal: 10,
     },
     formContainer: {
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
     },
     input: {
         borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        borderBottomColor: '#2B3D25',
         paddingVertical: 15,
         fontSize: 16,
         marginBottom: 20,
@@ -274,14 +275,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     countryCode: {
-        backgroundColor: '#2d5016',
+        backgroundColor: '#2B3D25',
         paddingHorizontal: 12,
         paddingVertical: 8,
         borderRadius: 5,
         marginRight: 10,
     },
     countryCodeText: {
-        color: '#ffffff',
+        color: '#FDFDFD',
         fontWeight: 'bold',
         fontSize: 14,
     },
@@ -290,44 +291,44 @@ const styles = StyleSheet.create({
         marginBottom: 0,
     },
     button: {
-        backgroundColor: '#2d5016',
+        backgroundColor: '#1F3A3D',
         paddingVertical: 15,
         borderRadius: 8,
         alignItems: 'center',
         marginBottom: 20,
     },
     buttonText: {
-        color: '#ffffff',
+        color: '#FDFDFD',
         fontSize: 16,
         fontWeight: 'bold',
     },
     orText: {
         textAlign: 'center',
-        color: '#999',
+        color: '#70746F',
         marginBottom: 20,
         fontSize: 14,
     },
     loginButton: {
-        backgroundColor: '#2d5016',
+        backgroundColor: '#1F3A3D',
         paddingVertical: 15,
         borderRadius: 8,
         alignItems: 'center',
     },
     loginButtonText: {
-        color: '#ffffff',
+        color: '#FDFDFD',
         fontSize: 16,
         fontWeight: 'bold',
     },
     successTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
+        color: '#212529',
         textAlign: 'center',
         marginBottom: 20,
     },
     successText: {
         fontSize: 14,
-        color: '#666',
+        color: '#212529',
         textAlign: 'center',
         lineHeight: 20,
         marginBottom: 30,

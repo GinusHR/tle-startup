@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     backgroundText: {
         fontSize: 32,
         fontWeight: 'bold',
-        color: 'white',
+        color: '#FDFDFD',
         letterSpacing: 2,
         marginVertical: 2,
     },
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         width: width * 0.8,
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        backgroundColor: '#FDFDFD',
         borderRadius: 12,
         padding: 30,
         elevation: 5,
@@ -170,18 +170,18 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingVertical: 12,
         borderBottomWidth: 2,
-        borderBottomColor: '#333',
-        color: '#333',
+        borderBottomColor: '#2B3D25',
+        color: '#8E8E8E',
     },
     loginButton: {
-        backgroundColor: '#2c3e2c',
+        backgroundColor: '#1F3A3D',
         paddingVertical: 15,
         borderRadius: 8,
         marginTop: 10,
         marginBottom: 20,
     },
     loginButtonText: {
-        color: 'white',
+        color: '#FDFDFD',
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
@@ -194,12 +194,13 @@ const styles = StyleSheet.create({
     dividerLine: {
         flex: 1,
         height: 1,
-        backgroundColor: '#ccc',
+        backgroundColor: '#70746F',
     },
     dividerText: {
         marginHorizontal: 15,
         fontSize: 16,
-        color: '#666',
+        fontWeight: 'bold',
+        color: '#70746F',
     },
     registerButton: {
         backgroundColor: '#2c3e2c',
@@ -214,12 +215,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     forgotPasswordButton: {
-        backgroundColor: '#2c3e2c',
+        backgroundColor: '#1F3A3D',
         paddingVertical: 15,
         borderRadius: 8,
     },
     forgotPasswordButtonText: {
-        color: 'white',
+        color: '#FDFDFD',
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
