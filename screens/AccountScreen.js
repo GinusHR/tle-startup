@@ -1,42 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function AccountScreen() {
+    const [darkMode, setDarkMode] = useState(false);
+
+    const toggleDarkMode = () => setDarkMode(prev => !prev);
+
+    const backgroundColor = darkMode ? '#1D1F21' : '#fff';
+    const textColor = darkMode ? '#fff' : '#1D1F21';
+    const borderColor = darkMode ? '#444' : '#ddd';
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor }]}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.header}>
-                    <Text style={styles.title}>GEBRUIKER</Text>
-                    <Ionicons name="qr-code-outline" size={24} color="#1D1F21" />
+                    <Text style={[styles.title, { color: textColor }]}>GEBRUIKER</Text>
+                    <Ionicons name="qr-code-outline" size={24} color={textColor} />
                 </View>
 
-                <View style={styles.card}>
-                    <MenuItem title="Account" icon="person-outline" />
-                    <MenuItem title="Help" icon="help-circle-outline" />
-                    <MenuItem title="Leren" icon="book-outline" />
-                    <MenuItem title="Uiterlijk" icon="color-palette-outline" />
+                <View style={[styles.card, { borderColor }]}>
+                    <MenuItem title="Account" icon="person-outline" color={textColor} />
+                    <MenuItem title="Help" icon="help-circle-outline" color={textColor} />
+                    <MenuItem title="Leren" icon="book-outline" color={textColor} />
+                    <MenuItem
+                        title="Uiterlijk"
+                        icon="color-palette-outline"
+                        color={textColor}
+                        onPress={toggleDarkMode}
+                        rightElement={
+                            <Text style={{ color: textColor, fontSize: 16 }}>
+                                {darkMode ? 'Dark' : 'Light'}
+                            </Text>
+                        }
+                    />
                 </View>
 
-                <View style={styles.card}>
-                    <MenuItem title="Over ons" icon="information-circle-outline" />
-                    <MenuItem title="FAQ’s" icon="chatbubble-ellipses-outline" />
-                    <MenuItem title="Algemene voorwaarden" icon="document-text-outline" />
+                <View style={[styles.card, { borderColor }]}>
+                    <MenuItem title="Over ons" icon="information-circle-outline" color={textColor} />
+                    <MenuItem title="FAQ’s" icon="chatbubble-ellipses-outline" color={textColor} />
+                    <MenuItem title="Algemene voorwaarden" icon="document-text-outline" color={textColor} />
                 </View>
 
-                <View style={styles.logoutCard}>
-                    <MenuItem title="Uitloggen" icon="log-out-outline" />
+                <View style={[styles.logoutCard, { borderColor }]}>
+                    <MenuItem title="Uitloggen" icon="log-out-outline" color={textColor} />
                 </View>
             </ScrollView>
         </View>
     );
 }
 
-const MenuItem = ({ title, icon }) => (
-    <TouchableOpacity style={styles.menuItem}>
+const MenuItem = ({ title, icon, onPress, color, rightElement }) => (
+    <TouchableOpacity style={styles.menuItem} onPress={onPress}>
         <View style={styles.menuRow}>
-            <Ionicons name={icon} size={22} color="#2F4538" style={styles.icon} />
-            <Text style={styles.menuText}>{title}</Text>
+            <View style={styles.menuLeft}>
+                <Ionicons name={icon} size={22} color={color} style={styles.icon} />
+                <Text style={[styles.menuText, { color }]}>{title}</Text>
+            </View>
+            {rightElement && <View>{rightElement}</View>}
         </View>
     </TouchableOpacity>
 );
@@ -44,7 +65,6 @@ const MenuItem = ({ title, icon }) => (
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     scrollContainer: {
         padding: 20,
@@ -54,23 +74,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     title: {
         fontWeight: 'bold',
         fontSize: 20,
-        color: '#1D1F21',
     },
     card: {
         borderWidth: 1,
-        borderColor: '#ddd',
         borderRadius: 10,
         paddingVertical: 10,
         marginBottom: 20,
     },
     logoutCard: {
         borderWidth: 1,
-        borderColor: '#ddd',
         borderRadius: 10,
         paddingVertical: 10,
         marginBottom: 60,
@@ -81,6 +98,11 @@ const styles = StyleSheet.create({
     },
     menuRow: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    menuLeft: {
+        flexDirection: 'row',
         alignItems: 'center',
     },
     icon: {
@@ -88,6 +110,5 @@ const styles = StyleSheet.create({
     },
     menuText: {
         fontSize: 16,
-        color: '#1D1F21',
     },
 });
