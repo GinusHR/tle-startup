@@ -110,10 +110,12 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
+        color: "#212529",
     },
     main: {
         alignItems: "center",
         marginTop: height * 0.1,
+        color: "#212529",
     },
     pageTitle: {
         fontFamily: "Montserrat",

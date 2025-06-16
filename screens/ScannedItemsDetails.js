@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: height * 0.03
+        marginBottom: height * 0.03,
     },
     pageTitle: {
         fontFamily: "Montserrat",

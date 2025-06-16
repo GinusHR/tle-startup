@@ -57,12 +57,14 @@ const style = StyleSheet.create({
         fontFamily: 'Montserrat',
         fontSize: scaleFontSize(24),
         fontWeight: 'bold',
+        color: "#212529",
     },
     body: {
         fontFamily: 'Montserrat',
         fontSize: scaleFontSize(36),
         fontWeight: '700',
         marginTop: 10,
+        color: "#212529",
     },
     subBody: {
         fontFamily: 'Montserrat',
