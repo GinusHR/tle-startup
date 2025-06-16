@@ -24,8 +24,7 @@ export const initDatabase = async () => {
             name     TEXT    NOT NULL,
             email    TEXT    NOT NULL,
             password TEXT    NOT NULL,
-            lng      INTEGER NULL,
-            lat      INTEGER NULL,
+            address  TEXT NULL,
             wallet   INTEGER NULL,
             total    INTEGER NULL
         );
@@ -70,10 +69,8 @@ export const initDatabase = async () => {
             FOREIGN KEY (customer_id) REFERENCES users (id),
             status BOOLEAN NOT NULL DEFAULT 0,
             driver TEXT NULL,
-            customer_lat INTEGER NULL,
-            customer_lng INTEGER NOT NULL,
-            FOREIGN KEY (customer_lat) REFERENCES users (lat),
-            FOREIGN KEY (customer_lng) REFERENCES users (lng)
+            customer_address INTEGER NULL,
+            FOREIGN KEY (customer_address) REFERENCES users (address)
         );
     `);
 
