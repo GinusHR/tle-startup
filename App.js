@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { View, StyleSheet, Text } from "react-native";
 import { useFonts } from 'expo-font';
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -22,7 +21,7 @@ const HomeStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const AuthNavigator = ({ onLogin }) => (
-    <AuthStack.Navigator screenOptions={{ headerShown: true }}>
+    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
         <AuthStack.Screen
             name="Login" component={LoginScreen} initialParams={{ onLogin }}
         />
@@ -31,7 +30,7 @@ const AuthNavigator = ({ onLogin }) => (
 );
 
 const HomeNavigator = () => (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator screenOptions={{headerShown: false}}>
         <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home' }} />
         <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
         <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />

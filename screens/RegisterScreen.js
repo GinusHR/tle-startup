@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    SafeAreaView,
-    Alert,
+    View, Text, TextInput, TouchableOpacity, StyleSheet,
+    SafeAreaView, Dimensions, ImageBackground, Alert
 } from 'react-native';
 
-export default function RegisterScreen() {
+import BackgroundImage from '../assets/images/background.png';
+
+const { width } = Dimensions.get('window');
+
+export default function RegisterScreen({ navigation }) {
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         naam: '',
@@ -21,10 +20,7 @@ export default function RegisterScreen() {
     });
 
     const updateFormData = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
+        setFormData(prev => ({ ...prev, [field]: value }));
     };
 
     const handleNext = () => {
@@ -48,228 +44,186 @@ export default function RegisterScreen() {
     };
 
     const handleLogin = () => {
-        // Handle login logic
-        Alert.alert('Login', 'Login functionaliteit');
+        navigation.navigate('Login'); // or your login handler
     };
 
     const renderHeader = () => (
-        <View style={styles.header}>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
+        <View style={styles.headerContainer}>
+            {Array.from({ length: 4 }).map((_, i) => (
+                <Text key={`top-${i}`} style={styles.headerText}>STATIESCAN</Text>
+            ))}
             <Text style={styles.headerTextBold}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-        </View>
-    );
-
-    const renderStepIndicator = () => (
-        <View style={styles.stepIndicator}>
-            <View style={[styles.step, currentStep >= 1 && styles.stepActive]}>
-                <Text style={[styles.stepText, currentStep >= 1 && styles.stepTextActive]}>1</Text>
-            </View>
-            <View style={styles.stepLine} />
-            <View style={[styles.step, currentStep >= 2 && styles.stepActive]}>
-                <Text style={[styles.stepText, currentStep >= 2 && styles.stepTextActive]}>2</Text>
-            </View>
+            {Array.from({ length: 3 }).map((_, i) => (
+                <Text key={`bottom-${i}`} style={styles.headerText}>STATIESCAN</Text>
+            ))}
         </View>
     );
 
     const renderStep1 = () => (
-        <View style={styles.formContainer}>
-            {renderStepIndicator()}
-
+        <>
             <TextInput
                 style={styles.input}
                 placeholder="Naam"
-                placeholderTextColor="#8E8E8E"
+                placeholderTextColor="#999"
                 value={formData.naam}
                 onChangeText={(text) => updateFormData('naam', text)}
             />
-
             <TextInput
                 style={styles.input}
                 placeholder="Achternaam"
-                placeholderTextColor="#8E8E8E"
+                placeholderTextColor="#999"
                 value={formData.achternaam}
                 onChangeText={(text) => updateFormData('achternaam', text)}
             />
-
-            <View style={styles.phoneContainer}>
+            <View style={styles.countryPhoneContainer}>
                 <View style={styles.countryCode}>
                     <Text style={styles.countryCodeText}>+31</Text>
                 </View>
                 <TextInput
                     style={[styles.input, styles.phoneInput]}
                     placeholder="Telefoon"
-                    placeholderTextColor="#8E8E8E"
+                    placeholderTextColor="#999"
                     keyboardType="phone-pad"
                     value={formData.telefoon}
                     onChangeText={(text) => updateFormData('telefoon', text)}
                 />
             </View>
-
             <TouchableOpacity style={styles.button} onPress={handleNext}>
                 <Text style={styles.buttonText}>Volgende</Text>
             </TouchableOpacity>
-
-            <Text style={styles.orText}>of</Text>
-
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
-        </View>
+        </>
     );
 
     const renderStep2 = () => (
-        <View style={styles.formContainer}>
-            {renderStepIndicator()}
-
+        <>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
-                placeholderTextColor="#8E8E8E"
-                keyboardType="email-address"
-                autoCapitalize="none"
+                placeholderTextColor="#999"
                 value={formData.email}
                 onChangeText={(text) => updateFormData('email', text)}
+                keyboardType="email-address"
+                autoCapitalize="none"
             />
-
             <TextInput
                 style={styles.input}
                 placeholder="Wachtwoord"
-                placeholderTextColor="#8E8E8E"
+                placeholderTextColor="#999"
                 secureTextEntry
                 value={formData.wachtwoord}
                 onChangeText={(text) => updateFormData('wachtwoord', text)}
             />
-
             <TextInput
                 style={styles.input}
                 placeholder="Wachtwoord bevestigen"
-                placeholderTextColor="#8E8E8E"
+                placeholderTextColor="#999"
                 secureTextEntry
                 value={formData.wachtwoordBevestigen}
                 onChangeText={(text) => updateFormData('wachtwoordBevestigen', text)}
             />
-
             <TouchableOpacity style={styles.button} onPress={handleNext}>
                 <Text style={styles.buttonText}>Registreer</Text>
             </TouchableOpacity>
-
-            <Text style={styles.orText}>of</Text>
-
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>Login</Text>
-            </TouchableOpacity>
-        </View>
+        </>
     );
 
     const renderStep3 = () => (
-        <View style={styles.formContainer}>
+        <>
             <Text style={styles.successTitle}>Registratie bijna voltooid.</Text>
-
             <Text style={styles.successText}>
                 We hebben je een bevestigingsmail gestuurd.
-                Volg de instructies in de mail om de registratie af te ronden.
+                Volg de instructies in de mail om je registratie af te ronden.
             </Text>
-
-            <View style={styles.bottleContainer}>
-                <View style={styles.bottle1} />
-                <View style={styles.bottle2} />
-            </View>
-
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                <Text style={styles.loginButtonText}>Login</Text>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-        </View>
+        </>
     );
 
     return (
-        <SafeAreaView style={styles.container}>
-            {renderHeader()}
-            <View style={styles.card}>
-                {currentStep === 1 && renderStep1()}
-                {currentStep === 2 && renderStep2()}
-                {currentStep === 3 && renderStep3()}
-            </View>
-        </SafeAreaView>
+        <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
+            <View style={styles.overlay} />
+            <SafeAreaView style={styles.container}>
+                {renderHeader()}
+                <View style={styles.contentContainer}>
+                    <View style={styles.formContainer}>
+                        {currentStep === 1 && renderStep1()}
+                        {currentStep === 2 && renderStep2()}
+                        {currentStep === 3 && renderStep3()}
+                        {currentStep !== 3 && (
+                            <>
+                                <View style={styles.dividerContainer}>
+                                    <View style={styles.dividerLine} />
+                                    <Text style={styles.dividerText}>of</Text>
+                                    <View style={styles.dividerLine} />
+                                </View>
+                                <TouchableOpacity style={styles.secondaryButton} onPress={handleLogin}>
+                                    <Text style={styles.buttonText}>Login</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
+                    </View>
+                </View>
+            </SafeAreaView>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+        width: '100%',
+        height: '100%',
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(11, 20, 8, 0.57)',
+        zIndex: 1,
+    },
     container: {
         flex: 1,
-        backgroundColor: '#2F4538',
-        paddingHorizontal: 20,
-
-},
-    header: {
+        zIndex: 2,
+    },
+    headerContainer: {
         alignItems: 'center',
         paddingVertical: 30,
+        position: 'absolute',
+        top: 0,
+        width: '100%',
+        zIndex: 1,
     },
     headerText: {
-        fontSize: 18,
+        fontSize: 30,
         color: '#FDFDFD',
         fontWeight: '300',
         letterSpacing: 2,
     },
     headerTextBold: {
-        fontSize: 18,
+        fontSize: 30,
         color: '#FDFDFD',
         fontWeight: 'bold',
         letterSpacing: 2,
     },
-    card: {
-        backgroundColor: '#FDFDFD',
-        borderRadius: 20,
-        padding: 30,
-        marginBottom: 30,
-    },
-    stepIndicator: {
-        flexDirection: 'row',
-        alignItems: 'center',
+    contentContainer: {
+        flex: 1,
         justifyContent: 'center',
-        marginBottom: 30,
-    },
-    step: {
-        width: 30,
-        height: 30,
-        borderRadius: 15,
-        backgroundColor: '#FDFDFD',
         alignItems: 'center',
-        justifyContent: 'center',
-    },
-    stepActive: {
-        backgroundColor: '#2B3D25',
-    },
-    stepText: {
-        color: '#999',
-        fontWeight: 'bold',
-    },
-    stepTextActive: {
-        color: '#FDFDFD',
-    },
-    stepLine: {
-        width: 50,
-        height: 2,
-        backgroundColor: '#2F4538',
-        marginHorizontal: 10,
+        paddingHorizontal: 20,
+        paddingTop: 120,
     },
     formContainer: {
-        width: '100%',
+        width: width * 0.85,
+        backgroundColor: '#FDFDFD',
+        borderRadius: 12,
+        padding: 30,
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
     },
-    input: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#2B3D25',
-        paddingVertical: 15,
-        fontSize: 16,
-        marginBottom: 20,
-        color: '#333',
-    },
-    phoneContainer: {
+    countryPhoneContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 20,
@@ -290,34 +244,46 @@ const styles = StyleSheet.create({
         flex: 1,
         marginBottom: 0,
     },
+    input: {
+        fontSize: 16,
+        paddingVertical: 12,
+        borderBottomWidth: 2,
+        borderBottomColor: '#2B3D25',
+        marginBottom: 20,
+        color: '#333',
+    },
     button: {
         backgroundColor: '#1F3A3D',
         paddingVertical: 15,
         borderRadius: 8,
-        alignItems: 'center',
-        marginBottom: 20,
+        marginTop: 10,
     },
     buttonText: {
         color: '#FDFDFD',
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
-    },
-    orText: {
         textAlign: 'center',
-        color: '#70746F',
-        marginBottom: 20,
-        fontSize: 14,
     },
-    loginButton: {
+    secondaryButton: {
         backgroundColor: '#1F3A3D',
         paddingVertical: 15,
         borderRadius: 8,
-        alignItems: 'center',
     },
-    loginButtonText: {
-        color: '#FDFDFD',
+    dividerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    dividerLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#70746F',
+    },
+    dividerText: {
+        marginHorizontal: 15,
         fontSize: 16,
         fontWeight: 'bold',
+        color: '#70746F',
     },
     successTitle: {
         fontSize: 20,
@@ -332,24 +298,5 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         lineHeight: 20,
         marginBottom: 30,
-    },
-    bottleContainer: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 40,
-    },
-    bottle1: {
-        width: 40,
-        height: 60,
-        backgroundColor: '#c4a484',
-        borderRadius: 8,
-        marginRight: 15,
-    },
-    bottle2: {
-        width: 35,
-        height: 55,
-        backgroundColor: '#7fb069',
-        borderRadius: 8,
     },
 });

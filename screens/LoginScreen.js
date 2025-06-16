@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    SafeAreaView,
-    Dimensions,
-    ScrollView,
+    View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, ScrollView,
 } from 'react-native';
+import { ImageBackground, Image } from 'react-native';
+import BackgroundImage from '../assets/images/background.png';
+import BottleImage from '../assets/images/bottle.png';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,105 +25,114 @@ export default function LoginScreen({ navigation }) {
         console.log('Forgot password pressed');
     };
 
-    const renderBackgroundText = () => {
-        return Array.from({ length: 12 }).map((_, i) => (
-            <Text
-                key={i}
-                style={[styles.backgroundText, { opacity: i === 4 ? 1 : 0.3 }]}
-            >
-                STATIESCAN
-            </Text>
-        ));
-    };
+    const renderHeader = () => (
+        <View style={styles.backgroundContainer}>
+            <Text style={styles.headerText}>STATIESCAN</Text>
+            <Text style={styles.headerText}>STATIESCAN</Text>
+            <Text style={styles.headerText}>STATIESCAN</Text>
+            <Text style={styles.headerText}>STATIESCAN</Text>
+            <Text style={styles.headerTextBold}>STATIESCAN</Text>
+            <Text style={styles.headerText}>STATIESCAN</Text>
+            <Text style={styles.headerText}>STATIESCAN</Text>
+            <Text style={styles.headerText}>STATIESCAN</Text>
+        </View>
+    );
+
 
     return (
-        <SafeAreaView style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.backgroundContainer}>{renderBackgroundText()}</View>
+        <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
+            <View style={styles.overlay} />
+            <SafeAreaView style={styles.container}>
+                    {renderHeader()}
 
-                <View style={styles.contentContainer}>
-                    <View style={styles.imageContainer}>
-                        <View style={styles.imagePlaceholder}>
-                            <Text style={styles.imagePlaceholderText}>Image Placeholder</Text>
+                    <View style={styles.contentContainer}>
+
+                        <View style={styles.formContainer}>
+                            <View style={styles.inputContainer}>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder="Email"
+                                    placeholderTextColor="#999"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                />
+                            </View>
+
+                            <View style={styles.inputContainer}>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder="Wachtwoord"
+                                    placeholderTextColor="#999"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry
+                                />
+                            </View>
+
+                            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                                <Text style={styles.loginButtonText}>Login</Text>
+                            </TouchableOpacity>
+
+                            <View style={styles.dividerContainer}>
+                                <View style={styles.dividerLine} />
+                                <Text style={styles.dividerText}>of</Text>
+                                <View style={styles.dividerLine} />
+                            </View>
+
+                            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+                                <Text style={styles.registerButtonText}>Registreer</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.forgotPasswordButton}
+                                onPress={handleForgotPassword}
+                            >
+                                <Text style={styles.forgotPasswordButtonText}>Wachtwoord vergeten</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-
-                    <View style={styles.formContainer}>
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                style={styles.textInput}
-                                placeholder="Email"
-                                placeholderTextColor="#999"
-                                value={email}
-                                onChangeText={setEmail}
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                            />
-                        </View>
-
-                        <View style={styles.inputContainer}>
-                            <TextInput
-                                style={styles.textInput}
-                                placeholder="Wachtwoord"
-                                placeholderTextColor="#999"
-                                value={password}
-                                onChangeText={setPassword}
-                                secureTextEntry
-                            />
-                        </View>
-
-                        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                            <Text style={styles.loginButtonText}>Login</Text>
-                        </TouchableOpacity>
-
-                        <View style={styles.dividerContainer}>
-                            <View style={styles.dividerLine} />
-                            <Text style={styles.dividerText}>of</Text>
-                            <View style={styles.dividerLine} />
-                        </View>
-
-                        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                            <Text style={styles.registerButtonText}>Registreer</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={styles.forgotPasswordButton}
-                            onPress={handleForgotPassword}
-                        >
-                            <Text style={styles.forgotPasswordButtonText}>Wachtwoord vergeten</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </ScrollView>
         </SafeAreaView>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'cover',
+        width: '100%',
+        height: '100%',
+    },
+    overlay: {
+        ...StyleSheet.absoluteFillObject, // makes the overlay cover the whole screen
+        backgroundColor: 'rgba(11, 20, 8, 0.57)', // 57% opacity over dark green
+        zIndex: 1,
+    },
     container: {
         flex: 1,
-        backgroundColor: '#2F4538',
-    },
-    scrollContainer: {
-        flexGrow: 1,
-        minHeight: height,
+        zIndex: 2, // above the overlay
     },
     backgroundContainer: {
+        alignItems: 'center',
+        paddingVertical: 30,
         position: 'absolute',
         top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        paddingTop: 60,
+        width: '100%',
+        zIndex: 1,
     },
-    backgroundText: {
-        fontSize: 32,
-        fontWeight: 'bold',
+    headerText: {
+        fontSize: 30,
         color: '#FDFDFD',
+        fontWeight: '300',
         letterSpacing: 2,
-        marginVertical: 2,
+    },
+    headerTextBold: {
+        fontSize: 30,
+        color: '#FDFDFD',
+        fontWeight: 'bold',
+        letterSpacing: 2,
     },
     contentContainer: {
         flex: 1,
@@ -134,6 +140,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 20,
         paddingTop: 100,
+    },
+    bottleImage: {
+        width: width * 0.8,
+        height: 120,
+        marginBottom: 20,
+    },
+    backgroundText: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#FDFDFD',
+        letterSpacing: 2,
+        marginVertical: 2,
+        textShadowColor: 'rgba(0, 0, 0, 0.3)',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1,
     },
     imageContainer: {
         marginBottom: 40,
@@ -203,7 +224,7 @@ const styles = StyleSheet.create({
         color: '#70746F',
     },
     registerButton: {
-        backgroundColor: '#2c3e2c',
+        backgroundColor: '#1F3A3D',
         paddingVertical: 15,
         borderRadius: 8,
         marginBottom: 15,
