@@ -64,7 +64,7 @@ export const initDatabase = async () => {
     await db.execAsync( `
         CREATE TABLE IF NOT EXISTS appointments (
             id INTEGER PRIMARY KEY AUTOINCREMENT ,
-            time TEXT NULL,
+            time DATETIME NULL,
             customer_id INTEGER NOT NULL,
             FOREIGN KEY (customer_id) REFERENCES users (id),
             status BOOLEAN NOT NULL DEFAULT 0,
