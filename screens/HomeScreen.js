@@ -35,6 +35,7 @@
 import React from 'react';
 import {View, StyleSheet, Text, SafeAreaView, Dimensions, Pressable} from 'react-native';
 import {FontAwesome5, FontAwesome6, Ionicons} from '@expo/vector-icons';
+
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
 
@@ -80,6 +81,7 @@ export default function HomeScreen({ navigation }) {
                         title={"Ophaal moment"}
                         body={"Onbekend"}
                         button={<RoundButton
+                            onPress={() => navigation.navigate('PlanPickup')}
                             icon={<FontAwesome5
                                 name="th-list"
                                 size={15}
