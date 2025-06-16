@@ -32,10 +32,10 @@ const AuthNavigator = () => (
 const HomeNavigator = () => (
     <HomeStack.Navigator>
       <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
-      <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
-      <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
-      <HomeStack.Screen name="Admin" component={AdminScreen}/>
-      <HomeStack.Screen name="Camera" component={CameraScreen}/>
+        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details', headerShown: false }} />
+        <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken', headerShown: false }} />
+        <HomeStack.Screen name="Admin" component={AdminScreen}/>
+        <HomeStack.Screen name="Camera" component={CameraScreen}/>
     </HomeStack.Navigator>
 );
 
