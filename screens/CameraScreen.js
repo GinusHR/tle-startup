@@ -2,7 +2,7 @@ import { CameraView } from "expo-camera";
 import { Platform, SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
 
 
-export default function CameraScreen() {
+export default function CameraScreen({navigation}) {
 
     return (
         <SafeAreaView style={styleSheet.container}>
@@ -22,6 +22,7 @@ export default function CameraScreen() {
                 onBarcodeScanned={
                     ({ data }) => {
                         console.log(data); // here you can get your barcode id or url
+                        navigation.navigate('Admin', {code: data})
                     }
                 }
             />

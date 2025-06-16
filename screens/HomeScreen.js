@@ -12,6 +12,10 @@ export default function HomeScreen() {
                 title="Go to Plan Pickup"
                 onPress={() => navigation.navigate('PlanPickup')}
             />
+            <Button
+                title="Go to Admin"
+                onPress={() => navigation.navigate('Admin')}
+            />
         </View>
     );
 }
