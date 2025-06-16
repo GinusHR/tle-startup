@@ -17,6 +17,7 @@ import AccountScreen from './screens/AccountScreen';
 import AdminScreen from "./screens/AdminScreen";
 import CameraScreen from "./screens/CameraScreen";
 import DbTestScreen from "./screens/test-screen/DbTestScreen";
+import ScannedItemsDetails from "./screens/ScannedItemsDetails";
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
