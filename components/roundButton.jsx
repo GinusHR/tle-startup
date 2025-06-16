@@ -1,9 +1,7 @@
 import React from "react";
 import {Pressable, Text, StyleSheet, View, Dimensions} from "react-native";
-import {FontAwesome5} from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
-const scale = width / 440;
 const RoundButton = ({ onPress, title, icon}) => (
     <View style={styles.buttonAndTextContainer}>
         <Pressable style={styles.roundButton} onPress={ onPress }>

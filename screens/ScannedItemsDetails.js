@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Text, SafeAreaView, Dimensions, Pressable} from 'react-native';
-import {Entypo, Ionicons} from "@expo/vector-icons";
+import {Entypo} from "@expo/vector-icons";
 import {useNavigation} from "@react-navigation/native";
 import DataBoxes from "../components/dataBoxes";
 

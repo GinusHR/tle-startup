@@ -1,10 +1,7 @@
 import React from "react";
 import {Pressable, Text, StyleSheet, View, Dimensions} from "react-native";
-import {FontAwesome5} from "@expo/vector-icons";
-import RoundButton from "./roundButton";
 
-const { width, height } = Dimensions.get("window");
-const scale = width / 440;
+const { width } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 const DataBoxes = ({ onPress, title, body, subBody, button }) => (
     <View style={style.container}>
