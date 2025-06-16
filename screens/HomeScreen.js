@@ -1,16 +1,17 @@
 import React from 'react';
-import { View, StyleSheet, Text, Pressable } from 'react-native';
+import { View, StyleSheet, Text, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function HomeScreen({navigation}) {
+export default function HomeScreen() {
+    const navigation = useNavigation();
+
     return (
         <View>
-           <Pressable onPress={
-                   () => {
-                     navigation.navigate('Admin')
-                   }
-                 } style={[styleSheet.mainBtn, styleSheet.btnYellow]}  >
-                   <Text>To Admin</Text>
-                 </Pressable>
+            <Text>Home</Text>
+            <Button
+                title="Go to Plan Pickup"
+                onPress={() => navigation.navigate('PlanPickup')}
+            />
         </View>
     );
 }
