@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {View, StyleSheet, Text, Button, ActivityIndicator} from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-import { initDatabase } from "./database";
+import {getAllUsers, initDatabase} from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -77,12 +77,9 @@ const AppTabs = ({ onLogout, currentUser }) => (
     >
         <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
         <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
-        <Tab.Screen name="Account" options={{ headerTitle: '' , headerShadowVisible: false}}>
+        <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
             {() => (
-                <View style={styles.container}>
-                    <AccountScreen currentUser={currentUser} />
-                    <Button title="Logout" onPress={onLogout} />
-                </View>
+                <AccountScreen currentUser={currentUser} onLogout={onLogout} />
             )}
         </Tab.Screen>
     </Tab.Navigator>
@@ -139,7 +136,7 @@ export default function App() {
             {userIsLoggedIn ? (
                 <AppTabs onLogout={handleLogout} currentUser={currentUser} />
             ) : (
-                <AuthNavigator onLogin={handleLogin()} />
+                <AuthNavigator onLogin={handleLogin} />
             )}
         </NavigationContainer>
     );

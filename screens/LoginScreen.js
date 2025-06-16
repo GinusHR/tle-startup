@@ -9,7 +9,7 @@ import { getUser } from "../database";
 
 const { width, height } = Dimensions.get('window');
 
-export default async function LoginScreen({navigation, route}) {
+export default function LoginScreen({navigation, route}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -18,28 +18,28 @@ export default async function LoginScreen({navigation, route}) {
 
     const handleLogin = async () => {
         if (!email || !password) {
-            Alert.alert('Vul alle velden in')
+            Alert.alert('Vul alle velden in');
             return;
         }
-    };
 
-    setIsLoading(true);
+        setIsLoading(true);
 
-    try {
-        const user = await getUser(email, password);
+        try {
+            const user = await getUser(email, password);
 
-        if (user) {
-            console.log('login succesvol')
-            onLogin(user);
-        } else {
-            Alert.alert('Login mislukt', 'email of wachtwoord is incorrect');
+            if (user) {
+                console.log('login succesvol');
+                onLogin(user);
+            } else {
+                Alert.alert('Login mislukt', 'Email of wachtwoord is incorrect');
+            }
+        } catch (error) {
+            console.error('Login error', error);
+            Alert.alert('Er is een fout opgetreden bij het inloggen');
+        } finally {
+            setIsLoading(false);
         }
-    } catch (error) {
-        console.error('Login error', error);
-        Alert.alert('Er is een fout opgetreden bij het inloggen');
-    } finally {
-        setIsLoading(false)
-    }
+    };
 
     const handleRegister = () => {
         navigation.navigate('Register');
