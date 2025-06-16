@@ -24,8 +24,7 @@ export const initDatabase = async () => {
             name     TEXT    NOT NULL,
             email    TEXT    NOT NULL,
             password TEXT    NOT NULL,
-            lng      INTEGER NULL,
-            lat      INTEGER NULL,
+            address  TEXT NULL,
             wallet   INTEGER NULL,
             total    INTEGER NULL
         );
@@ -64,13 +63,12 @@ export const initDatabase = async () => {
 
     await db.execAsync( `
         CREATE TABLE IF NOT EXISTS appointments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            time TEXT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT ,
+            time DATETIME NULL,
             customer_id INTEGER NOT NULL,
             appointment_status BOOLEAN NOT NULL DEFAULT 0,
             driver TEXT NULL,
-            customer_lat INTEGER NULL,
-            customer_lng INTEGER NULL,
+            customer_address INTEGER NULL,
             FOREIGN KEY (customer_id) REFERENCES users (id)
             );
 

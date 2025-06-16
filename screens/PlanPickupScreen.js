@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Platform} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function PlanPickupScreen() {
     const [isOneTime, setIsOneTime] = useState(true);
+    const navigation = useNavigation();
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
-                <Text style={styles.title}>Ophalen</Text>
+                {/* Header met terugknop */}
+                <View style={styles.headerRow}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
+                    </TouchableOpacity>
+                    <Text style={styles.title}>Ophalen</Text>
+                </View>
 
                 <View style={styles.card}>
                     <Text style={styles.label}>Ophaal moment</Text>
@@ -98,10 +106,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         justifyContent: 'space-between',
     },
+    headerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    backButton: {
+        marginRight: 10,
+    },
     title: {
         fontSize: 26,
         fontFamily: 'montserrat-bold',
-        marginBottom: 16,
     },
     card: {
         backgroundColor: '#F6F6F6',
@@ -183,4 +198,3 @@ const styles = StyleSheet.create({
         fontFamily: 'montserrat-bold',
     },
 });
-
