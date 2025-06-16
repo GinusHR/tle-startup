@@ -14,6 +14,7 @@ import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
 import ScanScreen from './screens/ScanScreen';
 import AccountScreen from './screens/AccountScreen';
+import DbTestScreen from "./screens/test-screen/DbTestScreen";
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -28,7 +29,7 @@ const AuthNavigator = () => (
 
 const HomeNavigator = () => (
     <HomeStack.Navigator>
-      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home' }} />
+      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
       <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
       <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
     </HomeStack.Navigator>
@@ -37,7 +38,7 @@ const HomeNavigator = () => (
 const AppTabs = () => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
-          headerShown: false,
+          // headerShown: true,
           tabBarIcon: ({ color, size }) => {
             let iconName;
             if (route.name === 'Home') iconName = 'home-outline';
@@ -52,9 +53,9 @@ const AppTabs = () => (
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-      <Tab.Screen name="Home" component={HomeNavigator} />
-      <Tab.Screen name="Scan" component={ScanScreen} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Screen name="Home" options={{ headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
+      <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
+      <Tab.Screen name="Account" options={{ headerTitle: '' , headerShadowVisible: false}}  component={AccountScreen} />
     </Tab.Navigator>
 );
 
