@@ -106,17 +106,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         justifyContent: 'space-between',
     },
-    headerRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
-    },
-    backButton: {
-        marginRight: 10,
-    },
     title: {
         fontSize: 26,
         fontFamily: 'montserrat-bold',
+        marginBottom: 16,
     },
     card: {
         backgroundColor: '#F6F6F6',
@@ -155,7 +148,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 20,
         borderWidth: 3,
-        borderColor: "transparent",
+        borderColor: '#2F4538',
     },
     toggleSelected: {
         backgroundColor: '#fff',
@@ -198,3 +191,4 @@ const styles = StyleSheet.create({
         fontFamily: 'montserrat-bold',
     },
 });
+
