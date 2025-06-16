@@ -15,7 +15,6 @@
     "ios": {
       "supportsTablet": true
     },
-    "jsEngine": "jsc",
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -27,7 +26,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-        "expo-sqlite"
+        "expo-sqlite",
+        "expo-font"
     ]
-  }
+    }
 }

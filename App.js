@@ -1,8 +1,10 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { View, StyleSheet, Text } from "react-native";
+import { useFonts } from 'expo-font';
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, StyleSheet, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import LoginScreen from './screens/LoginScreen';
@@ -27,7 +29,7 @@ const AuthNavigator = () => (
 
 const HomeNavigator = () => (
     <HomeStack.Navigator>
-      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home' }} />
+      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
       <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
       <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
     </HomeStack.Navigator>
@@ -36,7 +38,7 @@ const HomeNavigator = () => (
 const AppTabs = () => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
-          headerShown: false,
+          // headerShown: true,
           tabBarIcon: ({ color, size }) => {
             let iconName;
             if (route.name === 'Home') iconName = 'home-outline';
@@ -51,14 +53,23 @@ const AppTabs = () => (
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-      <Tab.Screen name="Home" component={HomeNavigator} />
-      <Tab.Screen name="Scan" component={ScanScreen} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      <Tab.Screen name="Home" options={{ headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
+      <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
+      <Tab.Screen name="Account" options={{ headerTitle: '' , headerShadowVisible: false}}  component={AccountScreen} />
     </Tab.Navigator>
 );
 
 
 export default function App() {
+    const [fontsLoaded] = useFonts({
+        'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+        'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+    });
+
+    if (!fontsLoaded) {
+        return null; // Of een <Loading /> component
+    }
+
   const userIsLoggedIn = true; // ← veranderen dit later naar een echte auth-check
 
   return (
