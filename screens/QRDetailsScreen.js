@@ -22,7 +22,7 @@ export default function QRDetailsScreen() {
             {/* QR-code Placeholder */}
             {/* <View style={styles.qrPlaceholder} /> */}
             <QRCode
-      value="Just some string value"
+      value="https://www.npmjs.com/package/react-native-qrcode-svg"
       size={310}
     />
 
