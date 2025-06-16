@@ -1,21 +1,45 @@
 import React, { useState } from 'react';
 import {
-    View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, ScrollView,
+    View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert, ActivityIndicator
 } from 'react-native';
 import { ImageBackground, Image } from 'react-native';
 import BackgroundImage from '../assets/images/background.png';
-import BottleImage from '../assets/images/bottle.png';
 
+import { getUser } from "../database";
 
 const { width, height } = Dimensions.get('window');
 
-export default function LoginScreen({ navigation }) {
+export default async function LoginScreen({navigation, route}) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = () => {
-        console.log('Login pressed', { email, password });
+    const {onLogin} = route.params;
+
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert('Vul alle velden in')
+            return;
+        }
     };
+
+    setIsLoading(true);
+
+    try {
+        const user = await getUser(email, password);
+
+        if (user) {
+            console.log('login succesvol')
+            onLogin(user);
+        } else {
+            Alert.alert('Login mislukt', 'email of wachtwoord is incorrect');
+        }
+    } catch (error) {
+        console.error('Login error', error);
+        Alert.alert('Er is een fout opgetreden bij het inloggen');
+    } finally {
+        setIsLoading(false)
+    }
 
     const handleRegister = () => {
         navigation.navigate('Register');
@@ -23,6 +47,7 @@ export default function LoginScreen({ navigation }) {
 
     const handleForgotPassword = () => {
         console.log('Forgot password pressed');
+        Alert.alert('Wachtwoord vergeten', 'Deze functie wordt binnenkort toegevoegd');
     };
 
     const renderHeader = () => (
@@ -41,59 +66,75 @@ export default function LoginScreen({ navigation }) {
 
     return (
         <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
-            <View style={styles.overlay} />
+            <View style={styles.overlay}/>
             <SafeAreaView style={styles.container}>
-                    {renderHeader()}
+                {renderHeader()}
 
-                    <View style={styles.contentContainer}>
+                <View style={styles.contentContainer}>
 
-                        <View style={styles.formContainer}>
-                            <View style={styles.inputContainer}>
-                                <TextInput
-                                    style={styles.textInput}
-                                    placeholder="Email"
-                                    placeholderTextColor="#999"
-                                    value={email}
-                                    onChangeText={setEmail}
-                                    keyboardType="email-address"
-                                    autoCapitalize="none"
-                                />
-                            </View>
-
-                            <View style={styles.inputContainer}>
-                                <TextInput
-                                    style={styles.textInput}
-                                    placeholder="Wachtwoord"
-                                    placeholderTextColor="#999"
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    secureTextEntry
-                                />
-                            </View>
-
-                            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-                                <Text style={styles.loginButtonText}>Login</Text>
-                            </TouchableOpacity>
-
-                            <View style={styles.dividerContainer}>
-                                <View style={styles.dividerLine} />
-                                <Text style={styles.dividerText}>of</Text>
-                                <View style={styles.dividerLine} />
-                            </View>
-
-                            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-                                <Text style={styles.registerButtonText}>Registreer</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                style={styles.forgotPasswordButton}
-                                onPress={handleForgotPassword}
-                            >
-                                <Text style={styles.forgotPasswordButtonText}>Wachtwoord vergeten</Text>
-                            </TouchableOpacity>
+                    <View style={styles.formContainer}>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder="Email"
+                                placeholderTextColor="#999"
+                                value={email}
+                                onChangeText={setEmail}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                editable={!isLoading}
+                            />
                         </View>
+
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder="Wachtwoord"
+                                placeholderTextColor="#999"
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry
+                                editable={!isLoading}
+                            />
+                        </View>
+
+                        <TouchableOpacity
+                            style={[styles.loginButton, isLoading && styles.disabledButton]}
+                            onPress={handleLogin}
+                            disabled={isLoading}>
+
+                            {isLoading ? (
+                                <ActivityIndicator color="#FDFDFD" />
+                            ) : (
+                                <Text style={styles.loginButtonText}>Login</Text>
+                            )}
+
+                        </TouchableOpacity>
+
+                        <View style={styles.dividerContainer}>
+                            <View style={styles.dividerLine}/>
+                            <Text style={styles.dividerText}>of</Text>
+                            <View style={styles.dividerLine}/>
+                        </View>
+
+                        <TouchableOpacity
+                            style={[styles.registerButton, isLoading && styles.disabledButton]}
+                            onPress={handleRegister}
+                            disabled={isLoading}
+                        >
+                            <Text style={styles.registerButtonText}>Registreer</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={[styles.forgotPasswordButton, isLoading && styles.disabledButton]}
+                            onPress={handleForgotPassword}
+                            disabled={isLoading}
+                        >
+                            <Text style={styles.forgotPasswordButtonText}>Wachtwoord vergeten</Text>
+                        </TouchableOpacity>
                     </View>
-        </SafeAreaView>
+                </View>
+            </SafeAreaView>
         </ImageBackground>
     );
 }
@@ -106,13 +147,13 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     overlay: {
-        ...StyleSheet.absoluteFillObject, // makes the overlay cover the whole screen
-        backgroundColor: 'rgba(11, 20, 8, 0.57)', // 57% opacity over dark green
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(11, 20, 8, 0.57)',
         zIndex: 1,
     },
     container: {
         flex: 1,
-        zIndex: 2, // above the overlay
+        zIndex: 2,
     },
     backgroundContainer: {
         alignItems: 'center',
@@ -141,11 +182,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingTop: 100,
     },
-    bottleImage: {
-        width: width * 0.8,
-        height: 120,
-        marginBottom: 20,
-    },
     backgroundText: {
         fontSize: 32,
         fontWeight: 'bold',
@@ -158,20 +194,6 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         marginBottom: 40,
-    },
-    imagePlaceholder: {
-        width: width * 0.8,
-        height: 120,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        borderRadius: 8,
-        borderWidth: 3,
-        borderColor: '#4a90e2',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    imagePlaceholderText: {
-        color: '#666',
-        fontSize: 16,
     },
     formContainer: {
         width: width * 0.8,

@@ -1,11 +1,13 @@
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from 'expo-font';
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {View, StyleSheet, Text, Button} from "react-native";
+import {View, StyleSheet, Text, Button, ActivityIndicator} from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+
+import { initDatabase } from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -23,7 +25,9 @@ const Tab = createBottomTabNavigator();
 const AuthNavigator = ({ onLogin }) => (
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
         <AuthStack.Screen
-            name="Login" component={LoginScreen} initialParams={{ onLogin }}
+            name="Login"
+            component={LoginScreen}
+            initialParams={{ onLogin }}
         />
         <AuthStack.Screen name="Register" component={RegisterScreen} />
     </AuthStack.Navigator>
@@ -37,7 +41,7 @@ const HomeNavigator = () => (
     </HomeStack.Navigator>
 );
 
-const AppTabs = ({ onLogout }) => (
+const AppTabs = ({ onLogout, currentUser }) => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
             headerShown: false,
@@ -62,7 +66,7 @@ const AppTabs = ({ onLogout }) => (
         <Tab.Screen name="Account">
             {() => (
                 <View style={styles.container}>
-                    <AccountScreen />
+                    <AccountScreen currentUser={currentUser} />
                     <Button title="Logout" onPress={onLogout} />
                 </View>
             )}
@@ -73,21 +77,55 @@ const AppTabs = ({ onLogout }) => (
 
 export default function App() {
     const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [isDbInitialized, setIsDbInitialized] = useState(false)
     const [fontsLoaded] = useFonts({
         'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
         'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
     });
 
+    useEffect(() => {
+        const initializeDatabase = async () => {
+            try {
+                await initDatabase();
+                setIsDbInitialized(true);
+                console.log("Database geïnitialiseerd")
+            } catch (error) {
+                console.error("Database initialisatie mislukt", error)
+            }
+        };
+        initializeDatabase();
+    }, []);
+
+    const handleLogin = (user) => {
+        setCurrentUser(user);
+        setUserIsLoggedIn(true);
+    };
+
+    const handleLogout = () => {
+        setCurrentUser(null);
+        setUserIsLoggedIn(false);
+    };
+
     if (!fontsLoaded) {
         return null; // Of een <Loading /> component
+    }
+
+    if (!isDbInitialized) {
+        return (
+            <View style={[styles.container, styles.centered]}>
+                <ActivityIndicator size="large" color="#2F4538" />
+                <Text style={styles.loadingText}>Laden...</Text>
+            </View>
+        )
     }
 
     return (
         <NavigationContainer>
             {userIsLoggedIn ? (
-                <AppTabs onLogout={() => setUserIsLoggedIn(false)} />
+                <AppTabs onLogout={handleLogout} currentUser={currentUser} />
             ) : (
-                <AuthNavigator onLogin={() => setUserIsLoggedIn(true)} />
+                <AuthNavigator onLogin={handleLogin()} />
             )}
         </NavigationContainer>
     );
@@ -101,8 +139,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 16,
     },
+    centered: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     title: {
         fontSize: 24,
         marginBottom: 20,
+    },
+    loadingText: {
+        marginTop: 10,
+        fontSize: 16,
+        color: '#2F4538',
     },
 });

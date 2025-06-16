@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import {
     View, Text, TextInput, TouchableOpacity, StyleSheet,
-    SafeAreaView, Dimensions, ImageBackground, Alert
+    SafeAreaView, Dimensions, ImageBackground, Alert, ActivityIndicator
 } from 'react-native';
 
 import BackgroundImage from '../assets/images/background.png';
+
+import { insertUser } from "../database";
 
 const { width } = Dimensions.get('window');
 
 export default function RegisterScreen({ navigation }) {
     const [currentStep, setCurrentStep] = useState(1);
+    const [isLoading, setIsLoading] = useState(false)
     const [formData, setFormData] = useState({
         naam: '',
         achternaam: '',
@@ -23,6 +26,15 @@ export default function RegisterScreen({ navigation }) {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+    const validatePassword = (password) => {
+        return password.length >= 6;
+    };
+
     const handleNext = () => {
         if (currentStep === 1) {
             if (!formData.naam || !formData.achternaam || !formData.telefoon) {
@@ -30,21 +42,51 @@ export default function RegisterScreen({ navigation }) {
                 return;
             }
             setCurrentStep(2);
-        } else if (currentStep === 2) {
+        }else if (currentStep === 2) {
             if (!formData.email || !formData.wachtwoord || !formData.wachtwoordBevestigen) {
                 Alert.alert('Error', 'Vul alle velden in');
                 return;
             }
+
+            if (!validateEmail(formData.email)) {
+                Alert.alert('Error', 'Vul een geldig email adres in');
+                return;
+            }
+
+            if (!validatePassword(formData.wachtwoord)) {
+                Alert.alert('Error', 'Wachtwoord moet minimaal 6 karakters lang zijn');
+                return;
+            }
+
             if (formData.wachtwoord !== formData.wachtwoordBevestigen) {
                 Alert.alert('Error', 'Wachtwoorden komen niet overeen');
                 return;
             }
+
+            handleRegister();
+
+        }
+    };
+
+    const handleRegister = async () => {
+        setIsLoading(true);
+
+        try {
+            const fullName = `${formData.naam} ${formData.achternaam}`;
+            await insertUser(fullName, formData.email, formData.wachtwoord);
+
+            console.log('Gebruiker succesvol geregistreerd:', formData.email);
             setCurrentStep(3);
+        } catch (error) {
+            console.error('Registratie error:', error);
+            Alert.alert('Registratie mislukt', 'Er is een fout opgetreden bij het registreren. Probeer het opnieuw.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const handleLogin = () => {
-        navigation.navigate('Login'); // or your login handler
+        navigation.navigate('Login');
     };
 
     const renderHeader = () => (
@@ -67,6 +109,7 @@ export default function RegisterScreen({ navigation }) {
                 placeholderTextColor="#999"
                 value={formData.naam}
                 onChangeText={(text) => updateFormData('naam', text)}
+                editable={!isLoading}
             />
             <TextInput
                 style={styles.input}
@@ -74,6 +117,7 @@ export default function RegisterScreen({ navigation }) {
                 placeholderTextColor="#999"
                 value={formData.achternaam}
                 onChangeText={(text) => updateFormData('achternaam', text)}
+                editable={!isLoading}
             />
             <View style={styles.countryPhoneContainer}>
                 <View style={styles.countryCode}>
@@ -86,9 +130,14 @@ export default function RegisterScreen({ navigation }) {
                     keyboardType="phone-pad"
                     value={formData.telefoon}
                     onChangeText={(text) => updateFormData('telefoon', text)}
+                    editable={!isLoading}
                 />
             </View>
-            <TouchableOpacity style={styles.button} onPress={handleNext}>
+            <TouchableOpacity
+                style={[styles.button, isLoading && styles.disabledButton]}
+                onPress={handleNext}
+                disabled={isLoading}
+            >
                 <Text style={styles.buttonText}>Volgende</Text>
             </TouchableOpacity>
         </>
@@ -104,6 +153,7 @@ export default function RegisterScreen({ navigation }) {
                 onChangeText={(text) => updateFormData('email', text)}
                 keyboardType="email-address"
                 autoCapitalize="none"
+                editable={!isLoading}
             />
             <TextInput
                 style={styles.input}
@@ -112,6 +162,7 @@ export default function RegisterScreen({ navigation }) {
                 secureTextEntry
                 value={formData.wachtwoord}
                 onChangeText={(text) => updateFormData('wachtwoord', text)}
+                editable={!isLoading}
             />
             <TextInput
                 style={styles.input}
@@ -120,9 +171,18 @@ export default function RegisterScreen({ navigation }) {
                 secureTextEntry
                 value={formData.wachtwoordBevestigen}
                 onChangeText={(text) => updateFormData('wachtwoordBevestigen', text)}
+                editable={!isLoading}
             />
-            <TouchableOpacity style={styles.button} onPress={handleNext}>
-                <Text style={styles.buttonText}>Registreer</Text>
+            <TouchableOpacity
+                style={[styles.button, isLoading && styles.disabledButton]}
+                onPress={handleNext}
+                disabled={isLoading}
+            >
+                {isLoading ? (
+                    <ActivityIndicator color="#FDFDFD" />
+                ) : (
+                    <Text style={styles.buttonText}>Registreer</Text>
+                )}
             </TouchableOpacity>
         </>
     );
@@ -157,7 +217,11 @@ export default function RegisterScreen({ navigation }) {
                                     <Text style={styles.dividerText}>of</Text>
                                     <View style={styles.dividerLine} />
                                 </View>
-                                <TouchableOpacity style={styles.secondaryButton} onPress={handleLogin}>
+                                <TouchableOpacity
+                                    style={[styles.secondaryButton, isLoading && styles.disabledButton]}
+                                    onPress={handleLogin}
+                                    disabled={isLoading}
+                                >
                                     <Text style={styles.buttonText}>Login</Text>
                                 </TouchableOpacity>
                             </>

@@ -64,17 +64,16 @@ export const initDatabase = async () => {
 
     await db.execAsync( `
         CREATE TABLE IF NOT EXISTS appointments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT ,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             time TEXT NULL,
             customer_id INTEGER NOT NULL,
-            FOREIGN KEY (customer_id) REFERENCES users (id),
-            status BOOLEAN NOT NULL DEFAULT 0,
+            appointment_status BOOLEAN NOT NULL DEFAULT 0,
             driver TEXT NULL,
             customer_lat INTEGER NULL,
-            customer_lng INTEGER NOT NULL,
-            FOREIGN KEY (customer_lat) REFERENCES users (lat),
-            FOREIGN KEY (customer_lng) REFERENCES users (lng)
-        );
+            customer_lng INTEGER NULL,
+            FOREIGN KEY (customer_id) REFERENCES users (id)
+            );
+
     `);
 
 };
