@@ -189,10 +189,9 @@ export default function RegisterScreen({ navigation }) {
 
     const renderStep3 = () => (
         <>
-            <Text style={styles.successTitle}>Registratie bijna voltooid.</Text>
+            <Text style={styles.successTitle}>Registratie voltooid.</Text>
             <Text style={styles.successText}>
-                We hebben je een bevestigingsmail gestuurd.
-                Volg de instructies in de mail om je registratie af te ronden.
+                Ga naar het login scherm om in te loggen!
             </Text>
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Login</Text>
