@@ -21,7 +21,10 @@ export default function CameraScreen({navigation}) {
 
                 onBarcodeScanned={
                     ({ data }) => {
-                        console.log(data); // here you can get your barcode id or url
+                        // write check for security
+                        // only go through if the qr is legit
+                        // make warning popup for false codes
+                        
                         navigation.navigate('Admin', {code: data})
                     }
                 }

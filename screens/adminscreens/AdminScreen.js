@@ -1,8 +1,6 @@
 import { useCameraPermissions } from 'expo-camera';
 import React from 'react';
 import { View, StyleSheet, Text, StatusBar, SafeAreaView, Pressable } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import CameraScreen from './CameraScreen';
 import { useRoute } from '@react-navigation/native';
 
 export default function AdminScreen({navigation}) {

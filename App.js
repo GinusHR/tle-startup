@@ -14,8 +14,8 @@ import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
 import ScanScreen from './screens/ScanScreen';
 import AccountScreen from './screens/AccountScreen';
-import AdminScreen from "./screens/AdminScreen";
-import CameraScreen from "./screens/CameraScreen";
+import AdminScreen from "./screens/adminscreens/AdminScreen";
+import CameraScreen from "./screens/adminscreens/CameraScreen";
 import DbTestScreen from "./screens/test-screen/DbTestScreen";
 
 const AuthStack = createNativeStackNavigator();
@@ -35,6 +35,7 @@ const HomeNavigator = () => (
         <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details', headerShown: false }} />
         <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken', headerShown: false }} />
         <HomeStack.Screen name="Admin" component={AdminScreen}/>
+        <HomeStack.Screen name="Camera" component={CameraScreen}/>
         <HomeStack.Screen name="Camera" component={CameraScreen}/>
     </HomeStack.Navigator>
 );
