@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function AccountScreen() {
+export default function AccountScreen({ onLogout }) {
     const [darkMode, setDarkMode] = useState(false);
 
     const toggleDarkMode = () => setDarkMode(prev => !prev);
@@ -43,7 +43,12 @@ export default function AccountScreen() {
                 </View>
 
                 <View style={[styles.logoutCard, { borderColor }]}>
-                    <MenuItem title="Uitloggen" icon="log-out-outline" color={textColor} />
+                    <MenuItem
+                        title="Uitloggen"
+                        icon="log-out-outline"
+                        color={textColor}
+                        onPress={onLogout}
+                    />
                 </View>
             </ScrollView>
         </View>
