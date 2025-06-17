@@ -1,49 +1,30 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Modal, TextInput, ScrollView, KeyboardAvoidingView, Platform, Button, } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { insertAppointment } from '../database';
+import React, {useEffect, useState} from 'react';
+import {Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {insertAppointment} from '../database';
 import RoundButton from '../components/roundButton';
 import DataBoxes from "../components/dataBoxes";
 
 export default function PlanPickupScreen() {
     const [isOneTime, setIsOneTime] = useState(true);
-    const [addressModalVisible, setAddressModalVisible] = useState(false);
-    const [datetimeModalVisible, setDatetimeModalVisible] = useState(false);
-
-    const [street, setStreet] = useState('');
-    const [number, setNumber] = useState('');
-    const [addition, setAddition] = useState('');
-    const [postal, setPostal] = useState('');
-    const [city, setCity] = useState('');
-
+    const [selectedAddress, setSelectedAddress] = useState('');
     const [selectedDate, setSelectedDate] = useState(null);
 
+    const [confirmedAddress, setConfirmedAddress] = useState(null);
+    const route = useRoute();
     const navigation = useNavigation();
 
-    const handleCreateAppointment = async () => {
-        const address = `${street} ${number}${addition ? ' ' + addition : ''}, ${postal} ${city}`;
-        if (!street || !number || !postal || !city || !selectedDate) return;
-        await insertAppointment(1, address, selectedDate);
-        navigation.goBack();
-    };
-
-    const handleDateChange = (event, date) => {
-        if (date) {
-            const minutes = date.getMinutes();
-            if ([0, 15, 30, 45].includes(minutes)) {
-                setSelectedDate(date);
-            }
+    useEffect(() => {
+        if (route.params?.selectedAddress) {
+            setConfirmedAddress(route.params.selectedAddress);
         }
-    };
+    }, [route.params?.selectedAddress]);
 
-    const getTomorrowAtNoon = () => {
-        const now = new Date();
-        const tomorrow = new Date(now);
-        tomorrow.setDate(now.getDate() + 1);
-        tomorrow.setHours(12, 0, 0, 0); // 12:00:00.000
-        return tomorrow;
+    const handleCreateAppointment = async () => {
+        if (!confirmedAddress || !selectedDate) return;
+        await insertAppointment(1, confirmedAddress, selectedDate);
+        navigation.goBack();
     };
 
     return (
@@ -51,7 +32,7 @@ export default function PlanPickupScreen() {
             <View style={styles.container}>
                 <View style={styles.headerRow}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
+                        <Ionicons name="chevron-back" size={28} color="#1C1F1E"/>
                     </TouchableOpacity>
                     <Text style={styles.title}>Ophalen</Text>
                 </View>
@@ -59,7 +40,7 @@ export default function PlanPickupScreen() {
                 <View style={styles.card}>
                     <Text style={styles.label}>Ophaal moment</Text>
                     <Text style={styles.placeholder}>
-                        {isOneTime ? 'Eenmalig ophalen' : 'Periodiek ophalen'} {/* Placeholder text for the toggle */}
+                        {isOneTime ? 'Eenmalig ophalen' : 'Periodiek ophalen'}
                     </Text>
                 </View>
 
@@ -80,17 +61,14 @@ export default function PlanPickupScreen() {
 
                 <DataBoxes
                     title="Adres"
-                    body={
-                        street
-                            ? `${street} ${number}${addition ? ' ' + addition : ''}, ${postal} ${city}`
-                            : 'Klik om in te vullen'
-                    }
+                    body={confirmedAddress ? confirmedAddress : 'Klik om in te vullen'}
                     button={
                         <RoundButton
                             icon="home"
                             onPress={() =>
                                 navigation.navigate('AddressPicker', {
-                                    currentAddress: { street, number, addition, postal, city }
+                                    onAddressSelected: (address) =>
+                                        setSelectedAddress(address),
                                 })
                             }
                         />
@@ -122,7 +100,6 @@ export default function PlanPickupScreen() {
                         />
                     }
                 />
-
 
                 <Text style={styles.disclaimer}>
                     Door op "Maak afspraak" te klikken, ga je akkoord met de{' '}

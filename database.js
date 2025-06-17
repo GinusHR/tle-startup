@@ -187,6 +187,21 @@ export const deleteList = async (id) => {
     }
 }
 
+export const updateUserAddress = async (userId, newAddress) => {
+    if (!db) return;
+    try {
+        await db.runAsync(
+            'UPDATE users SET address = ? WHERE id = ?;',
+            newAddress,
+            userId
+        );
+        console.log("Adres succesvol opgeslagen");
+    } catch (error) {
+        console.log("Fout bij opslaan adres:", error);
+    }
+};
+
+
 export const insertAppointment = async (customerId, address, time) => {
     if (!db) return;
     try {

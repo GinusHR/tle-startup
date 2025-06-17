@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { Ionicons } from '@expo/vector-icons';
+import React, {useState} from 'react';
+import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import {Ionicons} from '@expo/vector-icons';
 
-export default function DateTimePickerScreen({ navigation }) {
+export default function DateTimePickerScreen({navigation}) {
     const months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
-    const days = Array.from({ length: 31 }, (_, i) => i + 1);
-    const hours = Array.from({ length: 24 }, (_, i) => i);
+    const days = Array.from({length: 31}, (_, i) => i + 1);
+    const hours = Array.from({length: 24}, (_, i) => i);
     const minutes = [0, 15, 30, 45];
 
     const [selectedMonth, setSelectedMonth] = useState(null);
@@ -34,12 +34,12 @@ export default function DateTimePickerScreen({ navigation }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
+                <Ionicons name="chevron-back" size={28} color="#1C1F1E"/>
             </TouchableOpacity>
 
             <Text style={styles.title}>Kies datum en tijd</Text>
 
-            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+            <View style={{flex: 1, justifyContent: 'flex-start'}}>
                 {/* Maand dropdown */}
                 <View style={styles.dropdownSection}>
                     <Text style={styles.label}>Maand</Text>
@@ -50,7 +50,7 @@ export default function DateTimePickerScreen({ navigation }) {
                         <Text style={styles.dropdownText}>
                             {selectedMonth !== null ? months[selectedMonth] : 'Selecteer maand'}
                         </Text>
-                        <Ionicons name={monthDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
+                        <Ionicons name={monthDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E"/>
                     </TouchableOpacity>
                     {monthDropdownOpen && (
                         <ScrollView style={styles.dropdownList}>
@@ -80,7 +80,7 @@ export default function DateTimePickerScreen({ navigation }) {
                         <Text style={styles.dropdownText}>
                             {selectedDay !== null ? selectedDay : 'Selecteer dag'}
                         </Text>
-                        <Ionicons name={dayDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
+                        <Ionicons name={dayDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E"/>
                     </TouchableOpacity>
                     {dayDropdownOpen && (
                         <ScrollView style={styles.dropdownList}>

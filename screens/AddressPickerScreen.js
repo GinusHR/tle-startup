@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity, Dimensions } from 'react-native';
-import { Entypo } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { Keyboard } from 'react-native';
+import React, {useState} from 'react';
+import {Dimensions, Keyboard, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Entypo} from '@expo/vector-icons';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {updateUserAddress} from '../database';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 export default function AddressPickerScreen() {
     const navigation = useNavigation();
+    const route = useRoute();
 
-    const [step, setStep] = useState(0); // 0 = start, 1 = formulier
+    const [step, setStep] = useState(0);
     const [postal, setPostal] = useState('');
     const [houseNumber, setHouseNumber] = useState('');
     const [addressDetails, setAddressDetails] = useState(null);
@@ -49,13 +50,35 @@ export default function AddressPickerScreen() {
         }
     };
 
+    const handleConfirmAddress = async () => {
+        try {
+            Keyboard.dismiss();
+            const userId = 1;
 
+            if (addressDetails) {
+                const {street, number, postal, city} = addressDetails;
+                const formattedAddress = `${street} ${number}, ${postal} ${city}`;
+
+                await updateUserAddress(userId, formattedAddress);
+
+                if (route.params?.onAddressSelected) {
+                    route.params.onAddressSelected(formattedAddress);
+                }
+
+                navigation.goBack();
+            } else {
+                console.warn("Geen geldig adres om op te slaan.");
+            }
+        } catch (error) {
+            console.error("Fout bij bevestigen adres:", error);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Entypo name="chevron-left" size={35} color="#212529" onPress={() => navigation.goBack()} />
+                    <Entypo name="chevron-left" size={35} color="#212529" onPress={() => navigation.goBack()}/>
                     <Text style={styles.pageTitle}>Adres</Text>
                 </View>
 
@@ -96,16 +119,10 @@ export default function AddressPickerScreen() {
                                 </Text>
                             </View>
                         )}
+
                         {addressDetails && (
-                            <TouchableOpacity
-                                style={styles.button}
-                                onPress={() => {
-                                    navigation.goBack();
-                                }}
-                            >
-                                <Text style={styles.buttonText}>
-                                    Bevestigen
-                                </Text>
+                            <TouchableOpacity style={styles.button} onPress={handleConfirmAddress}>
+                                <Text style={styles.buttonText}>Bevestigen</Text>
                             </TouchableOpacity>
                         )}
                     </>
