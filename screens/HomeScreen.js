@@ -38,6 +38,8 @@ import {FontAwesome5, FontAwesome6, Ionicons, Entypo} from '@expo/vector-icons';
 
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
+import Header from '../components/header';
+
 
 const { width, height } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -45,9 +47,12 @@ export default function HomeScreen({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ paddingHorizontal: 30 }}>
-                <View style={styles.header}>
-                    <Text style={styles.pageTitle}>Home</Text>
-                    <Ionicons name="qr-code" size={30} color="#212529"/>
+                {/*<View style={styles.header}>*/}
+                {/*    <Text style={styles.pageTitle}>Home</Text>*/}
+                {/*    <Ionicons name="qr-code" size={30} color="#212529"/>*/}
+                {/*</View>*/}
+                <View style={{ paddingHorizontal: 0, paddingTop: 0 }}>
+                    <Header title="Home" />
                 </View>
                 <View style={styles.main}>
                     <Text style={styles.title}>In te leveren</Text>
@@ -107,6 +112,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         color: "#212529",
+        alignItems: "center",
+
     },
     main: {
         alignItems: "center",
