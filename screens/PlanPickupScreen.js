@@ -1,25 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Ionicons} from '@expo/vector-icons';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {insertAppointment} from '../database';
+import React, { useState } from 'react';
+import { Platform, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { insertAppointment } from '../database';
 import RoundButton from '../components/roundButton';
 import DataBoxes from "../components/dataBoxes";
 
 export default function PlanPickupScreen() {
     const [isOneTime, setIsOneTime] = useState(true);
-    const [selectedAddress, setSelectedAddress] = useState('');
+    const [confirmedAddress, setConfirmedAddress] = useState(null);
     const [selectedDate, setSelectedDate] = useState(null);
 
-    const [confirmedAddress, setConfirmedAddress] = useState(null);
-    const route = useRoute();
     const navigation = useNavigation();
-
-    useEffect(() => {
-        if (route.params?.selectedAddress) {
-            setConfirmedAddress(route.params.selectedAddress);
-        }
-    }, [route.params?.selectedAddress]);
 
     const handleCreateAppointment = async () => {
         if (!confirmedAddress || !selectedDate) return;
@@ -32,7 +24,7 @@ export default function PlanPickupScreen() {
             <View style={styles.container}>
                 <View style={styles.headerRow}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Ionicons name="chevron-back" size={28} color="#1C1F1E"/>
+                        <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
                     </TouchableOpacity>
                     <Text style={styles.title}>Ophalen</Text>
                 </View>
@@ -64,11 +56,10 @@ export default function PlanPickupScreen() {
                     body={confirmedAddress ? confirmedAddress : 'Klik om in te vullen'}
                     button={
                         <RoundButton
-                            icon="home"
+                            icon={<Ionicons name="home" size={18} color="white" />}
                             onPress={() =>
                                 navigation.navigate('AddressPicker', {
-                                    onAddressSelected: (address) =>
-                                        setSelectedAddress(address),
+                                    onAddressSelected: (address) => setConfirmedAddress(address),
                                 })
                             }
                         />
@@ -91,10 +82,11 @@ export default function PlanPickupScreen() {
                     }
                     button={
                         <RoundButton
-                            icon="calendar"
+                            icon={<Ionicons name="calendar-clear" size={18} color="white" />}
                             onPress={() =>
                                 navigation.navigate('DateTimePicker', {
-                                    currentDate: selectedDate
+                                    currentDate: selectedDate,
+                                    onDateSelected: (date) => setSelectedDate(date),
                                 })
                             }
                         />
@@ -108,15 +100,7 @@ export default function PlanPickupScreen() {
 
                 <Text style={styles.paragraph}>
                     Je stemt ermee in dat StatieScan op het door jou gekozen tijdstip
-                    statiegeldverpakkingen komt ophalen op het opgegeven adres. Je
-                    bent ervoor verantwoordelijk dat de verpakkingen correct worden
-                    aangeboden en dat jij of iemand namens jou aanwezig is op het
-                    moment van de afspraak. Indien er op het afgesproken tijdstip
-                    niemand aanwezig is of de aangeboden goederen niet klaarstaan
-                    volgens de instructies, behoudt StatieScan zich het recht voor om een
-                    boete of gemiste-ophaalvergoeding in rekening te brengen. Deze
-                    maatregel is bedoeld om onnodige ritten en kosten te voorkomen.
-                    Raadpleeg de volledige servicevoorwaarden voor meer informatie.
+                    statiegeldverpakkingen komt ophalen op het opgegeven adres. [...]
                 </Text>
 
                 <TouchableOpacity style={styles.button} onPress={handleCreateAppointment}>
@@ -126,6 +110,7 @@ export default function PlanPickupScreen() {
         </SafeAreaView>
     );
 }
+
 
 const styles = StyleSheet.create({
     safeArea: {
@@ -256,11 +241,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingHorizontal: 20,
         marginTop: 10,
-    },
-
-    dateTimePicker: {
-        width: Platform.OS === 'ios' ? 300 : '100%',
-        height: 200,
-        color: 'black', // Vooral voor Android
     },
 });

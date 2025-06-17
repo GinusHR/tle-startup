@@ -1,12 +1,19 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import {Ionicons} from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-export default function DateTimePickerScreen({navigation}) {
-    const months = ['Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni', 'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'];
-    const days = Array.from({length: 31}, (_, i) => i + 1);
-    const hours = Array.from({length: 24}, (_, i) => i);
+export default function DateTimePickerScreen() {
+    const navigation = useNavigation();
+    const route = useRoute();
+
+    const months = [
+        'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
+        'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
+    ];
+    const days = Array.from({ length: 31 }, (_, i) => i + 1);
+    const hours = Array.from({ length: 24 }, (_, i) => i);
     const minutes = [0, 15, 30, 45];
 
     const [selectedMonth, setSelectedMonth] = useState(null);
@@ -19,6 +26,9 @@ export default function DateTimePickerScreen({navigation}) {
 
     const handleConfirm = () => {
         const date = new Date();
+
+        if (selectedMonth === null || selectedDay === null) return;
+
         date.setMonth(selectedMonth);
         date.setDate(selectedDay);
         date.setHours(selectedHour);
@@ -28,18 +38,23 @@ export default function DateTimePickerScreen({navigation}) {
 
         console.log('Geselecteerde datum:', date.toISOString());
 
+        // ✅ Callback aanroepen om de datum terug te sturen
+        if (route.params?.onDateSelected) {
+            route.params.onDateSelected(date);
+        }
+
         navigation.goBack();
     };
 
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="chevron-back" size={28} color="#1C1F1E"/>
+                <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
             </TouchableOpacity>
 
             <Text style={styles.title}>Kies datum en tijd</Text>
 
-            <View style={{flex: 1, justifyContent: 'flex-start'}}>
+            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
                 {/* Maand dropdown */}
                 <View style={styles.dropdownSection}>
                     <Text style={styles.label}>Maand</Text>
@@ -50,7 +65,7 @@ export default function DateTimePickerScreen({navigation}) {
                         <Text style={styles.dropdownText}>
                             {selectedMonth !== null ? months[selectedMonth] : 'Selecteer maand'}
                         </Text>
-                        <Ionicons name={monthDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E"/>
+                        <Ionicons name={monthDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
                     </TouchableOpacity>
                     {monthDropdownOpen && (
                         <ScrollView style={styles.dropdownList}>
@@ -80,7 +95,7 @@ export default function DateTimePickerScreen({navigation}) {
                         <Text style={styles.dropdownText}>
                             {selectedDay !== null ? selectedDay : 'Selecteer dag'}
                         </Text>
-                        <Ionicons name={dayDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E"/>
+                        <Ionicons name={dayDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
                     </TouchableOpacity>
                     {dayDropdownOpen && (
                         <ScrollView style={styles.dropdownList}>
@@ -138,7 +153,7 @@ export default function DateTimePickerScreen({navigation}) {
                 </View>
             </View>
 
-            {/* Bevestig knop onderaan */}
+            {/* Bevestig knop */}
             <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
                 <Text style={styles.confirmText}>Bevestig</Text>
             </TouchableOpacity>

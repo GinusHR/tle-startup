@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { View, StyleSheet, Text } from "react-native";
 import { useFonts } from 'expo-font';
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Ionicons } from "@expo/vector-icons";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
+
+import { getAllUsers, initDatabase} from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
