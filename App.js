@@ -17,9 +17,11 @@ import AccountScreen from './screens/AccountScreen';
 import AdminScreen from "./screens/adminscreens/AdminScreen";
 import CameraScreen from "./screens/adminscreens/CameraScreen";
 import DbTestScreen from "./screens/test-screen/DbTestScreen";
+import CheckListScreen from "./screens/adminscreens/CheckListScreen";
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
+const AdminStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const AuthNavigator = () => (
@@ -36,9 +38,18 @@ const HomeNavigator = () => (
         <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken', headerShown: false }} />
         <HomeStack.Screen name="Admin" component={AdminScreen}/>
         <HomeStack.Screen name="Camera" component={CameraScreen}/>
-        <HomeStack.Screen name="Camera" component={CameraScreen}/>
+        <HomeStack.Screen name="CheckList" component={CheckListScreen}/>
+        <HomeStack.Screen name="DbTest" component={DbTestScreen}/>
     </HomeStack.Navigator>
 );
+
+// const AdminNavigator = () => (
+//   <AdminStack.Navigator>
+//         <AdminStack.Screen name="Admin" component={AdminScreen}/>
+//         <AdminStack.Screen name="Camera" component={CameraScreen}/>
+//         <AdminStack.Screen name="CheckList" component={CheckListScreen}/>
+//   </AdminStack.Navigator>
+// )
 
 const AppTabs = () => (
     <Tab.Navigator
