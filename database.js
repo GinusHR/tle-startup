@@ -31,12 +31,18 @@ export const initDatabase = async () => {
     `);
 
     await db.execAsync(`
+        DROP TABLE IF EXISTS items;
         CREATE TABLE IF NOT EXISTS items
         (
             id    INTEGER PRIMARY KEY AUTOINCREMENT,
             name  TEXT    NOT NULL,
             value INTEGER NULL DEFAULT 0
         );
+        INSERT INTO items (name, value) VALUES ('Grote fles', 0.25);
+        INSERT INTO items (name, value) VALUES ('Kleine fles', 0.15);
+        INSERT INTO items (name, value) VALUES ('Blikje', 0.15);
+        INSERT INTO items (name, value) VALUES ('Bier fles', 0.10);
+        INSERT INTO items (name, value) VALUES ('Bier fles met beugel', 0.20);
     `);
 
     await db.execAsync(`
@@ -156,10 +162,19 @@ export const deleteItem = async (id) => {
     }
 };
 
+export const getList = async (id) => {
+    try {
+        if (!db) return []
+        const
+    } catch (error) {
+        
+    }
+}
+
 export const getUserLists = async (id) => {
     try {
         if (!db) return [];
-        const lists = await db.getFirstAsync('SELECT * FROM lists WHERE user_id = ?', id);
+        const lists = await db.getAllAsync('SELECT * FROM lists WHERE user_id = ?', id);
         console.log("Lijst(en) succesvol opgehaald");
         return lists;
     } catch (error) {

@@ -62,7 +62,7 @@ const HomeNavigator = () => (
     </HomeStack.Navigator>
 );
 
-const AppTabs = ({ onLogout, currentUser }) => (
+const AppTabs = ({ onLogout, currentUser, items }) => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
             headerShown: false,
@@ -83,7 +83,7 @@ const AppTabs = ({ onLogout, currentUser }) => (
         })}
     >
         <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
-        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
+        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} items={items}>{()=> <ScanScreen items={items}/>}</Tab.Screen>
         <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
             {() => (
                 <AccountScreen currentUser={currentUser} onLogout={onLogout} />
@@ -171,7 +171,7 @@ export default function App() {
     return (
         <NavigationContainer>
             {userIsLoggedIn ? (
-                <AppTabs onLogout={handleLogout} currentUser={currentUser} />
+                <AppTabs onLogout={handleLogout} currentUser={currentUser} items={items}/>
             ) : (
                 <AuthNavigator onLogin={handleLogin} />
             )}
