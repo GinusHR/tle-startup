@@ -33,8 +33,8 @@
 // })
 
 import React from 'react';
-import {View, StyleSheet, Text, SafeAreaView, Dimensions, Pressable} from 'react-native';
-import {FontAwesome5, FontAwesome6, Ionicons} from '@expo/vector-icons';
+import {View, StyleSheet, Text, SafeAreaView, Dimensions, Pressable, Image} from 'react-native';
+import {FontAwesome5, FontAwesome6, Ionicons, Entypo} from '@expo/vector-icons';
 
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
@@ -73,19 +73,13 @@ export default function HomeScreen({ navigation }) {
                         title={"Saldo"}
                         body={"€0"}
                         button={<RoundButton
-                            icon={<FontAwesome5
-                                name="th-list"
-                                size={15}
-                                color="white" />}/>}/>
+                            icon={<Image source={require('../assets/images/wallet.png')} style={{ width: 15, height: 15 }}/>}/>}/>
                     <DataBoxes
                         title={"Ophaal moment"}
                         body={"Onbekend"}
                         button={<RoundButton
                             onPress={() => navigation.navigate('PlanPickup')}
-                            icon={<FontAwesome5
-                                name="th-list"
-                                size={15}
-                                color="white" />}/>}/>
+                            icon={<Image source={require('../assets/images/truck.png')} style={{ width: 17, height: 17 }}/>}/>}/>
                 </View>
             </View>
         </SafeAreaView>
