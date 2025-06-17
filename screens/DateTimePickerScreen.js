@@ -36,103 +36,109 @@ export default function DateTimePickerScreen({ navigation }) {
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                 <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
             </TouchableOpacity>
+
             <Text style={styles.title}>Kies datum en tijd</Text>
 
-            <View style={styles.dropdownSection}>
-                <Text style={styles.label}>Maand</Text>
-                <TouchableOpacity
-                    onPress={() => setMonthDropdownOpen(!monthDropdownOpen)}
-                    style={styles.dropdownButton}
-                >
-                    <Text style={styles.dropdownText}>
-                        {selectedMonth !== null ? months[selectedMonth] : 'Selecteer maand'}
-                    </Text>
-                    <Ionicons name={monthDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
-                </TouchableOpacity>
-                {monthDropdownOpen && (
-                    <ScrollView style={styles.dropdownList}>
-                        {months.map((month, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                onPress={() => {
-                                    setSelectedMonth(index);
-                                    setMonthDropdownOpen(false);
-                                }}
-                                style={styles.dropdownItem}
-                            >
-                                <Text>{month}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                )}
-            </View>
-
-            <View style={styles.dropdownSection}>
-                <Text style={styles.label}>Dag</Text>
-                <TouchableOpacity
-                    onPress={() => setDayDropdownOpen(!dayDropdownOpen)}
-                    style={styles.dropdownButton}
-                >
-                    <Text style={styles.dropdownText}>
-                        {selectedDay !== null ? selectedDay : 'Selecteer dag'}
-                    </Text>
-                    <Ionicons name={dayDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
-                </TouchableOpacity>
-                {dayDropdownOpen && (
-                    <ScrollView style={styles.dropdownList}>
-                        {days.map(day => (
-                            <TouchableOpacity
-                                key={day}
-                                onPress={() => {
-                                    setSelectedDay(day);
-                                    setDayDropdownOpen(false);
-                                }}
-                                style={styles.dropdownItem}
-                            >
-                                <Text>{day}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </ScrollView>
-                )}
-            </View>
-
-            <View style={styles.timePickerContainer}>
-                <Text style={styles.label}>Tijd</Text>
-                <View style={styles.pickerRow}>
-                    <Picker
-                        selectedValue={selectedHour}
-                        style={styles.picker}
-                        itemStyle={styles.pickerItem}
-                        onValueChange={itemValue => setSelectedHour(itemValue)}
+            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+                {/* Maand dropdown */}
+                <View style={styles.dropdownSection}>
+                    <Text style={styles.label}>Maand</Text>
+                    <TouchableOpacity
+                        onPress={() => setMonthDropdownOpen(!monthDropdownOpen)}
+                        style={styles.dropdownButton}
                     >
-                        {hours.map(hour => (
-                            <Picker.Item
-                                key={hour}
-                                label={hour.toString().padStart(2, '0')}
-                                value={hour}
-                                color="#000"
-                            />
-                        ))}
-                    </Picker>
-                    <Text style={styles.colon}>:</Text>
-                    <Picker
-                        selectedValue={selectedMinute}
-                        style={styles.picker}
-                        itemStyle={styles.pickerItem}
-                        onValueChange={itemValue => setSelectedMinute(itemValue)}
+                        <Text style={styles.dropdownText}>
+                            {selectedMonth !== null ? months[selectedMonth] : 'Selecteer maand'}
+                        </Text>
+                        <Ionicons name={monthDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
+                    </TouchableOpacity>
+                    {monthDropdownOpen && (
+                        <ScrollView style={styles.dropdownList}>
+                            {months.map((month, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    onPress={() => {
+                                        setSelectedMonth(index);
+                                        setMonthDropdownOpen(false);
+                                    }}
+                                    style={styles.dropdownItem}
+                                >
+                                    <Text>{month}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    )}
+                </View>
+
+                {/* Dag dropdown */}
+                <View style={styles.dropdownSection}>
+                    <Text style={styles.label}>Dag</Text>
+                    <TouchableOpacity
+                        onPress={() => setDayDropdownOpen(!dayDropdownOpen)}
+                        style={styles.dropdownButton}
                     >
-                        {minutes.map(minute => (
-                            <Picker.Item
-                                key={minute}
-                                label={minute.toString().padStart(2, '0')}
-                                value={minute}
-                                color="#000"
-                            />
-                        ))}
-                    </Picker>
+                        <Text style={styles.dropdownText}>
+                            {selectedDay !== null ? selectedDay : 'Selecteer dag'}
+                        </Text>
+                        <Ionicons name={dayDropdownOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
+                    </TouchableOpacity>
+                    {dayDropdownOpen && (
+                        <ScrollView style={styles.dropdownList}>
+                            {days.map(day => (
+                                <TouchableOpacity
+                                    key={day}
+                                    onPress={() => {
+                                        setSelectedDay(day);
+                                        setDayDropdownOpen(false);
+                                    }}
+                                    style={styles.dropdownItem}
+                                >
+                                    <Text>{day}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    )}
+                </View>
+
+                {/* Tijd */}
+                <View style={styles.timePickerContainer}>
+                    <Text style={styles.label}>Tijd</Text>
+                    <View style={styles.pickerRow}>
+                        <Picker
+                            selectedValue={selectedHour}
+                            style={styles.picker}
+                            itemStyle={styles.pickerItem}
+                            onValueChange={itemValue => setSelectedHour(itemValue)}
+                        >
+                            {hours.map(hour => (
+                                <Picker.Item
+                                    key={hour}
+                                    label={hour.toString().padStart(2, '0')}
+                                    value={hour}
+                                    color="#000"
+                                />
+                            ))}
+                        </Picker>
+                        <Picker
+                            selectedValue={selectedMinute}
+                            style={styles.picker}
+                            itemStyle={styles.pickerItem}
+                            onValueChange={itemValue => setSelectedMinute(itemValue)}
+                        >
+                            {minutes.map(minute => (
+                                <Picker.Item
+                                    key={minute}
+                                    label={minute.toString().padStart(2, '0')}
+                                    value={minute}
+                                    color="#000"
+                                />
+                            ))}
+                        </Picker>
+                    </View>
                 </View>
             </View>
 
+            {/* Bevestig knop onderaan */}
             <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
                 <Text style={styles.confirmText}>Bevestig</Text>
             </TouchableOpacity>
@@ -204,16 +210,15 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#000', // zwarte tekst
     },
-    colon: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginHorizontal: 10,
-    },
     confirmButton: {
         backgroundColor: '#2F4538',
         padding: 16,
         borderRadius: 10,
         alignItems: 'center',
+        position: 'absolute',
+        bottom: 50,
+        left: 20,
+        right: 20,
     },
     confirmText: {
         color: '#fff',

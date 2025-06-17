@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity, Dimensions } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { Keyboard } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -14,17 +15,41 @@ export default function AddressPickerScreen() {
     const [houseNumber, setHouseNumber] = useState('');
     const [addressDetails, setAddressDetails] = useState(null);
 
-    const handleFetchAddress = () => {
-        // Simuleer autocomplete resultaat
-        if (postal && houseNumber) {
-            setAddressDetails({
-                street: 'Voorbeeldstraat',
-                number: houseNumber,
-                city: 'Amsterdam',
-                postal: postal.toUpperCase()
-            });
+    const handleFetchAddress = async () => {
+        if (!postal || !houseNumber) return;
+
+        Keyboard.dismiss();
+
+        try {
+            const response = await fetch(
+                `https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=${postal}+${houseNumber}&fq=type:adres`
+            );
+            const data = await response.json();
+
+            if (data.response.numFound > 0) {
+                const doc = data.response.docs[0];
+                const straat = doc.straatnaam || 'Onbekend';
+                const huisnr = doc.huisnummer || houseNumber;
+                const woonplaats = doc.woonplaatsnaam || 'Onbekend';
+                const pc = doc.postcode || postal;
+
+                setAddressDetails({
+                    street: straat,
+                    number: huisnr,
+                    city: woonplaats,
+                    postal: pc
+                });
+            } else {
+                setAddressDetails(null);
+                alert('Adres niet gevonden. Controleer je invoer.');
+            }
+        } catch (err) {
+            console.error("Fout bij ophalen adres:", err);
+            alert('Er ging iets mis bij het ophalen van het adres.');
         }
     };
+
+
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -36,7 +61,7 @@ export default function AddressPickerScreen() {
 
                 {step === 0 && (
                     <TouchableOpacity style={styles.card} onPress={() => setStep(1)}>
-                        <Text style={styles.cardText}>Nieuw adres invoeren</Text>
+                        <Text style={styles.cardText}>Adres invoeren</Text>
                     </TouchableOpacity>
                 )}
 
@@ -70,6 +95,18 @@ export default function AddressPickerScreen() {
                                     {`${addressDetails.street} ${addressDetails.number}, ${addressDetails.postal} ${addressDetails.city}`}
                                 </Text>
                             </View>
+                        )}
+                        {addressDetails && (
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress={() => {
+                                    navigation.goBack();
+                                }}
+                            >
+                                <Text style={styles.buttonText}>
+                                    Bevestigen
+                                </Text>
+                            </TouchableOpacity>
                         )}
                     </>
                 )}
