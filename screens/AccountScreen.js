@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
-import {
-    View,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    ScrollView,
-    SafeAreaView,
-    Dimensions,
-} from 'react-native';
+import {View, StyleSheet, Text, TouchableOpacity, ScrollView, SafeAreaView, Dimensions,} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Header from '../components/header';
+
 
 const { width } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -24,14 +18,9 @@ export default function AccountScreen({ onLogout }) {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor }]}>
-            {/* HEADER zoals HomeScreen */}
             <View style={{ paddingHorizontal: 30, paddingTop: 0 }}>
-                <View style={styles.header}>
-                    <Text style={styles.pageTitle}>Account</Text>
-                    <Ionicons name="qr-code" size={30} color="#212529" />
-                </View>
+                <Header title="Account" />
             </View>
-
             {/* Inhoud */}
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={[styles.card, { borderColor }]}>
