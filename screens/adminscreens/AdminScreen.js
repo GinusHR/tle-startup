@@ -29,6 +29,23 @@ const [permission, requestPermission] = useCameraPermissions();
         <Text>Scan Code</Text>
       </Pressable>
 
+      <Pressable onPress={
+        () => {
+          useRoute
+          navigation.navigate('DbTest')
+        }
+      } style={[styleSheet.mainBtn, styleSheet.btnYellow, { opacity: isPermissionGranted ? 1 : 0.5 }]}  >
+        <Text>database</Text>
+      </Pressable>
+      <Pressable onPress={
+        () => {
+          useRoute
+          navigation.navigate('CheckList')
+        }
+      } style={[styleSheet.mainBtn, styleSheet.btnYellow, { opacity: isPermissionGranted ? 1 : 0.5 }]}  >
+        <Text>CheckList</Text>
+      </Pressable>
+
       <Text>code output: {code}</Text>
 
     </SafeAreaView>
