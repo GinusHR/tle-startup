@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { View, StyleSheet, Text } from "react-native";
 import { useFonts } from 'expo-font';
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Ionicons } from "@expo/vector-icons";
+import {View, StyleSheet, Text, ActivityIndicator, Alert} from "react-native";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
+
+import {getAllUsers, initDatabase} from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -23,10 +26,20 @@ const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const AuthNavigator = () => (
+if (!__DEV__) {
+    console.log = () => {};
+    console.warn = () => {};
+    console.error = () => {};
+}
+
+const AuthNavigator = ({ onLogin }) => (
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="Register" component={RegisterScreen} />
+        <AuthStack.Screen
+            name="Login"
+            component={LoginScreen}
+            initialParams={{ onLogin }}
+        />
+        <AuthStack.Screen name="Register" component={RegisterScreen} />
     </AuthStack.Navigator>
 );
 
@@ -49,55 +62,128 @@ const HomeNavigator = () => (
     </HomeStack.Navigator>
 );
 
-const AppTabs = () => (
+const AppTabs = ({ onLogout, currentUser }) => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
-          // headerShown: true,
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
-            if (route.name === 'Home') iconName = 'home-outline';
-            else if (route.name === 'Scan') iconName = 'camera-outline';
-            else if (route.name === 'Account') iconName = 'person-outline';
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => {
+                if (route.name === 'Home') {
+                    return <MaterialIcons name="dashboard" size={size} color={color} />;
+                } else if (route.name === 'Scan') {
+                    return <MaterialIcons name="camera" size={size} color={color} />;
+                } else if (route.name === 'Account') {
+                    return <Ionicons name="person" size={size} color={color} />;
+                }
+            },
             tabBarStyle: {
-              backgroundColor: '#2F4538',
+                backgroundColor: '#2F4538'
             },
             tabBarActiveTintColor: '#597364',
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-      <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
-      <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
-      <Tab.Screen name="Account" options={{ headerTitle: '' , headerShadowVisible: false}}  component={AccountScreen} />
+        <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
+        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
+        <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
+            {() => (
+                <AccountScreen currentUser={currentUser} onLogout={onLogout} />
+            )}
+        </Tab.Screen>
     </Tab.Navigator>
 );
 
 
 export default function App() {
+    const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [isDbInitialized, setIsDbInitialized] = useState(false)
     const [fontsLoaded] = useFonts({
         'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
         'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
     });
 
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const savedUser = await SecureStore.getItemAsync('user');
+                if (savedUser) {
+                    setCurrentUser(JSON.parse(savedUser));
+                    setUserIsLoggedIn(true);
+                }
+            } catch (error) {
+                console.error("Fout bij het ophalen van gebruiker uit SecureStore", error);
+            }
+        };
+        loadUser();
+    }, []);
+
+    useEffect(() => {
+        const initializeDatabase = async () => {
+            try {
+                await initDatabase();
+                setIsDbInitialized(true);
+                console.log("Database geïnitialiseerd");
+            } catch (error) {
+                console.error("Database initialisatie mislukt", error);
+            }
+        };
+        initializeDatabase();
+    }, []);
+
+    const handleLogin = (user) => {
+        setCurrentUser(user);
+        setUserIsLoggedIn(true);
+    };
+
+    const handleLogout = async () => {
+        setCurrentUser(null);
+        setUserIsLoggedIn(false);
+        await SecureStore.deleteItemAsync('user')
+    };
+
     if (!fontsLoaded) {
         return null; // Of een <Loading /> component
     }
 
-  const userIsLoggedIn = true; // ← veranderen dit later naar een echte auth-check
+    if (!isDbInitialized) {
+        return (
+            <View style={[styles.container, styles.centered]}>
+                <ActivityIndicator size="large" color="#2F4538" />
+                <Text style={styles.loadingText}>Laden...</Text>
+            </View>
+        )
+    }
 
-  return (
-      <NavigationContainer>
-        {userIsLoggedIn ? <AppTabs /> : <AuthNavigator />}
-      </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            {userIsLoggedIn ? (
+                <AppTabs onLogout={handleLogout} currentUser={currentUser} />
+            ) : (
+                <AuthNavigator onLogin={handleLogin} />
+            )}
+        </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FDFDFD',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#FDFDFD',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 16,
+    },
+    centered: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 24,
+        marginBottom: 20,
+    },
+    loadingText: {
+        marginTop: 10,
+        fontSize: 16,
+        color: '#2F4538',
+    },
 });
