@@ -1,11 +1,11 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { View, StyleSheet, Text } from "react-native";
-import { useFonts } from 'expo-font';
+import {NavigationContainer} from "@react-navigation/native";
+import {StyleSheet} from "react-native";
+import {useFonts} from 'expo-font';
 
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Ionicons } from "@expo/vector-icons";
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {Ionicons} from "@expo/vector-icons";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -16,28 +16,29 @@ import ScanScreen from './screens/ScanScreen';
 import AccountScreen from './screens/AccountScreen';
 import AdminScreen from "./screens/AdminScreen";
 import CameraScreen from "./screens/CameraScreen";
-import DbTestScreen from "./screens/test-screen/DbTestScreen";
 import ScannedItemsDetails from "./screens/ScannedItemsDetails";
+import AddressPickerScreen from "./screens/AddressPickerScreen";
+import DateTimePickerScreen from "./screens/DateTimePickerScreen";
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const AuthNavigator = () => (
-    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-      <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="Register" component={RegisterScreen} />
+    <AuthStack.Navigator screenOptions={{headerShown: false}}>
+        <AuthStack.Screen name="Login" component={LoginScreen}/>
+        <AuthStack.Screen name="Register" component={RegisterScreen}/>
     </AuthStack.Navigator>
 );
 
 const HomeNavigator = () => (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
-      <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
-      <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
-      <HomeStack.Screen name="Admin" component={AdminScreen}/>
-      <HomeStack.Screen name="Camera" component={CameraScreen}/>
-      <HomeStack.Screen
+    <HomeStack.Navigator screenOptions={{headerShown: false}}>
+        <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{title: 'Home', headerShown: false}}/>
+        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{title: 'Details'}}/>
+        <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{title: 'Afspraak maken'}}/>
+        <HomeStack.Screen name="Admin" component={AdminScreen}/>
+        <HomeStack.Screen name="Camera" component={CameraScreen}/>
+        <HomeStack.Screen
             name="details"
             component={ScannedItemsDetails}
             options={{
@@ -45,31 +46,50 @@ const HomeNavigator = () => (
                 presentation: 'modal',
                 animation: 'slide_from_right',
             }}
-      />
+        />
+        <HomeStack.Screen
+            name="AddressPicker"
+            component={AddressPickerScreen}
+            options={{
+                title: 'Adres',
+                presentation: 'modal',
+                animation: 'slide_from_right',
+            }}
+        />
+        <HomeStack.Screen
+            name="DateTimePicker"
+            component={DateTimePickerScreen}
+            options={{
+                title: 'Datum & Tijd',
+                presentation: 'modal',
+                animation: 'slide_from_right',
+            }}
+        />
     </HomeStack.Navigator>
 );
 
 const AppTabs = () => (
     <Tab.Navigator
-        screenOptions={({ route }) => ({
-          // headerShown: true,
-          tabBarIcon: ({ color, size }) => {
-            let iconName;
-            if (route.name === 'Home') iconName = 'home-outline';
-            else if (route.name === 'Scan') iconName = 'camera-outline';
-            else if (route.name === 'Account') iconName = 'person-outline';
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
+        screenOptions={({route}) => ({
+            // headerShown: true,
+            tabBarIcon: ({color, size}) => {
+                let iconName;
+                if (route.name === 'Home') iconName = 'home-outline';
+                else if (route.name === 'Scan') iconName = 'camera-outline';
+                else if (route.name === 'Account') iconName = 'person-outline';
+                return <Ionicons name={iconName} size={size} color={color}/>;
+            },
             tabBarStyle: {
-              backgroundColor: '#2F4538',
+                backgroundColor: '#2F4538',
             },
             tabBarActiveTintColor: '#597364',
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-      <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
-      <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
-      <Tab.Screen name="Account" options={{ headerTitle: '' , headerShadowVisible: false}}  component={AccountScreen} />
+        <Tab.Screen name="Home" options={{headerShown: false, headerTitle: '', headerShadowVisible: false}}
+                    component={HomeNavigator}/>
+        <Tab.Screen name="Scan" options={{headerTitle: '', headerShadowVisible: false}} component={ScanScreen}/>
+        <Tab.Screen name="Account" options={{headerTitle: '', headerShadowVisible: false}} component={AccountScreen}/>
     </Tab.Navigator>
 );
 
@@ -84,20 +104,20 @@ export default function App() {
         return null; // Of een <Loading /> component
     }
 
-  const userIsLoggedIn = true; // ← veranderen dit later naar een echte auth-check
+    const userIsLoggedIn = true; // ← veranderen dit later naar een echte auth-check
 
-  return (
-      <NavigationContainer>
-        {userIsLoggedIn ? <AppTabs /> : <AuthNavigator />}
-      </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            {userIsLoggedIn ? <AppTabs/> : <AuthNavigator/>}
+        </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FDFDFD',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#FDFDFD',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });

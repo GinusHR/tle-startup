@@ -186,3 +186,18 @@ export const deleteList = async (id) => {
         console.log("Kon item niet verwijderen uit de lijst:", error)
     }
 }
+
+export const insertAppointment = async (customerId, address, time) => {
+    if (!db) return;
+    try {
+        await db.runAsync(
+            'INSERT INTO appointments (customer_id, customer_address, time) VALUES (?, ?, ?);',
+            customerId,
+            address,
+            time.toISOString()
+        );
+        console.log("Afspraak succesvol opgeslagen");
+    } catch (error) {
+        console.log("Fout bij opslaan afspraak:", error);
+    }
+};
