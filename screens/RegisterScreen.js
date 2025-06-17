@@ -42,7 +42,7 @@ export default function RegisterScreen({ navigation }) {
                 return;
             }
             setCurrentStep(2);
-        }else if (currentStep === 2) {
+        } else if (currentStep === 2) {
             if (!formData.email || !formData.wachtwoord || !formData.wachtwoordBevestigen) {
                 Alert.alert('Error', 'Vul alle velden in');
                 return;
@@ -54,7 +54,7 @@ export default function RegisterScreen({ navigation }) {
             }
 
             if (!validatePassword(formData.wachtwoord)) {
-                Alert.alert('Error', 'Wachtwoord moet minimaal 6 karakters lang zijn');
+                Alert.alert('Error', 'Wachtwoord moet minimaal 6 tekens bevatten');
                 return;
             }
 
@@ -79,7 +79,7 @@ export default function RegisterScreen({ navigation }) {
             setCurrentStep(3);
         } catch (error) {
             console.error('Registratie error:', error);
-            Alert.alert('Registratie mislukt', 'Er is een fout opgetreden bij het registreren. Probeer het opnieuw.');
+            Alert.alert('Registratie mislukt', 'Er ging iets mis, probeer opnieuw.');
         } finally {
             setIsLoading(false);
         }
