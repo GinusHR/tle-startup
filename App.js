@@ -4,8 +4,9 @@ import { useFonts } from 'expo-font';
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {View, StyleSheet, Text, Button, ActivityIndicator} from "react-native";
+import {View, StyleSheet, Text, ActivityIndicator, Alert} from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import * as SecureStore from "expo-secure-store";
 
 import {getAllUsers, initDatabase} from "./database";
 
@@ -24,6 +25,12 @@ import ScannedItemsDetails from "./screens/ScannedItemsDetails";
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+
+if (!__DEV__) {
+    console.log = () => {};
+    console.warn = () => {};
+    console.error = () => {};
+}
 
 const AuthNavigator = ({ onLogin }) => (
     <AuthStack.Navigator screenOptions={{ headerShown: false }}>
@@ -96,13 +103,28 @@ export default function App() {
     });
 
     useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const savedUser = await SecureStore.getItemAsync('user');
+                if (savedUser) {
+                    setCurrentUser(JSON.parse(savedUser));
+                    setUserIsLoggedIn(true);
+                }
+            } catch (error) {
+                console.error("Fout bij het ophalen van gebruiker uit SecureStore", error);
+            }
+        };
+        loadUser();
+    }, []);
+
+    useEffect(() => {
         const initializeDatabase = async () => {
             try {
                 await initDatabase();
                 setIsDbInitialized(true);
-                console.log("Database geïnitialiseerd")
+                console.log("Database geïnitialiseerd");
             } catch (error) {
-                console.error("Database initialisatie mislukt", error)
+                console.error("Database initialisatie mislukt", error);
             }
         };
         initializeDatabase();
@@ -113,9 +135,10 @@ export default function App() {
         setUserIsLoggedIn(true);
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         setCurrentUser(null);
         setUserIsLoggedIn(false);
+        await SecureStore.deleteItemAsync('user')
     };
 
     if (!fontsLoaded) {
