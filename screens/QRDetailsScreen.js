@@ -18,13 +18,10 @@ export default function QRDetailsScreen() {
                 <Text style={[styles.title, { color: textColor }]}>QR totaal</Text>
                 <View style={{ width: 24 }} /> {/* Spacing voor centreren */}
             </View>
-
-            {/* QR-code Placeholder */}
-            {/* <View style={styles.qrPlaceholder} /> */}
             <QRCode
-      value="https://www.npmjs.com/package/react-native-qrcode-svg"
-      size={310}
-    />
+                value="https://www.npmjs.com/package/react-native-qrcode-svg"
+                size={310}
+            />
 
         </View>
     );
