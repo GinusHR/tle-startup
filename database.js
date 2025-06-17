@@ -156,14 +156,25 @@ export const deleteItem = async (id) => {
     }
 };
 
-export const getList = async (id) => {
+export const getUserLists = async (id) => {
     try {
         if (!db) return [];
-        const lists = await db.getAllAsync('SELECT * FROM lists WHERE user_id = ?', id);
+        const lists = await db.getFirstAsync('SELECT * FROM lists WHERE user_id = ?', id);
         console.log("Lijst(en) succesvol opgehaald");
         return lists;
     } catch (error) {
         console.log("Kon de lijst(en) niet ophalen:", error);
+        return [];
+    }
+};
+
+
+export const getAllLists = async () => {
+    if (!db) return [];
+    try {
+        return await db.getAllAsync('SELECT * FROM lists;');
+    } catch (error) {
+        console.error("Fout bij van de lijsten:", error);
         return [];
     }
 };

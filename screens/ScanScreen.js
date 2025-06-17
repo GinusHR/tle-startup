@@ -2,15 +2,15 @@ import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, FlatList} from 'react-native';
 
 
-const [items, setItems] = useState([])
+// const [items, setItems] = useState([])
 
 
-export default function ScanScreen({list}) {
+export default function ScanScreen() {
     useEffect(() => {
         (async () => {
             try {
                 console.log("Collecting info")
-                setItems(list);
+                // setItems(list);
                 console.log("List found")
             } catch (error) {
                 console.log("AAAAAAAAAAAAAAAAAAgh", error)
@@ -20,7 +20,6 @@ export default function ScanScreen({list}) {
     return (
         <View>
             <Text>Scan</Text>
-            <FlatList data={items} renderItem={}></FlatList>
         </View>
     );
 }
