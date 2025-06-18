@@ -56,7 +56,7 @@ export default function LoginScreen({navigation, route}) {
             <Text style={styles.headerTextBold}>STATIESCAN</Text>
             <Text style={styles.headerText}>STATIESCAN</Text>
             <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCANn</Text>
+            <Text style={styles.headerText}>STATIESCAN</Text>
         </View>
     );
 
