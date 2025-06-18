@@ -18,6 +18,7 @@ import AdminScreen from "./screens/AdminScreen";
 import CameraScreen from "./screens/CameraScreen";
 import DbTestScreen from "./screens/test-screen/DbTestScreen";
 import ScannedItemsDetails from "./screens/ScannedItemsDetails";
+import Wallet from "./screens/WalletScreen";
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -32,12 +33,12 @@ const AuthNavigator = () => (
 
 const HomeNavigator = () => (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
-      <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
-      <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
-      <HomeStack.Screen name="Admin" component={AdminScreen}/>
-      <HomeStack.Screen name="Camera" component={CameraScreen}/>
-      <HomeStack.Screen
+        <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
+        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
+        <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
+        <HomeStack.Screen name="Admin" component={AdminScreen}/>
+        <HomeStack.Screen name="Camera" component={CameraScreen}/>
+        <HomeStack.Screen
             name="details"
             component={ScannedItemsDetails}
             options={{
@@ -45,7 +46,15 @@ const HomeNavigator = () => (
                 presentation: 'modal',
                 animation: 'slide_from_right',
             }}
-      />
+        />
+        <HomeStack.Screen
+            name="Wallet"
+            component={Wallet}
+            options={{
+                title: 'Wallet',
+                presentation: 'fullScreenModal',
+                animation: 'slide_from_right',
+            }}/>
     </HomeStack.Navigator>
 );
 
@@ -67,7 +76,7 @@ const AppTabs = () => (
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-      <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
+      <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false, unmountOnBlur: true }} component={HomeNavigator} />
       <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
       <Tab.Screen name="Account" options={{ headerTitle: '' , headerShadowVisible: false}}  component={AccountScreen} />
     </Tab.Navigator>
