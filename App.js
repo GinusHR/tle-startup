@@ -83,7 +83,7 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
         })}
     >
         <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
-        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} items={items}>{()=> <ScanScreen items={items}/>}</Tab.Screen>
+        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ScanScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
         <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
             {() => (
                 <AccountScreen currentUser={currentUser} onLogout={onLogout} />
