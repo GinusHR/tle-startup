@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import {View, StyleSheet, Text, TouchableOpacity, ScrollView, SafeAreaView, Dimensions,} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    ScrollView,
+    SafeAreaView,
+    Dimensions,
+    Platform,
+    StatusBar,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../components/header';
 
@@ -18,10 +28,18 @@ export default function AccountScreen({ onLogout }) {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor }]}>
-            <View style={{ paddingHorizontal: 30, paddingTop: 0 }}>
+            {/*<View style={{ paddingHorizontal: 30, paddingTop: 0 }}>*/}
+            {/*    <Header title="Account" />*/}
+            {/*</View>*/}
+            <View
+                style={{
+                    paddingHorizontal: 30,
+                    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+                }}
+            >
                 <Header title="Account" />
             </View>
-            {/* Inhoud */}
+
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={[styles.card, { borderColor }]}>
                     <MenuItem title="Account" icon="person-outline" color={textColor} />
