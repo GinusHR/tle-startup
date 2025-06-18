@@ -11,7 +11,8 @@ export default function ScanScreen({navigation}) {
             <Pressable onPress={
                     () => {
                       useRoute
-                      navigation.navigate('CheckList')
+                      navigation.navigate('Home', { screen: 'CheckList' });
+
                     }
                   } style={[styleSheet.mainBtn, styleSheet.btnYellow ]}  >
                     <Text>CheckList</Text>
