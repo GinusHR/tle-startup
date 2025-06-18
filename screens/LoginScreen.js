@@ -26,10 +26,16 @@ export default function LoginScreen({navigation, route}) {
             if (!user) {
                 return Alert.alert('Error', 'Gebruiker niet gevonden.');
             }
-            await SecureStore.setItemAsync('user', JSON.stringify({
-                id: user.id, email: user.email
-            }));
-            onLogin({ id: user.id, email: user.email });
+
+            const userData = {
+                id: user.id,
+                email: user.email,
+                role: user.role
+            };
+
+            await SecureStore.setItemAsync('user', JSON.stringify(userData));
+            onLogin(userData);
+
         } catch (error) {
             console.error('Login error:', error)
             Alert.alert('Login mislukt', 'Er ging iets mis.')
@@ -56,7 +62,7 @@ export default function LoginScreen({navigation, route}) {
             <Text style={styles.headerTextBold}>STATIESCAN</Text>
             <Text style={styles.headerText}>STATIESCAN</Text>
             <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCANn</Text>
+            <Text style={styles.headerText}>STATIESCAN</Text>
         </View>
     );
 

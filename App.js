@@ -17,11 +17,11 @@ import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
 import ScanScreen from './screens/ScanScreen';
 import AccountScreen from './screens/AccountScreen';
-import AdminScreen from "./screens/adminscreens/AdminScreen";
-import CameraScreen from "./screens/adminscreens/CameraScreen";
-import DbTestScreen from "./screens/test-screen/DbTestScreen";
-import CheckListScreen from "./screens/adminscreens/CheckListScreen";
 import ScannedItemsDetails from "./screens/ScannedItemsDetails";
+
+import AdminScreen from './screens/adminscreens/AdminScreen';
+import CameraScreen from './screens/adminscreens/CameraScreen';
+import CheckListScreen from './screens/adminscreens/CheckListScreen';
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
@@ -48,23 +48,19 @@ const AuthNavigator = ({ onLogin }) => (
 const HomeNavigator = () => (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
-        <HomeStack.Screen name="Admin" component={AdminScreen}/>
-        <HomeStack.Screen name="Camera" component={CameraScreen}/>
-        <HomeStack.Screen name="CheckList" component={CheckListScreen}/>
-        <HomeStack.Screen name="DbTest" component={DbTestScreen}/>
       <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
       <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
       <HomeStack.Screen name="details" component={ScannedItemsDetails} options={{ title: 'Details', presentation: 'modal', animation: 'slide_from_right',}} />
     </HomeStack.Navigator>
 );
 
-// const AdminNavigator = () => (
-//   <AdminStack.Navigator>
-//         <AdminStack.Screen name="Admin" component={AdminScreen}/>
-//         <AdminStack.Screen name="Camera" component={CameraScreen}/>
-//         <AdminStack.Screen name="CheckList" component={CheckListScreen}/>
-//   </AdminStack.Navigator>
-// )
+const AdminNavigator = () => (
+    <AdminStack.Navigator screenOptions={{ headerShown: false }}>
+        <AdminStack.Screen name="AdminMain" component={AdminScreen}/>
+         <AdminStack.Screen name="Camera" component={CameraScreen}/>
+        <AdminStack.Screen name="CheckList" component={CheckListScreen}/>
+   </AdminStack.Navigator>
+)
 
 const AppTabs = ({ onLogout, currentUser }) => (
     <Tab.Navigator
@@ -96,6 +92,38 @@ const AppTabs = ({ onLogout, currentUser }) => (
     </Tab.Navigator>
 );
 
+const AdminTabs = ({ onLogout, currentUser }) => (
+    <Tab.Navigator
+        screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarIcon: ({ color, size }) => {
+                if (route.name === 'Admin') {
+                    return <MaterialIcons name="admin-panel-settings" size={size} color={color} />;
+                } else if (route.name === 'Camera') {
+                    return <MaterialIcons name="camera" size={size} color={color} />;
+                } else if (route.name === 'CheckList') {
+                    return <MaterialIcons name="checklist" size={size} color={color} />;
+                } else if (route.name === 'Account') {
+                    return <Ionicons name="person" size={size} color={color} />;
+                }
+            },
+            tabBarStyle: {
+                backgroundColor: '#2F4538'
+            },
+            tabBarActiveTintColor: '#597364',
+            tabBarInactiveTintColor: '#FDFDFD',
+        })}
+    >
+        <Tab.Screen name="Admin" options={{ headerShown: false, headerTitle: '', headerShadowVisible: false}} component={AdminNavigator} />
+        <Tab.Screen name="Camera" options={{ headerTitle: '', headerShadowVisible: false}} component={CameraScreen} />
+        <Tab.Screen name="CheckList" options={{ headerTitle: '', headerShadowVisible: false}} component={CheckListScreen} />
+        <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
+            {() => (
+                <AccountScreen currentUser={currentUser} onLogout={onLogout} />
+            )}
+        </Tab.Screen>
+    </Tab.Navigator>
+);
 
 export default function App() {
     const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -145,11 +173,7 @@ export default function App() {
         await SecureStore.deleteItemAsync('user')
     };
 
-    if (!fontsLoaded) {
-        return null; // Of een <Loading /> component
-    }
-
-    if (!isDbInitialized) {
+    if (!fontsLoaded || !isDbInitialized) {
         return (
             <View style={[styles.container, styles.centered]}>
                 <ActivityIndicator size="large" color="#2F4538" />
@@ -158,10 +182,18 @@ export default function App() {
         )
     }
 
+    const renderAppNavigation = () => {
+        if (currentUser && currentUser.role === 1) {
+            return <AdminTabs onLogout={handleLogout} currentUser={currentUser} />;
+        } else {
+            return <AppTabs onLogout={handleLogout} currentUser={currentUser} />;
+        }
+    };
+
     return (
         <NavigationContainer>
             {userIsLoggedIn ? (
-                <AppTabs onLogout={handleLogout} currentUser={currentUser} />
+                renderAppNavigation()
             ) : (
                 <AuthNavigator onLogin={handleLogin} />
             )}

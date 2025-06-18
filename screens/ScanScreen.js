@@ -8,49 +8,10 @@ export default function ScanScreen({navigation}) {
     return (
         <View>
             <Text>Scan</Text>
-            <Pressable onPress={
-                    () => {
-                      useRoute
-                      navigation.navigate('Home', { screen: 'CheckList' });
 
-                    }
-                  } style={[styleSheet.mainBtn, styleSheet.btnYellow ]}  >
-                    <Text>CheckList</Text>
-                  </Pressable>
-            <Pressable onPress={
-                    () => {
-                      useRoute
-                      navigation.navigate('Home', { screen: 'Admin' });
-
-                    }
-                  } style={[styleSheet.mainBtn, styleSheet.btnYellow ]}  >
-                    <Text>Admin</Text>
-                  </Pressable>
         </View>
     );
 }
-const styleSheet = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    rowGap: 20
-  },
-  mainBtn: {
-    width: 200,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  btnGreen: {
-    backgroundColor: "#0BCD4C",
-  },
-  btnYellow: {
-    backgroundColor: "yellow",
-  },
-  mainText: {
-    fontSize: 20,
-    fontWeight: "bold"
-  }
-});
+const styleSheet = StyleSheet.create(
+
+);
