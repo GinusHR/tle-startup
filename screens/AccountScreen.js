@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    ScrollView,
+    SafeAreaView,
+    Dimensions,
+    Platform,
+    StatusBar,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Header from '../components/header';
+
+
+const { width } = Dimensions.get("window");
+const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 export default function AccountScreen({ onLogout }) {
     const [darkMode, setDarkMode] = useState(false);
@@ -12,13 +27,20 @@ export default function AccountScreen({ onLogout }) {
     const borderColor = darkMode ? '#444' : '#ddd';
 
     return (
-        <View style={[styles.container, { backgroundColor }]}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.header}>
-                    <Text style={[styles.title, { color: textColor }]}>GEBRUIKER</Text>
-                    <Ionicons name="qr-code-outline" size={24} color={textColor} />
-                </View>
+        <SafeAreaView style={[styles.container, { backgroundColor }]}>
+            {/*<View style={{ paddingHorizontal: 30, paddingTop: 0 }}>*/}
+            {/*    <Header title="Account" />*/}
+            {/*</View>*/}
+            <View
+                style={{
+                    paddingHorizontal: 30,
+                    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+                }}
+            >
+                <Header title="Account" />
+            </View>
 
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={[styles.card, { borderColor }]}>
                     <MenuItem title="Account" icon="person-outline" color={textColor} />
                     <MenuItem title="Help" icon="help-circle-outline" color={textColor} />
@@ -51,7 +73,7 @@ export default function AccountScreen({ onLogout }) {
                     />
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -72,29 +94,33 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContainer: {
-        padding: 20,
         paddingBottom: 40,
     },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 20,
     },
-    title: {
-        fontWeight: 'bold',
-        fontSize: 20,
+    pageTitle: {
+        fontFamily: 'Montserrat',
+        fontSize: scaleFontSize(36),
+        fontWeight: '800',
+        color: '#212529',
+        letterSpacing: -1,
     },
     card: {
         borderWidth: 1,
         borderRadius: 10,
         paddingVertical: 10,
+        marginHorizontal: 30,
         marginBottom: 20,
     },
     logoutCard: {
         borderWidth: 1,
         borderRadius: 10,
         paddingVertical: 10,
+        marginHorizontal: 30,
         marginBottom: 60,
     },
     menuItem: {
@@ -115,5 +141,6 @@ const styles = StyleSheet.create({
     },
     menuText: {
         fontSize: 16,
+        fontFamily: 'montserrat-regular',
     },
 });
