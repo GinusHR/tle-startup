@@ -1,6 +1,24 @@
-import {Animated, Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+    Animated,
+    Button,
+    Dimensions,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import React, { useRef, useState, useEffect } from 'react';
-import {Entypo, FontAwesome5, FontAwesome6, Ionicons} from "@expo/vector-icons";
+import {
+    Entypo,
+    FontAwesome5,
+    FontAwesome6,
+    Ionicons,
+    Fontisto,
+    Foundation,
+    MaterialCommunityIcons
+} from "@expo/vector-icons";
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
 import {useNavigation} from "@react-navigation/native";
@@ -42,19 +60,37 @@ const UitbetalenTab = () => {
                         <View>
                             <Text style={styles.label}>Bedrag</Text>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text>$ </Text>
+                                <Text style={{ fontWeight: 800, fontSize: 18 }}>€ </Text>
                                 <TextInput
+                                    style={styles.input}
                                     placeholder={"0,00"}
+                                    placeholderTextColor={"#7D8893"}
                                     keyboardType={"numeric"}
-                                    onChangeText={setBedrag}  />
+                                    onChangeText={setBedrag}
+                                    value={bedrag}  />
                             </View>
                         </View>
-                        <Ionicons name="home" size={24} color="#2F4538" />
+                        <FontAwesome6 name="euro-sign" size={24} color="#2F4538" />
                     </View>
                 </View>
-                <View>
-                    <Text>Rekening nummer</Text>
+                <View style={styles.card}>
+                    <View style={styles.row}>
+                        <View>
+                            <Text style={styles.label}>Ontvanger</Text>
+                            <View style={{ flexDirection: 'row' }}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder={"Rekeningnummer"}
+                                    placeholderTextColor={"#7D8893"}
+                                    keyboardType={"default"}
+                                    onChangeText={setRekeningnummer}
+                                    value={rekeningnummer}  />
+                            </View>
+                        </View>
+                        <MaterialCommunityIcons name="bank" size={24} color="#2F4538" />
+                    </View>
                 </View>
+                <Button title={"Volgende"}/>
             </View>
         </View>
     );
@@ -215,8 +251,8 @@ const styles = StyleSheet.create({
         fontFamily: 'montserrat-bold',
         marginBottom: 4,
     },
-    placeholder: {
-        color: '#7D8893',
+    input: {
+        color: '#2F4538',
         fontSize: 18,
         fontFamily: 'montserrat-bold',
     },
