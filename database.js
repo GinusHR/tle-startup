@@ -89,6 +89,19 @@ export const initDatabase = async () => {
     `);
 };
 
+//to create an admin use this instead of  insertUser
+export const insertAdmin = async (name, email, plainPassword, role) => {
+    try {
+        const salt = bcrypt.genSaltSync(10);
+        const passwordHash = bcrypt.hashSync(plainPassword, salt);
+        if (!db) return;
+        await db.runAsync('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?);', name, email, passwordHash, role);
+        console.log("User toegevoegd:", name, email, passwordHash, role);
+    } catch (error) {
+        console.error("Kon user niet toevoegen:", error);
+    }
+};
+
 export const insertUser = async (name, email, plainPassword) => {
     try {
         const salt = bcrypt.genSaltSync(10);
@@ -127,6 +140,8 @@ export const getAllUsers = async () => {
         return [];
     }
 };
+
+
 
 export const deleteUser = async (id) => {
     try {
@@ -263,3 +278,18 @@ export const getFullListItems = async () => {
         return [];
     }
 };
+
+//updates list bool to true to mark list as done 
+export const markListAsDone = async (id) => {
+    try {
+        if(!db) return [];
+        const result = await db.runAsync(`
+            UPDATE lists SET list.done = 1 WHERE list.list_id = ${id} 
+            `)
+            console.log("Lijst afgerond: ", result);
+            return result
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
