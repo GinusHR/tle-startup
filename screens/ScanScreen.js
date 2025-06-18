@@ -17,6 +17,15 @@ export default function ScanScreen({navigation}) {
                   } style={[styleSheet.mainBtn, styleSheet.btnYellow ]}  >
                     <Text>CheckList</Text>
                   </Pressable>
+            <Pressable onPress={
+                    () => {
+                      useRoute
+                      navigation.navigate('Home', { screen: 'Admin' });
+
+                    }
+                  } style={[styleSheet.mainBtn, styleSheet.btnYellow ]}  >
+                    <Text>Admin</Text>
+                  </Pressable>
         </View>
     );
 }
