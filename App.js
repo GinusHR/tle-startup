@@ -52,7 +52,7 @@ const HomeNavigator = () => (
             component={Wallet}
             options={{
                 title: 'Wallet',
-                presentation: 'fullScreenModal',
+                presentation: 'card',
                 animation: 'slide_from_right',
             }}/>
     </HomeStack.Navigator>

@@ -45,7 +45,6 @@ const UitbetalenTab = () => {
             return;
         }
 
-        // Hier zou je een API-call doen of iets verwerken
         alert(`Aanvraag om € ${bedrag} uit te betalen naar ${rekeningnummer} is verstuurd.`);
 
         // Reset
@@ -68,7 +67,14 @@ const UitbetalenTab = () => {
                                     placeholderTextColor={"#7D8893"}
                                     keyboardType={"numeric"}
                                     onChangeText={setBedrag}
-                                    value={bedrag}  />
+                                    value={bedrag}
+                                    onBlur={() => {
+                                        // zorgt ervoor dat het bedrag altijd met 2 getallen achter de commas worden getoond
+                                        const num = parseFloat(bedrag.replace(',', '.'));
+                                        if (!isNaN(num)) {
+                                            setBedrag(num.toFixed(2).replace('.', ','));
+                                        }
+                                }}/>
                             </View>
                         </View>
                         <FontAwesome6 name="euro-sign" size={24} color="#2F4538" />
@@ -258,6 +264,7 @@ const styles = StyleSheet.create({
         color: '#2F4538',
         fontSize: 18,
         fontFamily: 'montserrat-bold',
+        width: '200',
     },
     row: {
         flexDirection: 'row',
