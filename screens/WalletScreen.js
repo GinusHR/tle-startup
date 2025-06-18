@@ -1,7 +1,7 @@
 import {
     Animated,
     Button,
-    Dimensions,
+    Dimensions, Platform, Pressable,
     SafeAreaView,
     StyleSheet,
     Text,
@@ -45,7 +45,7 @@ const UitbetalenTab = () => {
         }
 
         // Hier zou je een API-call doen of iets verwerken
-        alert(`Aanvraag om €${bedrag} uit te betalen naar ${rekeningnummer} is verstuurd.`);
+        alert(`Aanvraag om € ${bedrag} uit te betalen naar ${rekeningnummer} is verstuurd.`);
 
         // Reset
         setBedrag('');
@@ -90,7 +90,9 @@ const UitbetalenTab = () => {
                         <MaterialCommunityIcons name="bank" size={24} color="#2F4538" />
                     </View>
                 </View>
-                <Button title={"Volgende"}/>
+                <Pressable style={styles.button} onPress={handleUitbetalen}>
+                    <Text style={styles.buttonText}>Volgende</Text>
+                </Pressable>
             </View>
         </View>
     );
@@ -260,6 +262,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+    },
+    button: {
+        backgroundColor: '#2F4538',
+        padding: 16,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontFamily: 'montserrat-bold',
     },
 
     toggleContainer: {
