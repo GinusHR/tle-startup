@@ -29,7 +29,8 @@ export const initDatabase = async () => {
             password TEXT    NOT NULL,
             address  TEXT    NULL,
             wallet   INTEGER NULL,
-            total    INTEGER NULL
+            total    INTEGER NULL,
+            role     BOOLEAN DEFAULT 0
         );
     `);
 
@@ -166,6 +167,19 @@ export const deleteItem = async (id) => {
         console.log("Item succesvol verwijderd");
     } catch (error) {
         console.error("Kon item niet verwijderen:", error);
+    }
+};
+
+export const createListForUser = async (userId) => {
+    try {
+        if (!db) return null;
+        const result = await db.runAsync('INSERT INTO lists (user_id) VALUES (?);', userId);
+        const listId = result.lastInsertRowId;
+        console.log("Lijst aangemaakt voor user:", userId, "met lijst ID:", listId);
+        return listId;
+    } catch (error) {
+        console.error("Kon lijst niet aanmaken:", error);
+        return null;
     }
 };
 
