@@ -88,7 +88,7 @@ export const insertUser = async (name, email, plainPassword) => {
         await db.runAsync('INSERT INTO users (name, email, password) VALUES (?, ?, ?);', name, email, passwordHash);
         console.log("User toegevoegd:", name, email, passwordHash);
     } catch (error) {
-        console.log("Kon user niet toevoegen:", error);
+        console.error("Kon user niet toevoegen:", error);
     }
 };
 
@@ -96,7 +96,6 @@ export const getUser = async (email, password) => {
     if (!db) return null;
 
     try {
-        // Use getFirstAsync instead of getAsync
         const user = await db.getFirstAsync('SELECT * FROM users WHERE email = ?;', email);
         if (!user) return null;
 
@@ -126,7 +125,7 @@ export const deleteUser = async (id) => {
         await db.runAsync('DELETE FROM users WHERE id = ?;', id);
         console.log("User verwijderd");
     } catch (error) {
-        console.log("Kon user niet verwijderen", error);
+        console.error("Kon user niet verwijderen", error);
     }
 };
 
@@ -136,7 +135,7 @@ export const insertItem = async (name, value) => {
         await db.runAsync('INSERT INTO items (name, value) VALUES (?, ?);', name, value);
         console.log("Item toegevoegd aan database");
     } catch (error) {
-        console.log("Item kon niet worden toegevoegd", error);
+        console.error("Item kon niet worden toegevoegd", error);
     }
 };
 
@@ -147,7 +146,7 @@ export const getItems = async () => {
         console.log("Items succesvol opgehaald");
         return items;
     } catch (error) {
-        console.log("Kon items niet ophalen", error);
+        console.error("Kon items niet ophalen", error);
         return [];
     }
 };
@@ -158,16 +157,17 @@ export const deleteItem = async (id) => {
         await db.runAsync('DELETE FROM items WHERE id = ?;', id);
         console.log("Item succesvol verwijderd");
     } catch (error) {
-        console.log("Kon item niet verwijderen:", error);
+        console.error("Kon item niet verwijderen:", error);
     }
 };
 
 export const getList = async (id) => {
     try {
         if (!db) return []
-        const
+        await db.getFirstAsync('SELECT FROM lists WHERE id =?', id);
+        console.log("Lijst opgehaald")
     } catch (error) {
-        
+        console.error("Kon lijst niet ophalen", error)
     }
 }
 
@@ -178,7 +178,7 @@ export const getUserLists = async (id) => {
         console.log("Lijst(en) succesvol opgehaald");
         return lists;
     } catch (error) {
-        console.log("Kon de lijst(en) niet ophalen:", error);
+        console.error("Kon de lijst(en) niet ophalen:", error);
         return [];
     }
 };
@@ -194,24 +194,36 @@ export const getAllLists = async () => {
     }
 };
 
+export const createListForUser = async (userId) => {
+    try {
+        if (!db) return null;
+        const result = await db.runAsync('INSERT INTO lists (user_id) VALUES (?);', userId);
+        const listId = result.lastInsertRowId;
+        console.log("Lijst aangemaakt voor user:", userId, "met lijst ID:", listId);
+        return listId;
+    } catch (error) {
+        console.error("Kon lijst niet aanmaken:", error);
+        return null;
+    }
+};
+
+
 export const insertList = async (listId, itemId, quantity) => {
     try {
         if (!db) return;
-        // Fixed table name: should be list_items, not list_item
         await db.runAsync('INSERT INTO list_items (list_id, item_id, quantity) VALUES (?, ?, ?);', listId, itemId, quantity);
         console.log("Item succesvol toegevoegd aan de lijst");
     } catch (error) {
-        console.log("Kon item niet toevoegen aan de lijst", error);
+        console.error("Kon item niet toevoegen aan de lijst", error);
     }
 };
 
 export const deleteList = async (id) => {
     try {
         if (!db) return;
-        // Fixed table name: should be list_items, not list_item
         await db.runAsync('DELETE FROM list_items WHERE id = ?', id);
         console.log("Item succesvol verwijderd uit de lijst");
     } catch (error) {
-        console.log("Kon item niet verwijderen uit de lijst:", error);
+        console.error("Kon item niet verwijderen uit de lijst:", error);
     }
 };

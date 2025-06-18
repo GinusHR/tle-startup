@@ -15,7 +15,8 @@ export default function ScanScreen({items}) {
         }
     }, [items]);
 
-    const increment = () => setAmount()
+    const increment = () => setAmount(q => q + 1)
+    const decrement = () => setAmount(q => Math.max(0, q - 1))
 
     return (
         <View style={styles.container}>
@@ -27,11 +28,11 @@ export default function ScanScreen({items}) {
                 <View style={styles.item}>
                     <Text>{item.name}</Text>
                     <View style={styles.fn}>
-                        <Pressable style={styles.button}>
+                        <Pressable onPress={increment} style={styles.button}>
                             <Text style={styles.bText}>+</Text>
                         </Pressable>
                         <Text>{amount}</Text>
-                        <Pressable style={styles.button}>
+                        <Pressable onPress={decrement} style={styles.button}>
                             <Text style={styles.bText}>-</Text>
                         </Pressable>
                     </View>
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     header: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
     input: { borderBottomWidth: 1, marginBottom: 10, padding: 5 },
     item: { flexDirection: 'row', justifyContent: "space-around", paddingVertical: 10 },
-    fn: {flexDirection: 'row', gap: 10, width: 30},
+    fn: { flexDirection: 'row', gap: 10, width: 30 },
     button: { backgroundColor: '#1F3A3D', borderRadius: 8, width: 20, alignContent: "center" },
-    bText: {color: '#fff', fontWeight: "bold"}
+    bText: { color: '#fff', fontWeight: "bold" }
 });
