@@ -59,6 +59,7 @@ export default function LoginScreen({ navigation, route }) {
 
     const handleForgotPassword = () => {
         Alert.alert('Wachtwoord vergeten', 'Deze functie wordt binnenkort toegevoegd');
+    };
 
     return (
         <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
@@ -261,5 +262,4 @@ const styles = StyleSheet.create({
     disabledButton: {
         opacity: 0.6,
     },
-    }
 });
