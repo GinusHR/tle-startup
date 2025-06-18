@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import QRCode from 'react-native-qrcode-svg';
 
 export default function QRDetailsScreen() {
     const navigation = useNavigation();
-
     const backgroundColor = '#fff';
     const textColor = '#1D1F21';
 
@@ -18,9 +18,11 @@ export default function QRDetailsScreen() {
                 <Text style={[styles.title, { color: textColor }]}>QR totaal</Text>
                 <View style={{ width: 24 }} /> {/* Spacing voor centreren */}
             </View>
+            <QRCode
+                value="https://www.npmjs.com/package/react-native-qrcode-svg"
+                size={310}
+            />
 
-            {/* QR-code Placeholder */}
-            <View style={styles.qrPlaceholder} />
         </View>
     );
 }

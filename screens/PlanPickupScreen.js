@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     toggleContainer: {
         flexDirection: 'row',
         backgroundColor: '#2F4538',
+        // backgroundColor: 'blue',
         borderRadius: 999,
         padding: 4,
         marginBottom: 16,
@@ -155,7 +156,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 20,
         borderWidth: 3,
-        borderColor: '#2F4538',
+        // borderColor: '#2F4538',
+        borderColor: 'transparent',
     },
     toggleSelected: {
         backgroundColor: '#fff',
@@ -198,3 +200,4 @@ const styles = StyleSheet.create({
         fontFamily: 'montserrat-bold',
     },
 });
+
