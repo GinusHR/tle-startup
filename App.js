@@ -62,7 +62,7 @@ const AdminNavigator = () => (
    </AdminStack.Navigator>
 )
 
-const AppTabs = ({ onLogout, currentUser }) => (
+const AppTabs = ({ onLogout, currentUser, items }) => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
             headerShown: false,

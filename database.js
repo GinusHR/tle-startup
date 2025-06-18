@@ -216,20 +216,6 @@ export const getAllLists = async () => {
     }
 };
 
-export const createListForUser = async (userId) => {
-    try {
-        if (!db) return null;
-        const result = await db.runAsync('INSERT INTO lists (user_id) VALUES (?);', userId);
-        const listId = result.lastInsertRowId;
-        console.log("Lijst aangemaakt voor user:", userId, "met lijst ID:", listId);
-        return listId;
-    } catch (error) {
-        console.error("Kon lijst niet aanmaken:", error);
-        return null;
-    }
-};
-
-
 export const insertIntoList = async (listId, itemId, quantity) => {
     try {
         if (!db) return;
