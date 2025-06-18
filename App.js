@@ -8,7 +8,7 @@ import {View, StyleSheet, Text, ActivityIndicator, Alert} from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 
-import {getAllUsers, initDatabase} from "./database";
+import {getAllLists, getAllUsers, getItems, getList, getListItem, initDatabase} from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -100,7 +100,7 @@ const AppTabs = ({ onLogout, currentUser }) => (
         })}
     >
         <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
-        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}} component={ScanScreen} />
+        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ScanScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
         <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
             {() => (
                 <AccountScreen currentUser={currentUser} onLogout={onLogout} />
@@ -150,6 +150,11 @@ export default function App() {
         'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
         'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
     });
+    const [users, setUsers] = useState([]);
+    const [lists, setLists] = useState([]);
+    const [items, setItems] = useState([]);
+    const [listItems, setListItems] = useState([])
+    // const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -172,6 +177,19 @@ export default function App() {
                 await initDatabase();
                 setIsDbInitialized(true);
                 console.log("Database geïnitialiseerd");
+                const itemData = await getItems();
+                const userData = await getAllUsers();
+                // const appoData = await
+                const listData = await getAllLists();
+                const listContentData = await getListItem();
+                setItems(itemData);
+                setUsers(userData);
+                setLists(listData);
+                setListItems(listContentData)
+                console.log("Items:", itemData)
+                console.log("Users:",userData)
+                console.log("Lists:", listData)
+                console.log("list_item:", listContentData)
             } catch (error) {
                 console.error("Database initialisatie mislukt", error);
             }
@@ -203,7 +221,7 @@ export default function App() {
         if (currentUser && currentUser.role === 1) {
             return <AdminTabs onLogout={handleLogout} currentUser={currentUser} />;
         } else {
-            return <AppTabs onLogout={handleLogout} currentUser={currentUser} />;
+            return <AppTabs onLogout={handleLogout} currentUser={currentUser} items={items}/>;
         }
     };
 
