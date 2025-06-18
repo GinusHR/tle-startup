@@ -26,7 +26,8 @@ export const initDatabase = async () => {
             password TEXT    NOT NULL,
             address  TEXT NULL,
             wallet   INTEGER NULL,
-            total    INTEGER NULL
+            total    INTEGER NULL,
+            role     BOOLEAN DEFAULT 0
         );
     `);
 
