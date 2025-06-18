@@ -14,6 +14,10 @@ let db;
 
 export const initDatabase = async () => {
     db = await openDatabaseAsync('mijndatabase.db')
+    await db.execAsync(`PRAGMA foreign_keys = OFF`);
+
+    await db.execAsync(` DROP TABLE IF EXISTS items;`)
+
     await db.execAsync(`PRAGMA foreign_keys = ON;`);
 
     await db.execAsync(`
@@ -30,7 +34,6 @@ export const initDatabase = async () => {
     `);
 
     await db.execAsync(`
-        DROP TABLE IF EXISTS items;
         CREATE TABLE IF NOT EXISTS items
         (
             id    INTEGER PRIMARY KEY AUTOINCREMENT,
