@@ -1,7 +1,6 @@
 import { useRoute } from "@react-navigation/native";
-import { CameraView } from "expo-camera";
 import React from "react";
-import { Platform, Pressable, SafeAreaView, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import { getList } from "../../database";
 
 
@@ -51,7 +50,6 @@ export default function CheckListScreen({navigation}) {
     return (
         <SafeAreaView style={styleSheet.container}>
         <View style={styleSheet.form}>
-            {/* <View style={styleSheet.allinputs}> */}
             <Text>aantal 0,25 flessen:</Text>
             <TextInput
             style={styleSheet.input}
@@ -84,13 +82,14 @@ export default function CheckListScreen({navigation}) {
             placeholder="totaal "
             keyboardType="numeric"
             />
-{/* </View> */}
 
             <Pressable onPress={
                 () => {
                   checkvalues()
+                  useRoute
+                  navigation.navigate('HomeMain')
                 }
-              } style={[styleSheet.mainBtn, styleSheet.btnYellow ]}  >
+              } style={styleSheet.mainBtn}  >
                 <Text>CheckList</Text>
               </Pressable>
         </View>
