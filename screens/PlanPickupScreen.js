@@ -35,6 +35,7 @@ export default function PlanPickupScreen() {
                             title="Adres"
                             body={confirmedAddress ? confirmedAddress : '...'}
                             bodyStyle={{ fontSize: 18 }}
+                            shrinkText={true}
                             button={
                                 <RoundButton
                                     icon={<Ionicons name="home" size={16} color="white"/>}
@@ -62,6 +63,7 @@ export default function PlanPickupScreen() {
                                     : '...'
                             }
                             bodyStyle={{ fontSize: 18 }}
+                            shrinkText={true}
                             button={
                                 <RoundButton
                                     icon={<Ionicons name="calendar-clear" size={15} color="white"/>}
