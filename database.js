@@ -13,8 +13,7 @@ bcrypt.setRandomFallback((len) => {
 let db;
 
 export const initDatabase = async () => {
-    db = await openDatabaseAsync('mijndatabase.db');
-
+    db = await openDatabaseAsync('mijndatabase.db')
     await db.execAsync(`PRAGMA foreign_keys = ON;`);
 
     await db.execAsync(`
@@ -24,7 +23,7 @@ export const initDatabase = async () => {
             name     TEXT    NOT NULL,
             email    TEXT    NOT NULL,
             password TEXT    NOT NULL,
-            address  TEXT NULL,
+            address  TEXT    NULL,
             wallet   INTEGER NULL,
             total    INTEGER NULL
         );
@@ -38,11 +37,16 @@ export const initDatabase = async () => {
             name  TEXT    NOT NULL,
             value INTEGER NULL DEFAULT 0
         );
-        INSERT INTO items (name, value) VALUES ('Grote fles', 0.25);
-        INSERT INTO items (name, value) VALUES ('Kleine fles', 0.15);
-        INSERT INTO items (name, value) VALUES ('Blikje', 0.15);
-        INSERT INTO items (name, value) VALUES ('Bier fles', 0.10);
-        INSERT INTO items (name, value) VALUES ('Bier fles met beugel', 0.20);
+        INSERT INTO items (name, value)
+        VALUES ('Grote fles', 0.25);
+        INSERT INTO items (name, value)
+        VALUES ('Kleine fles', 0.15);
+        INSERT INTO items (name, value)
+        VALUES ('Blikje', 0.15);
+        INSERT INTO items (name, value)
+        VALUES ('Bier fles', 0.10);
+        INSERT INTO items (name, value)
+        VALUES ('Bier fles met beugel', 0.20);
     `);
 
     await db.execAsync(`
@@ -50,33 +54,34 @@ export const initDatabase = async () => {
         (
             id      INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
-            done    BOOLEAN NOT NULL DEFAULT 0,
+            done    BOOLEAN DEFAULT 0,
             FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-            );
+        );
     `);
 
     await db.execAsync(`
-        CREATE TABLE IF NOT EXISTS list_items
+        CREATE TABLE IF NOT EXISTS list_item
         (
             id       INTEGER PRIMARY KEY AUTOINCREMENT,
             list_id  INTEGER NOT NULL,
             item_id  INTEGER NOT NULL,
-            quantity INTEGER NOT NULL DEFAULT 1,
+            quantity INTEGER DEFAULT 1,
             FOREIGN KEY (list_id) REFERENCES lists (id),
             FOREIGN KEY (item_id) REFERENCES items (id)
-            );
+        );
     `);
 
     await db.execAsync(`
-        CREATE TABLE IF NOT EXISTS appointments (
-                                                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                    time DATETIME NULL,
-                                                    customer_id INTEGER NOT NULL,
-                                                    appointment_status BOOLEAN NOT NULL DEFAULT 0,
-                                                    driver TEXT NULL,
-                                                    customer_address INTEGER NULL,
-                                                    FOREIGN KEY (customer_id) REFERENCES users (id)
-            );
+        CREATE TABLE IF NOT EXISTS appointments
+        (
+            id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+            time               DATETIME NULL,
+            customer_id        INTEGER  NOT NULL,
+            appointment_status BOOLEAN  NOT NULL DEFAULT 0,
+            driver             TEXT     NULL,
+            customer_address   INTEGER  NULL,
+            FOREIGN KEY (customer_id) REFERENCES users (id)
+        );
     `);
 };
 
@@ -164,7 +169,7 @@ export const deleteItem = async (id) => {
 export const getList = async (id) => {
     try {
         if (!db) return []
-        await db.getFirstAsync('SELECT FROM lists WHERE id =?', id);
+        await db.getFirstAsync('SELECT * FROM lists WHERE id =?', id);
         console.log("Lijst opgehaald")
     } catch (error) {
         console.error("Kon lijst niet ophalen", error)
@@ -185,8 +190,8 @@ export const getUserLists = async (id) => {
 
 
 export const getAllLists = async () => {
-    if (!db) return [];
     try {
+        if (!db) return [];
         return await db.getAllAsync('SELECT * FROM lists;');
     } catch (error) {
         console.error("Fout bij van de lijsten:", error);
@@ -208,11 +213,11 @@ export const createListForUser = async (userId) => {
 };
 
 
-export const insertList = async (listId, itemId, quantity) => {
+export const insertIntoList = async (listId, itemId, quantity) => {
     try {
         if (!db) return;
-        await db.runAsync('INSERT INTO list_items (list_id, item_id, quantity) VALUES (?, ?, ?);', listId, itemId, quantity);
-        console.log("Item succesvol toegevoegd aan de lijst");
+        await db.runAsync('INSERT INTO list_item (list_id, item_id, quantity) VALUES (?, ?, ?);', listId, itemId, quantity);
+        console.log("Inserting into list_items: listId =", listId, ", itemId =", itemId, ", quantity =", quantity);
     } catch (error) {
         console.error("Kon item niet toevoegen aan de lijst", error);
     }
@@ -221,9 +226,37 @@ export const insertList = async (listId, itemId, quantity) => {
 export const deleteList = async (id) => {
     try {
         if (!db) return;
-        await db.runAsync('DELETE FROM list_items WHERE id = ?', id);
+        await db.runAsync('DELETE FROM lists WHERE id = ?', id);
         console.log("Item succesvol verwijderd uit de lijst");
     } catch (error) {
         console.error("Kon item niet verwijderen uit de lijst:", error);
+    }
+};
+
+export const getListItem = async () => {
+    try {
+        if (!db) return;
+        const result = await db.getAllAsync('SELECT * FROM list_item')
+        console.log("opgehaald uit de database", result)
+        return result
+    } catch (error) {
+        console.error("Kon list_item niet ophalen")
+    }
+};
+
+export const getFullListItems = async () => {
+    try {
+        if (!db) return [];
+        const result = await db.getAllAsync(`
+            SELECT list.id, list.list_id, list.item_id, item.name AS item_name, list.quantity
+            FROM list_item list
+            JOIN items item ON list.item_id = item.id
+            ORDER BY list.list_id;
+        `);
+        console.log("Volledige lijst items:", result);
+        return result;
+    } catch (error) {
+        console.error("Kon volledige lijst items niet ophalen:", error);
+        return [];
     }
 };

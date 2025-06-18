@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, use} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from 'expo-font';
 
@@ -8,7 +8,7 @@ import {View, StyleSheet, Text, ActivityIndicator, Alert} from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from "expo-secure-store";
 
-import {getAllLists, getAllUsers, getItems, getList, initDatabase} from "./database";
+import {getAllLists, getAllUsers, getItems, getList, getListItem, initDatabase} from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -104,6 +104,7 @@ export default function App() {
     const [users, setUsers] = useState([]);
     const [lists, setLists] = useState([]);
     const [items, setItems] = useState([]);
+    const [listItems, setListItems] = useState([])
     // const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
@@ -130,13 +131,16 @@ export default function App() {
                 const itemData = await getItems();
                 const userData = await getAllUsers();
                 // const appoData = await
-                const listData = await getAllLists()
+                const listData = await getAllLists();
+                const listContentData = await getListItem();
                 setItems(itemData);
                 setUsers(userData);
                 setLists(listData);
+                setListItems(listContentData)
                 console.log("Items:", itemData)
                 console.log("Users:",userData)
                 console.log("Lists:", listData)
+                console.log("list_item:", listContentData)
             } catch (error) {
                 console.error("Database initialisatie mislukt", error);
             }

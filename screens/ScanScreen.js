@@ -1,45 +1,35 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, FlatList, Pressable, Alert} from 'react-native';
+import {View, StyleSheet, Text, FlatList, Pressable, Alert, Button, TouchableOpacity, Dimensions} from 'react-native';
+import {Ionicons} from "@expo/vector-icons";
+import {createListForUser, getListItem, insertIntoList} from "../database";
 
-
+const {width, height} = Dimensions.get("window");
+const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 
 export default function ScanScreen({items, currentUser}) {
-    // const [localItems, setLocalItems] = useState([])
-    // const [quantities, setQuantities] = useState({});
-    //
-    // useEffect(() => {
-    //     const fetchItems = async () => {
-    //         const dbItems = await getItems();
-    //         setLocalItems(dbItems);
-    //
-    //         // Initialiseer hoeveelheden op 0 per item
-    //         const initial = {};
-    //         dbItems.forEach(item => {
-    //             initial[item.id] = 0;
-    //         });
-    //         setQuantities(initial);
-    //     };
-    //     fetchItems();
-    // }, []);
-
-    // const increment = () => setAmount(q => q + 1)
-    // const decrement = () => setAmount(q => Math.max(0, q - 1))
-
     const [selectedItems, setSelectedItems] = useState([]);
 
-    const toggleSelectItem = (item) => {
-        setSelectedItems((prevSelected) => {
-            const alreadySelected = prevSelected.find((i) => i.id === item.id);
-            if (alreadySelected) {
-                return prevSelected.filter((i) => i.id !== item.id);
-            } else {
-                return [...prevSelected, item];
+    const updateQuantity = (itemId, delta) => {
+        setSelectedItems((prev) => {
+            const existing = prev.find((i) => i.id === itemId);
+            if (existing) {
+                const newQuantity = existing.quantity + delta;
+                if (newQuantity <= 0) {
+                    return prev.filter((i) => i.id !== itemId);
+                }
+                return prev.map((item) =>
+                    item.id === itemId ? { ...item, quantity: newQuantity } : item
+                );
+            } else if (delta > 0) {
+                const newItem = items.find((i) => i.id === itemId);
+                return [...prev, { ...newItem, quantity: 1 }];
             }
+            return prev;
         });
     };
 
-    const bevestigKeuze = async () => {
+    const confirmChoice = async () => {
         if (!currentUser) {
             Alert.alert("Fout", "Geen gebruiker ingelogd.");
             return;
@@ -50,71 +40,167 @@ export default function ScanScreen({items, currentUser}) {
             return;
         }
 
-        try {
-            // 1. Lijst aanmaken
-            const response = await db.runAsync(
-                'INSERT INTO lists (user_id, done) VALUES (?, ?);',
-                currentUser.id, 0
-            );
-            const listId = response.lastInsertRowId;
 
-            // 2. Voeg elk geselecteerd item toe aan list_items
+        try {
+            console.log("Huidige gebruiker ID:", currentUser.id);
+            const listId = await createListForUser(currentUser.id);
+            if (!listId) {
+                Alert.alert("Fout", "Kon geen lijst aanmaken.");
+                return;
+            }
+
             for (const item of selectedItems) {
-                await insertList(listId, item.id, 1); // default quantity = 1
+                console.log("Voeg toe aan list_id:", listId, "item:", item.id, "qty:", item.quantity);
+                await insertIntoList(listId, item.id, item.quantity);
             }
 
             Alert.alert("Succes", "Je lijst is opgeslagen!");
-            setSelectedItems([]); // reset selectie
+            setSelectedItems([]);
         } catch (error) {
             console.error("Fout bij bevestigen keuze:", error);
             Alert.alert("Fout", "Er ging iets mis bij het opslaan.");
         }
     };
 
-    const renderItem = ({ item }) => {
-        const selected = selectedItems.some((i) => i.id === item.id);
+    const renderItem = ({item}) => {
+        const selected = selectedItems.find((i) => i.id === item.id);
+        const quantity = selected?.quantity || 0;
+
         return (
-            <View style={[styles.itemContainer, selected && styles.selectedItem]}>
-                <Text>{item.name} (€{item.value.toFixed(2)})</Text>
-                <Button
-                    title={selected ? "Verwijder" : "Voeg toe"}
-                    onPress={() => toggleSelectItem(item)}
-                    color={selected ? "#8b0000" : "#2F4538"}
-                />
+            <View style={[styles.itemContainer, quantity > 0 && styles.selectedItem]}>
+                <View>
+                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemValue}>€{item.value.toFixed(2)}</Text>
+                </View>
+                <View style={styles.controls}>
+                    <TouchableOpacity
+                        style={styles.controlButton}
+                        onPress={() => updateQuantity(item.id, -1)}
+                    >
+                        <Text style={styles.controlText}>-</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.quantity}>{quantity}</Text>
+                    <TouchableOpacity
+                        style={styles.controlButton}
+                        onPress={() => updateQuantity(item.id, 1)}
+                    >
+                        <Text style={styles.controlText}>+</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     };
 
+    const dbChecker =  async () => {
+        const response =  await getListItem()
+        console.log(response);
+    }
     return (
         <View style={styles.container}>
-            <Text style={styles.header}>Kies het aantal flessen dat u wilt afleveren</Text>
+            <View style={styles.header}>
+                <Text style={styles.pageTitle}>Scan</Text>
+                <Ionicons name="qr-code" size={30} color="#212529"/>
+            </View>
+            <Text style={styles.title}>Kies uw statiegeld</Text>
             <FlatList
-                data={localItems}
+                data={items}
                 keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                <View style={styles.item}>
-                    <Text>{item.name}</Text>
-                    <View style={styles.fn}>
-                        <Pressable onPress={increment} style={styles.button}>
-                            <Text style={styles.bText}>+</Text>
-                        </Pressable>
-                        <Text>{amount}</Text>
-                        <Pressable onPress={decrement} style={styles.button}>
-                            <Text style={styles.bText}>-</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            )}/>
+                renderItem={renderItem}
+            />
+            <Button title="Check db" onPress={dbChecker}/>
+            <View>
+                <Pressable
+                    onPress={confirmChoice}
+                    style={styles.confirmButton}
+                >
+                    <Text style={styles.confirmText}>Bevestig selectie</Text>
+                </Pressable>
+            </View>
         </View>
+
     );
 }
 
 const styles = StyleSheet.create({
-    container: { padding: 20, marginTop: 50 },
-    header: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
-    input: { borderBottomWidth: 1, marginBottom: 10, padding: 5 },
-    item: { flexDirection: 'row', justifyContent: "space-around", paddingVertical: 10 },
-    fn: { flexDirection: 'row', gap: 10, width: 30 },
-    button: { backgroundColor: '#1F3A3D', borderRadius: 8, width: 20, alignContent: "center" },
-    bText: { color: '#fff', fontWeight: "bold" }
+    container: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: '#FDFDFD',
+    },
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        color: "#212529",
+    },
+    pageTitle: {
+        fontFamily: "Montserrat",
+        fontSize: scaleFontSize(36),
+        fontWeight: "800",
+        color: "#212529",
+        letterSpacing: -1,
+    },
+    title: {
+        fontFamily: "Montserrat",
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 12,
+        textAlign: 'center',
+    },
+    itemContainer: {
+        padding: 12,
+        marginBottom: 8,
+        backgroundColor: '#EDEDED',
+        borderRadius: 10,
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    selectedItem: {
+        backgroundColor: '#D6F5D6',
+    },
+    itemName: {
+        fontFamily: "Montserrat",
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    itemValue: {
+        fontFamily: "Montserrat",
+        fontSize: 14,
+        color: '#555',
+    },
+    controls: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
+        gap: 8,
+    },
+    controlButton: {
+        backgroundColor: '#2F4538',
+        borderRadius: 200,
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+    },
+    controlText: {
+        fontFamily: "Montserrat",
+        color: '#FFF',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    quantity: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        minWidth: 24,
+        textAlign: 'center',
+    },
+    confirmButton: {
+        marginTop: 16,
+        borderRadius: 40,
+        backgroundColor: "#597364",
+        padding: 20,
+    },
+    confirmText: {
+        fontFamily: "Montserrat",
+        color: '#fff',
+        fontWeight: "bold",
+        alignSelf: "center",
+    },
 });
