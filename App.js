@@ -17,13 +17,15 @@ import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
 import ScanScreen from './screens/ScanScreen';
 import AccountScreen from './screens/AccountScreen';
-import AdminScreen from "./screens/AdminScreen";
-import CameraScreen from "./screens/CameraScreen";
+import AdminScreen from "./screens/adminscreens/AdminScreen";
+import CameraScreen from "./screens/adminscreens/CameraScreen";
 import DbTestScreen from "./screens/test-screen/DbTestScreen";
+import CheckListScreen from "./screens/adminscreens/CheckListScreen";
 import ScannedItemsDetails from "./screens/ScannedItemsDetails";
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
+const AdminStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 if (!__DEV__) {
@@ -46,21 +48,23 @@ const AuthNavigator = ({ onLogin }) => (
 const HomeNavigator = () => (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
+        <HomeStack.Screen name="Admin" component={AdminScreen}/>
+        <HomeStack.Screen name="Camera" component={CameraScreen}/>
+        <HomeStack.Screen name="CheckList" component={CheckListScreen}/>
+        <HomeStack.Screen name="DbTest" component={DbTestScreen}/>
       <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
       <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
-      <HomeStack.Screen name="Admin" component={AdminScreen}/>
-      <HomeStack.Screen name="Camera" component={CameraScreen}/>
-      <HomeStack.Screen
-            name="details"
-            component={ScannedItemsDetails}
-            options={{
-                title: 'Details',
-                presentation: 'modal',
-                animation: 'slide_from_right',
-            }}
-      />
+      <HomeStack.Screen name="details" component={ScannedItemsDetails} options={{ title: 'Details', presentation: 'modal', animation: 'slide_from_right',}} />
     </HomeStack.Navigator>
 );
+
+// const AdminNavigator = () => (
+//   <AdminStack.Navigator>
+//         <AdminStack.Screen name="Admin" component={AdminScreen}/>
+//         <AdminStack.Screen name="Camera" component={CameraScreen}/>
+//         <AdminStack.Screen name="CheckList" component={CheckListScreen}/>
+//   </AdminStack.Navigator>
+// )
 
 const AppTabs = ({ onLogout, currentUser }) => (
     <Tab.Navigator
