@@ -22,6 +22,7 @@ import {
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
 import {useNavigation} from "@react-navigation/native";
+import { getUser } from "../database";
 
 const { width, height } = Dimensions.get("window");
 
