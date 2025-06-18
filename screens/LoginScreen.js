@@ -6,36 +6,33 @@ import { ImageBackground, Image } from 'react-native';
 import BackgroundImage from '../assets/images/background.png';
 
 import { getUser } from "../database";
+import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get('window');
 
 export default function LoginScreen({navigation, route}) {
+    const {onLogin} = route.params;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const {onLogin} = route.params;
-
     const handleLogin = async () => {
-        if (!email || !password) {
-            Alert.alert('Vul alle velden in');
-            return;
-        }
-
         setIsLoading(true);
-
         try {
-            const user = await getUser(email, password);
-
-            if (user) {
-                console.log('login succesvol');
-                onLogin(user);
-            } else {
-                Alert.alert('Login mislukt', 'Email of wachtwoord is incorrect');
+            if (!email || !password) {
+               return Alert.alert('Error', 'Vul alles in.');
             }
+            const user = await getUser(email, password);
+            if (!user) {
+                return Alert.alert('Error', 'Gebruiker niet gevonden.');
+            }
+            await SecureStore.setItemAsync('user', JSON.stringify({
+                id: user.id, email: user.email
+            }));
+            onLogin({ id: user.id, email: user.email });
         } catch (error) {
-            console.error('Login error', error);
-            Alert.alert('Er is een fout opgetreden bij het inloggen');
+            console.error('Login error:', error)
+            Alert.alert('Login mislukt', 'Er ging iets mis.')
         } finally {
             setIsLoading(false);
         }
