@@ -21,7 +21,7 @@ const {width, height} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 
-export default function ScanScreen({items, currentUser}) {
+export default function ListScreen({items, currentUser}) {
     const [selectedItems, setSelectedItems] = useState([]);
 
     const updateQuantity = (itemId, delta) => {

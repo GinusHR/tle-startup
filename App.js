@@ -15,7 +15,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
 import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
-import ScanScreen from './screens/ScanScreen';
+import ListScreen from './screens/ListScreen';
 import AccountScreen from './screens/AccountScreen';
 import ScannedItemsDetails from "./screens/ScannedItemsDetails";
 import AddressPickerScreen from "./screens/AddressPickerScreen";
@@ -99,8 +99,8 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
             tabBarIcon: ({ color, size }) => {
                 if (route.name === 'Home') {
                     return <MaterialIcons name="dashboard" size={size} color={color} />;
-                } else if (route.name === 'Scan') {
-                    return <MaterialIcons name="camera" size={size} color={color} />;
+                } else if (route.name === 'List') {
+                    return <MaterialIcons name="format-list-numbered-rtl" size={size} color={color} />;
                 } else if (route.name === 'Account') {
                     return <Ionicons name="person" size={size} color={color} />;
                 }
@@ -113,7 +113,7 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
         })}
     >
         <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
-        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ScanScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
+        <Tab.Screen name="List" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
         <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
             {() => (
                 <AccountScreen currentUser={currentUser} onLogout={onLogout} />

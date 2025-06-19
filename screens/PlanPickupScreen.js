@@ -200,7 +200,7 @@ export default function PlanPickupScreen() {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FDFDFD',
     },
     container: {
         flex: 1,

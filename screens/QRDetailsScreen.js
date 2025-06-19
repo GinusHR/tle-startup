@@ -30,7 +30,7 @@ export default function QRDetailsScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FDFDFD',
         padding: 20,
         justifyContent: 'center',
     },

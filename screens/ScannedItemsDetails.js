@@ -30,6 +30,8 @@ export default function ScannedItemsDetails () {
 }
 
 const styles = StyleSheet.create({
+    backgroundColor: '#FDFDFD',
+
     header: {
         flexDirection: 'row',
         alignItems: 'center',
