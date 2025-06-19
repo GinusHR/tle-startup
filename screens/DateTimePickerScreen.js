@@ -1,33 +1,29 @@
 import React, { useState } from 'react';
-import {
-    Platform,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {Platform, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import MonthDayDropdowns from '../components/MonthDayDropdowns';
 import TimePicker from '../components/TimePicker';
+
 export default function DateTimePickerScreen() {
     const navigation = useNavigation();
     const route = useRoute();
 
-    const hours = Array.from({ length: 24 }, (_, i) => i);
-    const minutes = [0, 15, 30, 45];
+    const now = new Date();
+    const isoString = now.toISOString(); // "2025-06-18T13:30:00.000Z"
+    const [datum, tijdMetMs] = isoString.split('T');
+    const tijd = tijdMetMs.slice(0, 5); // "13:30"
 
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
     const [selectedHour, setSelectedHour] = useState(12);
     const [selectedMinute, setSelectedMinute] = useState(0);
 
-    const handleConfirm = () => {
-        const date = new Date();
-
+    const handleConfirmDateTime = () => {
         if (selectedMonth === null || selectedDay === null) return;
 
+        const date = new Date();
         date.setMonth(selectedMonth);
         date.setDate(selectedDay);
         date.setHours(selectedHour);
@@ -35,15 +31,24 @@ export default function DateTimePickerScreen() {
         date.setSeconds(0);
         date.setMilliseconds(0);
 
-        console.log('Geselecteerde datum:', date.toISOString());
+        const formattedDate = date.toISOString(); // bv: "2025-06-18T13:30:00.000Z"
 
-        // ✅ Callback aanroepen om de datum terug te sturen
+        const [datum, tijd] = formattedDate.split('T'); // "2025-06-18", "13:30:00.000Z"
+
+        console.log('✅ Geselecteerde datum:', formattedDate);
+
+        // ✅ Geef de gekozen tijd terug aan het vorige scherm
         if (route.params?.onDateSelected) {
-            route.params.onDateSelected(date);
+            route.params.onDateSelected({
+                date: datum,            // "2025-06-18"
+                time: tijd.slice(0, 5), // "13:30"
+            });
         }
 
         navigation.goBack();
     };
+
+
 
     return (
         <View style={styles.container}>
@@ -69,7 +74,7 @@ export default function DateTimePickerScreen() {
                 />
             </View>
 
-            <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
+            <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmDateTime}>
                 <Text style={styles.confirmText}>Bevestig</Text>
             </TouchableOpacity>
         </View>

@@ -1,23 +1,112 @@
-import React, {useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useIsFocused, useRoute} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {insertAppointment} from '../database';
 import RoundButton from '../components/roundButton';
 import DataBoxes from "../components/dataBoxes";
 
+import * as SecureStore from 'expo-secure-store';
+
 export default function PlanPickupScreen() {
     const [isOneTime, setIsOneTime] = useState(true);
-    const [confirmedAddress, setConfirmedAddress] = useState(null);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [userId, setUserId] = useState(null);
+    const [selectedAddress, setSelectedAddress] = useState('');
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedTime, setSelectedTime] = useState('');
+
 
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
+    const route = useRoute();
+
+    useEffect(() => {
+        const fetchUserDataAndParams = async () => {
+            try {
+                // ✅ Haal gebruiker uit SecureStore
+                const userData = await SecureStore.getItemAsync('user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    setUserId(user.id);
+                    console.log('Opgehaalde userId uit SecureStore:', user.id);
+                } else {
+                    console.warn('Geen gebruiker gevonden in SecureStore');
+                }
+
+                // ✅ Verwerk eventuele meegegeven route params
+                if (route.params?.address) {
+                    setSelectedAddress(route.params.address);
+                }
+                if (route.params?.date) {
+                    setSelectedDate("Gekozen datum:", route.params.date);
+                }
+                if (route.params?.time) {
+                    setSelectedTime("Gekozen tijdstip:", route.params.time);
+                }
+
+            } catch (error) {
+                console.error('Fout bij ophalen gebruiker of verwerken params:', error);
+            }
+        };
+
+        if (isFocused) {
+            fetchUserDataAndParams();
+        }
+    }, [route, isFocused]);
 
     const handleCreateAppointment = async () => {
-        if (!confirmedAddress || !selectedDate) return;
-        await insertAppointment(1, confirmedAddress, selectedDate);
-        navigation.goBack();
+        try {
+            // ✅ Haal ingelogde gebruiker op uit SecureStore
+            const userDataString = await SecureStore.getItemAsync('user');
+            if (!userDataString) {
+                Alert.alert('Fout', 'Gebruikersgegevens niet gevonden. Log opnieuw in.');
+                return;
+            }
+
+            const user = JSON.parse(userDataString);
+
+            // ✅ Controleer of alle gegevens aanwezig zijn
+            if (!user || !user.id || !selectedAddress || !selectedDate || !selectedTime) {
+                Alert.alert('Fout', 'Vul adres, datum en tijd in.');
+                return;
+            }
+
+            // ✅ Bouw volledige ISO timestamp voor opslag
+            const fullDateTime = `${selectedDate}T${selectedTime}:00`; // bijv. '2025-06-20T14:15:00'
+            console.log("Volledige timestamp die wordt opgeslagen:", fullDateTime);
+
+            // ✅ Sla afspraak op
+            await insertAppointment({
+                customer_id: user.id,
+                customer_address: selectedAddress,
+                time: fullDateTime, // als YYYY-MM-DD HH:MM
+            });
+
+            Alert.alert(
+                'Afspraak opgeslagen',
+                'Je afspraak is succesvol ingepland.',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'Home' }],
+                            });
+                        },
+                    },
+                ],
+                { cancelable: false }
+            );
+
+
+        } catch (error) {
+            console.error('Fout bij aanmaken afspraak:', error);
+            Alert.alert('Fout', 'Er ging iets mis bij het opslaan van de afspraak.');
+        }
     };
+
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -33,7 +122,7 @@ export default function PlanPickupScreen() {
 
                         <DataBoxes
                             title="Adres"
-                            body={confirmedAddress ? confirmedAddress : '...'}
+                            body={selectedAddress ? selectedAddress : '...'}
                             bodyStyle={{ fontSize: 18 }}
                             shrinkText={true}
                             button={
@@ -41,7 +130,10 @@ export default function PlanPickupScreen() {
                                     icon={<Ionicons name="home" size={16} color="white"/>}
                                     onPress={() =>
                                         navigation.navigate('AddressPicker', {
-                                            onAddressSelected: (address) => setConfirmedAddress(address),
+                                            onAddressSelected: (address) => {
+                                                setSelectedAddress(address)
+                                                console.log("Gekozen adres:", address)
+                                            },
                                         })
                                     }
                                 />
@@ -63,14 +155,19 @@ export default function PlanPickupScreen() {
                                     : '...'
                             }
                             bodyStyle={{ fontSize: 18 }}
-                            shrinkText={true}
+                            shrinkText={false}
                             button={
                                 <RoundButton
-                                    icon={<Ionicons name="calendar-clear" size={15} color="white"/>}
+                                    icon={<Ionicons name="calendar-clear" size={15} color="white" />}
                                     onPress={() =>
                                         navigation.navigate('DateTimePicker', {
                                             currentDate: selectedDate,
-                                            onDateSelected: (date) => setSelectedDate(date),
+                                            onDateSelected: ({ date, time }) => {
+                                                console.log("Gekozen date:", date);
+                                                console.log("Gekozen time:", time);
+                                                setSelectedDate(date);
+                                                setSelectedTime(time);
+                                            },
                                         })
                                     }
                                 />

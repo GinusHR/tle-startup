@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { ImageBackground, Image } from 'react-native';
 import BackgroundImage from '../assets/images/background.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getUser } from "../database";
 import * as SecureStore from 'expo-secure-store';
@@ -29,6 +30,8 @@ export default function LoginScreen({navigation, route}) {
             await SecureStore.setItemAsync('user', JSON.stringify({
                 id: user.id, email: user.email
             }));
+            await AsyncStorage.setItem('userId', String(user.id));
+
             onLogin({ id: user.id, email: user.email });
         } catch (error) {
             console.error('Login error:', error)

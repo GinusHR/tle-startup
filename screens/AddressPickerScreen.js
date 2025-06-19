@@ -3,6 +3,7 @@ import {Dimensions, Keyboard, SafeAreaView, StyleSheet, Text, TextInput, Touchab
 import {Entypo} from '@expo/vector-icons';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {updateUserAddress} from '../database';
+import * as SecureStore from 'expo-secure-store';
 
 const {width, height} = Dimensions.get('window');
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -53,14 +54,26 @@ export default function AddressPickerScreen() {
     const handleConfirmAddress = async () => {
         try {
             Keyboard.dismiss();
-            const userId = 1;
+
+            // ✅ Haal ingelogde gebruiker op uit SecureStore
+            const userData = await SecureStore.getItemAsync('user');
+            const user = userData ? JSON.parse(userData) : null;
+
+            if (!user || !user.id) {
+                Alert.alert('Fout', 'Gebruikersgegevens niet gevonden. Log opnieuw in.');
+                return;
+            }
+
+            const userId = user.id;
 
             if (addressDetails) {
-                const {street, number, postal, city} = addressDetails;
+                const { street, number, postal, city } = addressDetails;
                 const formattedAddress = `${street} ${number}, ${postal} ${city}`;
 
+                // ✅ Sla adres op in DB
                 await updateUserAddress(userId, formattedAddress);
 
+                // ✅ Navigeer terug naar PlanPickup met adres
                 if (route.params?.onAddressSelected) {
                     route.params.onAddressSelected(formattedAddress);
                 }

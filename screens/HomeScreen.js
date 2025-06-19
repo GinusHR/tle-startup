@@ -1,6 +1,8 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Text, SafeAreaView, Dimensions, Pressable} from 'react-native';
 import {FontAwesome5, FontAwesome6, Ionicons} from '@expo/vector-icons';
+import { getLastAppointmentForUser} from "../database";
+import * as SecureStore from 'expo-secure-store';
 
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
@@ -8,6 +10,35 @@ import DataBoxes from "../components/dataBoxes";
 const { width, height } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 export default function HomeScreen({ navigation }) {
+    const [lastAppointment, setLastAppointment] = useState(null);
+
+    useEffect(() => {
+        const fetchAppointment = async () => {
+            const userData = await SecureStore.getItemAsync("user");
+            if (userData) {
+                const user = JSON.parse(userData);
+                const appointment = await getLastAppointmentForUser(user.id);
+                setLastAppointment(appointment);
+            }
+        };
+
+        const unsubscribe = navigation.addListener('focus', fetchAppointment);
+        return unsubscribe;
+    }, [navigation]);
+
+    const formatAfspraakDatum = (isoString) => {
+        if (!isoString) return "Onbekend";
+        const date = new Date(isoString);
+        return date.toLocaleString('nl-NL', {
+            weekday: 'short',
+            day: '2-digit',
+            month: 'short',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        });
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={{ paddingHorizontal: 30 }}>
@@ -45,7 +76,7 @@ export default function HomeScreen({ navigation }) {
                                 color="white" />}/>}/>
                     <DataBoxes
                         title={"Ophaal moment"}
-                        body={"Onbekend"}
+                        body={formatAfspraakDatum(lastAppointment?.time)}
                         button={<RoundButton
                             onPress={() => navigation.navigate('PlanPickup')}
                             icon={<FontAwesome5
