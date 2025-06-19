@@ -54,33 +54,9 @@ const HomeNavigator = () => (
         <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{title: 'Afspraak maken'}}/>
         <HomeStack.Screen name="Admin" component={AdminScreen}/>
         <HomeStack.Screen name="Camera" component={CameraScreen}/>
-        <HomeStack.Screen
-            name="details"
-            component={ScannedItemsDetails}
-            options={{
-                title: 'Details',
-                presentation: 'modal',
-                animation: 'slide_from_right',
-            }}
-        />
-        <HomeStack.Screen
-            name="AddressPicker"
-            component={AddressPickerScreen}
-            options={{
-                title: 'Adres',
-                presentation: 'modal',
-                animation: 'slide_from_right',
-            }}
-        />
-        <HomeStack.Screen
-            name="DateTimePicker"
-            component={DateTimePickerScreen}
-            options={{
-                title: 'Datum & Tijd',
-                presentation: 'modal',
-                animation: 'slide_from_right',
-            }}
-      />
+        <HomeStack.Screen name="details" component={ScannedItemsDetails} options={{title: 'Details', presentation: 'modal', animation: 'slide_from_right',}}/>
+        <HomeStack.Screen name="AddressPicker" component={AddressPickerScreen} options={{title: 'Adres', presentation: 'modal', animation: 'slide_from_right',}}/>
+        <HomeStack.Screen name="DateTimePicker" component={DateTimePickerScreen} options={{title: 'Datum & Tijd', presentation: 'modal', animation: 'slide_from_right',}}/>
     </HomeStack.Navigator>
 );
 

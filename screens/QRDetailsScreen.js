@@ -1,28 +1,60 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { View, StyleSheet, Alert } from 'react-native';
+import HeaderQR from '../components/headerQR';
 import QRCode from 'react-native-qrcode-svg';
+import * as Brightness from 'expo-brightness';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function QRDetailsScreen() {
-    const navigation = useNavigation();
-    const backgroundColor = '#fff';
-    const textColor = '#1D1F21';
+    useFocusEffect(
+        React.useCallback(() => {
+            let previousBrightness = null;
+
+            const setBrightness = async () => {
+                try {
+                    const { status } = await Brightness.requestPermissionsAsync();
+                    if (status !== 'granted') {
+                        Alert.alert('Toestemming vereist', 'Schermhelderheid kan niet worden aangepast.');
+                        return;
+                    }
+
+                    // sla huidige helderheid tijdelijk op
+                    previousBrightness = await Brightness.getBrightnessAsync();
+
+                    // zet scherm op maximale helderheid
+                    await Brightness.setBrightnessAsync(1);
+                } catch (error) {
+                    console.warn('Fout bij instellen helderheid:', error);
+                }
+            };
+
+            const restoreBrightness = async () => {
+                try {
+                    if (previousBrightness !== null) {
+                        await Brightness.setBrightnessAsync(previousBrightness);
+                    }
+                } catch (error) {
+                    console.warn('Fout bij herstellen helderheid:', error);
+                }
+            };
+
+            setBrightness();
+
+            return () => {
+                restoreBrightness();
+            };
+        }, [])
+    );
 
     return (
-        <View style={[styles.container, { backgroundColor }]}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="close" size={24} color={textColor} />
-                </TouchableOpacity>
-                <Text style={[styles.title, { color: textColor }]}>QR totaal</Text>
-                <View style={{ width: 24 }} /> {/* Spacing voor centreren */}
+        <View style={styles.container}>
+            <HeaderQR title="QR totaal" />
+            <View style={styles.qrWrapper}>
+                <QRCode
+                    value="https://www.npmjs.com/package/react-native-qrcode-svg"
+                    size={310}
+                />
             </View>
-            <QRCode
-                value="https://www.npmjs.com/package/react-native-qrcode-svg"
-                size={310}
-            />
-
         </View>
     );
 }
@@ -31,28 +63,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#fff',
-        padding: 20,
+    },
+    qrWrapper: {
+        flexGrow: 1,
         justifyContent: 'center',
-    },
-    header: {
-        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 24,
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        right: 20,
-    },
-    title: {
-        fontFamily: 'montserrat-bold',
-        fontSize: 18,
-    },
-    qrPlaceholder: {
-        width: 240,
-        height: 240,
-        backgroundColor: '#2F4538',
-        borderRadius: 16,
-        alignSelf: 'center',
+        paddingTop: -40,
+        marginTop: -60,
     },
 });
