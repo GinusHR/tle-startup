@@ -28,7 +28,7 @@ export const initDatabase = async () => {
             email    TEXT    NOT NULL,
             password TEXT    NOT NULL,
             address  TEXT    NULL,
-            wallet   INTEGER NULL,
+            wallet   INTEGER DEFAULT 0,
             total    INTEGER NULL,
             role     BOOLEAN DEFAULT 0
         );
@@ -121,7 +121,7 @@ export const getUser = async (email, password) => {
 export const getAllUsers = async () => {
     if (!db) return [];
     try {
-        return await db.getAllAsync('SELECT id, name, email FROM users;');
+        return await db.getAllAsync('SELECT id, name, email, wallet FROM users;');
     } catch (error) {
         console.error("Fout bij ophalen gebruikers:", error);
         return [];
@@ -167,19 +167,6 @@ export const deleteItem = async (id) => {
         console.log("Item succesvol verwijderd");
     } catch (error) {
         console.error("Kon item niet verwijderen:", error);
-    }
-};
-
-export const createListForUser = async (userId) => {
-    try {
-        if (!db) return null;
-        const result = await db.runAsync('INSERT INTO lists (user_id) VALUES (?);', userId);
-        const listId = result.lastInsertRowId;
-        console.log("Lijst aangemaakt voor user:", userId, "met lijst ID:", listId);
-        return listId;
-    } catch (error) {
-        console.error("Kon lijst niet aanmaken:", error);
-        return null;
     }
 };
 
@@ -275,5 +262,27 @@ export const getFullListItems = async () => {
     } catch (error) {
         console.error("Kon volledige lijst items niet ophalen:", error);
         return [];
+    }
+};
+
+export const changeWalletValue = async (value, id) => {
+    try {
+        if(!db) return
+        const change = await db.runAsync(`UPDATE users SET wallet =? WHERE id = ?`, value, id)
+        console.log("Wallet waarde aangepast", change)
+    } catch (error) {
+        console.error("Kon wallet niet aanpassen", error)
+    }
+}
+
+export const getUserWallet = async (id) => {
+    try {
+        if (!db) return
+        const results = await db.getFirstAsync(`SELECT wallet FROM users WHERE id = ?`, id);
+        console.log("Wallet opgehaald", results.wallet);
+        return results.wallet ?? 0;
+    } catch (error) {
+        console.error("Kon de wallet niet ophalen of het bestaat niet.", error);
+        return 0;
     }
 };

@@ -46,6 +46,7 @@ export default function HomeScreen({ navigation }) {
                     body={"€0"}
                     button={
                         <RoundButton
+                            onPress={() => navigation.navigate('Wallet')}
                             icon={<FontAwesome5 name="th-list" size={15} color="white" />}
                         />
                     }

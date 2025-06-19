@@ -1,4 +1,5 @@
 import {
+    Alert,
     Animated,
     Button,
     Dimensions, Platform, Pressable,
@@ -22,7 +23,9 @@ import {
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
 import {useNavigation} from "@react-navigation/native";
-import { getUser } from "../database";
+
+import { getUser, changeWalletValue, getUserWallet } from "../database";
+import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get("window");
 
@@ -35,21 +38,46 @@ const TransactiesTab = () => (
     </View>
 );
 
-const UitbetalenTab = () => {
+const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
     const [bedrag, setBedrag] = useState('');
     const [rekeningnummer, setRekeningnummer] = useState('');
 
-    const handleUitbetalen = () => {
-        if (!bedrag || !rekeningnummer) {
-            alert("Vul zowel het bedrag als het rekeningnummer in.");
-            return;
+    const handleUitbetalen = async () => {
+        try {
+            if (!bedrag || !rekeningnummer) {
+                alert("Vul zowel het bedrag als het rekeningnummer in.");
+                return;
+            }
+
+            const formattedAmount = parseFloat(bedrag.replace(',', '.'));
+            const currentBalance = parseFloat(balance);
+
+            if (isNaN(formattedAmount) || formattedAmount <= 0) {
+                alert("Ongeldig bedrag.");
+                return;
+            }
+
+            if (formattedAmount > currentBalance) {
+                alert("Onvoldoende saldo.");
+                return;
+            }
+
+            const updatedBalance = (await getUserWallet(userId) - formattedAmount).toFixed(2);
+
+            await changeWalletValue(updatedBalance, userId);
+
+            refreshBalance()
+
+            setBedrag('');
+            setRekeningnummer('');
+            alert(`Aanvraag om €${formattedAmount.toFixed(2).replace('.', ',')} uit te betalen naar ${rekeningnummer} is verstuurd.`);
+
+        } catch (error) {
+            console.error("Fout tijdens uitbetalen:", error);
+            alert("Er is iets misgegaan tijdens het verwerken.");
+            setBedrag('');
+            setRekeningnummer('');
         }
-
-        alert(`Aanvraag om € ${bedrag} uit te betalen naar ${rekeningnummer} is verstuurd.`);
-
-        // Reset
-        setBedrag('');
-        setRekeningnummer('');
     };
 
     return (
@@ -69,12 +97,11 @@ const UitbetalenTab = () => {
                                     onChangeText={setBedrag}
                                     value={bedrag}
                                     onBlur={() => {
-                                        // zorgt ervoor dat het bedrag altijd met 2 getallen achter de commas worden getoond
                                         const num = parseFloat(bedrag.replace(',', '.'));
                                         if (!isNaN(num)) {
                                             setBedrag(num.toFixed(2).replace('.', ','));
                                         }
-                                }}/>
+                                    }}/>
                             </View>
                         </View>
                         <FontAwesome6 name="euro-sign" size={24} color="#2F4538" />
@@ -113,20 +140,70 @@ const BeloningenTab = () => (
 );
 
 export default function Wallet() {
+    const [userId, setUserId] = useState(null)
     const [activeTab, setActiveTab] = useState("transacties");
+    const [balance, setBalance] = useState(0)
     const translateX = useRef(new Animated.Value(0)).current;
     const tabWidth = useRef(0);
+
+    // const [newAmount, setNewAmount] = useState('')
+    // const [bankNumber, setNewBankNumber] = useState('')
+
+    const handleSubmit = async () => {
+        if (!newAmount) {
+            Alert.alert("Fout", "Vul een bedrag in.");
+            return;
+        }
+        Alert.alert("Formulier verzonden", `Naam: ${newAmount}`);
+        await changeWalletValue(newAmount, userId);
+        const updatedBalance = await getUserWallet(userId);
+        setBalance(updatedBalance);
+        setNewAmount('');
+    };
+
+    const refreshBalance = async () => {
+        if (userId) {
+            const updatedBalance = await getUserWallet(userId);
+            setBalance(Number(updatedBalance));
+        }
+    };
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userData = await SecureStore.getItemAsync("user");
+            if (userData) {
+                const user = JSON.parse(userData);
+                setUserId(user.id);
+                let wallet = await getUserWallet(user.id)
+
+                const walletNumber = wallet ? Number(wallet) : 0;
+
+                setBalance(walletNumber)
+                console.log("Raw balance:", balance, "Type:", typeof balance);
+                console.log('Opgehaalde userId uit SecureStore:', user.id);
+            } else {
+                console.warn('Geen gebruiker gevonden in SecureStore');
+            }
+        };
+        fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        if (balance !== null) {
+            console.log("Geüpdatete balance:", balance, "Type:", typeof balance);
+        }
+    }, [balance]);
 
     const renderTabContent = () => {
         switch (activeTab) {
             case "transacties":
                 return <TransactiesTab />;
             case "uitbetalen":
-                return <UitbetalenTab />;
+                return <UitbetalenTab userId={userId} balance={balance} setBalance={setBalance} refreshBalance={refreshBalance}/>;
             case "beloningen":
                 return <BeloningenTab />;
             default:
-                return <TransactiesTab />;
+                return <UitbetalenTab />;
         }
     };
 
@@ -154,7 +231,19 @@ export default function Wallet() {
                 </View>
                 <DataBoxes
                     title={"Huidige saldo"}
-                    body={"€ 0,00"}/>
+                    body={`€ ${balance.toFixed(2).replace('.', ',')}`}/>
+
+                {/*<View style={styles.container}>*/}
+                {/*    <Text style={styles.label}>Naam</Text>*/}
+                {/*    <TextInput*/}
+                {/*        style={styles.input}*/}
+                {/*        value={newAmount}*/}
+                {/*        onChangeText={setNewAmount}*/}
+                {/*        placeholder="Voer een nieuwe bedrag in"*/}
+                {/*    />*/}
+
+                {/*    <Button title="Verstuur" onPress={handleSubmit} />*/}
+                {/*</View>*/}
 
                 {/*3 Tabs: Transacties, Uitbetalen, Beloningen.*/}
 
