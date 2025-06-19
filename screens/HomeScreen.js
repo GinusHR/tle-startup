@@ -26,7 +26,7 @@ export default function HomeScreen({navigation}) {
         return unsubscribe;
     }, [navigation]);
 
-    const formatAfspraakDatum = (isoString) => {
+    const formatAppoinmentDate = (isoString) => {
         if (!isoString) return "Onbekend";
         const date = new Date(isoString);
         return date.toLocaleString('nl-NL', {
@@ -76,7 +76,7 @@ export default function HomeScreen({navigation}) {
                                 color="white"/>}/>}/>
                     <DataBoxes
                         title={"Ophaal moment"}
-                        body={formatAfspraakDatum(lastAppointment?.time)}
+                        body={formatAppoinmentDate(lastAppointment?.time)}
                         button={<RoundButton
                             onPress={() => navigation.navigate('PlanPickup')}
                             icon={<FontAwesome5

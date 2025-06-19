@@ -11,8 +11,8 @@ export default function DateTimePickerScreen() {
 
     const now = new Date();
     const isoString = now.toISOString(); // "2025-06-18T13:30:00.000Z"
-    const [datum, tijdMetMs] = isoString.split('T');
-    const tijd = tijdMetMs.slice(0, 5); // "13:30"
+    const [selectedDateString, timeWithMs] = isoString.split('T');
+    const selectedTimeString = timeWithMs.slice(0, 5); // "13:30"
 
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
@@ -32,14 +32,14 @@ export default function DateTimePickerScreen() {
 
         const formattedDate = date.toISOString(); // bv: "2025-06-18T13:30:00.000Z"
 
-        const [datum, tijd] = formattedDate.split('T'); // "2025-06-18", "13:30:00.000Z"
+        const [selectedDateString, selectedTimeString] = formattedDate.split('T'); // "2025-06-18", "13:30:00.000Z"
 
         console.log('✅ Geselecteerde datum:', formattedDate);
 
         if (route.params?.onDateSelected) {
             route.params.onDateSelected({
-                date: datum,            // "2025-06-18"
-                time: tijd.slice(0, 5), // "13:30"
+                date: selectedDateString,            // "2025-06-18"
+                time: selectedTimeString.slice(0, 5), // "13:30"
             });
         }
 
