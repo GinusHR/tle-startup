@@ -194,10 +194,8 @@ export default function PlanPickupScreen() {
                 </View>
             </View>
         </SafeAreaView>
-
     );
 }
-
 
 const styles = StyleSheet.create({
     safeArea: {

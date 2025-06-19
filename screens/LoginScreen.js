@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
-import {
-    View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Dimensions, Alert, ActivityIndicator
-} from 'react-native';
-import { ImageBackground, Image } from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert, ActivityIndicator, ImageBackground, Platform,} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as SecureStore from 'expo-secure-store';
 import BackgroundImage from '../assets/images/background.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { getUser } from "../database";
-import * as SecureStore from 'expo-secure-store';
+import { getUser } from '../database';
 
 const { width, height } = Dimensions.get('window');
 
-export default function LoginScreen({navigation, route}) {
-    const {onLogin} = route.params;
+export default function LoginScreen({ navigation, route }) {
+    const insets = useSafeAreaInsets();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const { onLogin } = route.params;
 
     const handleLogin = async () => {
         setIsLoading(true);
@@ -27,12 +25,16 @@ export default function LoginScreen({navigation, route}) {
             if (!user) {
                 return Alert.alert('Error', 'Gebruiker niet gevonden.');
             }
-            await SecureStore.setItemAsync('user', JSON.stringify({
-                id: user.id, email: user.email
-            }));
-            await AsyncStorage.setItem('userId', String(user.id));
 
-            onLogin({ id: user.id, email: user.email });
+            const userData = {
+                id: user.id,
+                email: user.email,
+                role: user.role
+            };
+
+            await SecureStore.setItemAsync('user', JSON.stringify(userData));
+            onLogin(userData);
+
         } catch (error) {
             console.error('Login error:', error)
             Alert.alert('Login mislukt', 'Er ging iets mis.')
@@ -46,32 +48,26 @@ export default function LoginScreen({navigation, route}) {
     };
 
     const handleForgotPassword = () => {
-        console.log('Forgot password pressed');
         Alert.alert('Wachtwoord vergeten', 'Deze functie wordt binnenkort toegevoegd');
     };
 
-    const renderHeader = () => (
-        <View style={styles.backgroundContainer}>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerTextBold}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-            <Text style={styles.headerText}>STATIESCAN</Text>
-        </View>
-    );
-
-
     return (
         <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
-            <View style={styles.overlay}/>
-            <SafeAreaView style={styles.container}>
-                {renderHeader()}
+            <View style={styles.overlay} />
 
+            <View style={[styles.decorationContainer, { paddingTop: insets.top + 10 }]}>
+                {Array.from({ length: 15 }, (_, i) => (
+                    <Text
+                        key={i}
+                        style={i % 2 === 0 ? styles.headerText : styles.headerTextBold}
+                    >
+                        STATIESCAN
+                    </Text>
+                ))}
+            </View>
+
+            <View style={[styles.container, { paddingTop: insets.top }]}>
                 <View style={styles.contentContainer}>
-
                     <View style={styles.formContainer}>
                         <View style={styles.inputContainer}>
                             <TextInput
@@ -101,20 +97,19 @@ export default function LoginScreen({navigation, route}) {
                         <TouchableOpacity
                             style={[styles.loginButton, isLoading && styles.disabledButton]}
                             onPress={handleLogin}
-                            disabled={isLoading}>
-
+                            disabled={isLoading}
+                        >
                             {isLoading ? (
                                 <ActivityIndicator color="#FDFDFD" />
                             ) : (
                                 <Text style={styles.loginButtonText}>Login</Text>
                             )}
-
                         </TouchableOpacity>
 
                         <View style={styles.dividerContainer}>
-                            <View style={styles.dividerLine}/>
+                            <View style={styles.dividerLine} />
                             <Text style={styles.dividerText}>of</Text>
-                            <View style={styles.dividerLine}/>
+                            <View style={styles.dividerLine} />
                         </View>
 
                         <TouchableOpacity
@@ -134,7 +129,7 @@ export default function LoginScreen({navigation, route}) {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </SafeAreaView>
+            </View>
         </ImageBackground>
     );
 }
@@ -149,51 +144,37 @@ const styles = StyleSheet.create({
     overlay: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'rgba(11, 20, 8, 0.57)',
-        zIndex: 1,
+        zIndex: 0,
     },
-    container: {
-        flex: 1,
-        zIndex: 2,
-    },
-    backgroundContainer: {
+    decorationContainer: {
+        ...StyleSheet.absoluteFillObject,
         alignItems: 'center',
-        paddingVertical: 30,
-        position: 'absolute',
-        top: 0,
-        width: '100%',
+        justifyContent: 'flex-start',
         zIndex: 1,
     },
     headerText: {
         fontSize: 30,
         color: '#FDFDFD',
         fontWeight: '300',
+        opacity: 0.5,
         letterSpacing: 2,
     },
     headerTextBold: {
         fontSize: 30,
-        color: '#FDFDFD',
+        color: 'white',
         fontWeight: 'bold',
+        opacity: 0.8,
         letterSpacing: 2,
+    },
+    container: {
+        flex: 1,
+        zIndex: 2,
     },
     contentContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: 100,
-    },
-    backgroundText: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: '#FDFDFD',
-        letterSpacing: 2,
-        marginVertical: 2,
-        textShadowColor: 'rgba(0, 0, 0, 0.3)',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 1,
-    },
-    imageContainer: {
-        marginBottom: 40,
     },
     formContainer: {
         width: width * 0.8,
@@ -211,7 +192,7 @@ const styles = StyleSheet.create({
     },
     textInput: {
         fontSize: 16,
-        paddingVertical: 12,
+        paddingVertical: Platform.OS === 'ios' ? 12 : 10,
         borderBottomWidth: 2,
         borderBottomColor: '#2B3D25',
         color: '#8E8E8E',
@@ -267,5 +248,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    disabledButton: {
+        opacity: 0.6,
     },
 });
