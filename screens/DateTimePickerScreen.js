@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import {Platform, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { Ionicons } from '@expo/vector-icons';
-import { useRoute, useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import MonthDayDropdowns from '../components/MonthDayDropdowns';
 import TimePicker from '../components/TimePicker';
 
@@ -37,7 +36,6 @@ export default function DateTimePickerScreen() {
 
         console.log('✅ Geselecteerde datum:', formattedDate);
 
-        // ✅ Geef de gekozen tijd terug aan het vorige scherm
         if (route.params?.onDateSelected) {
             route.params.onDateSelected({
                 date: datum,            // "2025-06-18"
@@ -49,16 +47,15 @@ export default function DateTimePickerScreen() {
     };
 
 
-
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
+                <Ionicons name="chevron-back" size={28} color="#1C1F1E"/>
             </TouchableOpacity>
 
             <Text style={styles.title}>Kies datum en tijd</Text>
 
-            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+            <View style={{flex: 1, justifyContent: 'flex-start'}}>
                 <MonthDayDropdowns
                     selectedMonth={selectedMonth}
                     setSelectedMonth={setSelectedMonth}

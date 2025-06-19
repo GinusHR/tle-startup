@@ -227,39 +227,38 @@ export const insertAppointment = async ({ customer_id, customer_address, time })
     }
 };
 
-
-export const getLastAppointmentForUser = async (customerId) => {
+export const getNextAppointmentForUser = async (customerId) => {
     if (!db) return null;
     try {
         const result = await db.getFirstAsync(
-            'SELECT * FROM appointments WHERE customer_id = ? ORDER BY id DESC LIMIT 1;',
+            'SELECT * FROM appointments WHERE customer_id = ? AND appointment_status = 0 ORDER BY time ASC LIMIT 1;',
             customerId
         );
         return result;
     } catch (error) {
-        console.log("Fout bij ophalen laatste afspraak:", error);
+        console.log("Fout bij ophalen volgende afspraak:", error);
         return null;
     }
 };
 
-export const deleteAllAppointments = async () => {
-    try {
-        if (!db) return;
-        await db.runAsync('DELETE FROM appointments');
-        console.log("Afspraken succesvol verwijderd");
-    } catch (error) {
-        console.log("Kon afspraken niet verwijderen:", error);
-    }
-};
-
-export const getAllAppointments = async () => {
-    if (!db) return [];
-    try {
-        const appointments = await db.getAllAsync('SELECT * FROM appointments;');
-        console.log("Afspraken succesvol opgehaald", appointments);
-        return appointments;
-    } catch (error) {
-        console.log("Kon afspraken niet ophalen:", error);
-        return [];
-    }
-};
+// export const deleteAllAppointments = async () => {
+//     try {
+//         if (!db) return;
+//         await db.runAsync('DELETE FROM appointments');
+//         console.log("Afspraken succesvol verwijderd");
+//     } catch (error) {
+//         console.log("Kon afspraken niet verwijderen:", error);
+//     }
+// };
+//
+// export const getAllAppointments = async () => {
+//     if (!db) return [];
+//     try {
+//         const appointments = await db.getAllAsync('SELECT * FROM appointments;');
+//         console.log("Afspraken succesvol opgehaald", appointments);
+//         return appointments;
+//     } catch (error) {
+//         console.log("Kon afspraken niet ophalen:", error);
+//         return [];
+//     }
+// };

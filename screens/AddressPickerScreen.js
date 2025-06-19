@@ -55,7 +55,6 @@ export default function AddressPickerScreen() {
         try {
             Keyboard.dismiss();
 
-            // ✅ Haal ingelogde gebruiker op uit SecureStore
             const userData = await SecureStore.getItemAsync('user');
             const user = userData ? JSON.parse(userData) : null;
 
@@ -67,13 +66,11 @@ export default function AddressPickerScreen() {
             const userId = user.id;
 
             if (addressDetails) {
-                const { street, number, postal, city } = addressDetails;
+                const {street, number, postal, city} = addressDetails;
                 const formattedAddress = `${street} ${number}, ${postal} ${city}`;
 
-                // ✅ Sla adres op in DB
                 await updateUserAddress(userId, formattedAddress);
 
-                // ✅ Navigeer terug naar PlanPickup met adres
                 if (route.params?.onAddressSelected) {
                     route.params.onAddressSelected(formattedAddress);
                 }

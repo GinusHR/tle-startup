@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, SafeAreaView, Dimensions, Pressable} from 'react-native';
+import {Dimensions, SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import {FontAwesome5, FontAwesome6, Ionicons} from '@expo/vector-icons';
-import { getLastAppointmentForUser} from "../database";
+import {getNextAppointmentForUser} from "../database";
 import * as SecureStore from 'expo-secure-store';
 
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
 
-const { width, height } = Dimensions.get("window");
+const {width, height} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({navigation}) {
     const [lastAppointment, setLastAppointment] = useState(null);
 
     useEffect(() => {
@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation }) {
             const userData = await SecureStore.getItemAsync("user");
             if (userData) {
                 const user = JSON.parse(userData);
-                const appointment = await getLastAppointmentForUser(user.id);
+                const appointment = await getNextAppointmentForUser(user.id);
                 setLastAppointment(appointment);
             }
         };
@@ -41,7 +41,7 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{ paddingHorizontal: 30 }}>
+            <View style={{paddingHorizontal: 30}}>
                 <View style={styles.header}>
                     <Text style={styles.pageTitle}>Home</Text>
                     <Ionicons name="qr-code" size={30} color="#212529"/>
@@ -62,7 +62,7 @@ export default function HomeScreen({ navigation }) {
                                      icon={<FontAwesome6
                                          name="chart-simple"
                                          size={15}
-                                         color="white" />}/>
+                                         color="white"/>}/>
                     </View>
                 </View>
                 <View>
@@ -73,7 +73,7 @@ export default function HomeScreen({ navigation }) {
                             icon={<FontAwesome5
                                 name="th-list"
                                 size={15}
-                                color="white" />}/>}/>
+                                color="white"/>}/>}/>
                     <DataBoxes
                         title={"Ophaal moment"}
                         body={formatAfspraakDatum(lastAppointment?.time)}
@@ -82,7 +82,7 @@ export default function HomeScreen({ navigation }) {
                             icon={<FontAwesome5
                                 name="th-list"
                                 size={15}
-                                color="white" />}/>}/>
+                                color="white"/>}/>}/>
                 </View>
             </View>
         </SafeAreaView>
