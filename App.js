@@ -4,9 +4,9 @@ import { useFonts } from 'expo-font';
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {View, StyleSheet, Text, ActivityIndicator, Alert} from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import * as SecureStore from "expo-secure-store";
+import * as SecureStore from 'expo-secure-store';
 
 import {getAllLists, getAllUsers, getItems, getList, getListItem, initDatabase} from "./database";
 
@@ -15,10 +15,12 @@ import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
 import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
-import ScanScreen from './screens/ScanScreen';
+import ListScreen from './screens/ListScreen';
 import AccountScreen from './screens/AccountScreen';
 import ScannedItemsDetails from "./screens/ScannedItemsDetails";
 import Wallet from "./screens/WalletScreen";
+import AddressPickerScreen from "./screens/AddressPickerScreen";
+import DateTimePickerScreen from "./screens/DateTimePickerScreen";
 
 import AdminScreen from './screens/adminscreens/AdminScreen';
 import CameraScreen from './screens/adminscreens/CameraScreen';
@@ -47,10 +49,14 @@ const AuthNavigator = ({ onLogin }) => (
 );
 
 const HomeNavigator = () => (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-        <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
-        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
-        <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
+    <HomeStack.Navigator screenOptions={{headerShown: false}}>
+        <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{title: 'Home', headerShown: false}}/>
+        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{title: 'Details'}}/>
+        <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{title: 'Afspraak maken'}}/>
+        <HomeStack.Screen name="Admin" component={AdminScreen}/>
+        <HomeStack.Screen name="Camera" component={CameraScreen}/>
+        <HomeStack.Screen name="AddressPicker" component={AddressPickerScreen} options={{title: 'Adres', presentation: 'modal', animation: 'slide_from_right',}}/>
+        <HomeStack.Screen name="DateTimePicker" component={DateTimePickerScreen} options={{title: 'Datum & Tijd', presentation: 'modal', animation: 'slide_from_right',}}/>
         <HomeStack.Screen
             name="details"
             component={ScannedItemsDetails}
@@ -79,28 +85,28 @@ const AdminNavigator = () => (
    </AdminStack.Navigator>
 )
 
-const AppTabs = ({ onLogout, currentUser }) => (
+const AppTabs = ({ onLogout, currentUser, items }) => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
             headerShown: false,
             tabBarIcon: ({ color, size }) => {
                 if (route.name === 'Home') {
                     return <MaterialIcons name="dashboard" size={size} color={color} />;
-                } else if (route.name === 'Scan') {
-                    return <MaterialIcons name="camera" size={size} color={color} />;
+                } else if (route.name === 'List') {
+                    return <MaterialIcons name="format-list-numbered-rtl" size={size} color={color} />;
                 } else if (route.name === 'Account') {
                     return <Ionicons name="person" size={size} color={color} />;
                 }
             },
             tabBarStyle: {
-                backgroundColor: '#2F4538'
+                backgroundColor: '#2F4538',
             },
             tabBarActiveTintColor: '#597364',
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
         <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
-        <Tab.Screen name="Scan" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ScanScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
+        <Tab.Screen name="List" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
         <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
             {() => (
                 <AccountScreen currentUser={currentUser} onLogout={onLogout} />

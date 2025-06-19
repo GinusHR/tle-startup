@@ -92,6 +92,7 @@ const MenuItem = ({ title, icon, onPress, color, rightElement }) => (
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FDFDFD',
     },
     scrollContainer: {
         paddingBottom: 40,

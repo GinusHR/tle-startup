@@ -1,13 +1,27 @@
 import React, {useEffect, useState} from 'react';
-import {View, StyleSheet, Text, FlatList, Pressable, Alert, Button, TouchableOpacity, Dimensions} from 'react-native';
+import {
+    View,
+    StyleSheet,
+    Text,
+    FlatList,
+    Pressable,
+    Alert,
+    Button,
+    TouchableOpacity,
+    Dimensions,
+    SafeAreaView,
+    Platform, StatusBar
+} from 'react-native';
 import {Ionicons} from "@expo/vector-icons";
 import {createListForUser, getListItem, insertIntoList} from "../database";
+
+import Header from '../components/header';
 
 const {width, height} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 
-export default function ScanScreen({items, currentUser}) {
+export default function ListScreen({items, currentUser}) {
     const [selectedItems, setSelectedItems] = useState([]);
 
     const updateQuantity = (itemId, delta) => {
@@ -96,18 +110,22 @@ export default function ScanScreen({items, currentUser}) {
         console.log(response);
     }
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.pageTitle}>Scan</Text>
-                <Ionicons name="qr-code" size={30} color="#212529"/>
+        <SafeAreaView style={styles.container}>
+            <View
+                style={{
+                    paddingHorizontal: 30,
+                    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+                }}
+            >
+                <Header title="Scan" />
             </View>
+            <View style={{flex: 1, paddingHorizontal: 16, backgroundColor: '#FDFDFD'}}>
             <Text style={styles.title}>Kies uw statiegeld</Text>
             <FlatList
                 data={items}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={renderItem}
             />
-            <Button title="Check db" onPress={dbChecker}/>
             <View>
                 <Pressable
                     onPress={confirmChoice}
@@ -117,6 +135,7 @@ export default function ScanScreen({items, currentUser}) {
                 </Pressable>
             </View>
         </View>
+        </SafeAreaView>
 
     );
 }
@@ -192,7 +211,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     confirmButton: {
-        marginTop: 16,
+        marginBottom: 30,
         borderRadius: 40,
         backgroundColor: "#597364",
         padding: 20,

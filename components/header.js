@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -10,6 +11,8 @@ export default function Header({
                                    showQR = true,
                                    textColor = '#212529',
                                }) {
+    const navigation = useNavigation();
+
     return (
         <View style={styles.header}>
             <Text style={[styles.pageTitle, { color: textColor }]}>{title}</Text>
@@ -19,6 +22,10 @@ export default function Header({
                     size={30}
                     color={textColor}
                     style={styles.qrIcon}
+                    onPress={() => navigation.navigate('Home', {
+                        screen: 'QRDetail',
+                    })
+                    }
                 />
             )}
         </View>
@@ -39,7 +46,6 @@ const styles = StyleSheet.create({
         letterSpacing: -1,
     },
     qrIcon: {
-        // optioneel: je kunt hiermee een fine-tune doen qua hoogte
         transform: [{ translateY: 1 }],
     },
 });
