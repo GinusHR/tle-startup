@@ -8,9 +8,9 @@ import { useFocusEffect } from '@react-navigation/native';
 export default function QRDetailsScreen() {
     useFocusEffect(
         React.useCallback(() => {
-            let previousBrightness = null;
+            let originalBrightness = null;
 
-            const setBrightness = async () => {
+            const setBrightnessOnce = async () => {
                 try {
                     const { status } = await Brightness.requestPermissionsAsync();
                     if (status !== 'granted') {
@@ -18,10 +18,7 @@ export default function QRDetailsScreen() {
                         return;
                     }
 
-                    // sla huidige helderheid tijdelijk op
-                    previousBrightness = await Brightness.getBrightnessAsync();
-
-                    // zet scherm op maximale helderheid
+                    originalBrightness = await Brightness.getBrightnessAsync();
                     await Brightness.setBrightnessAsync(1);
                 } catch (error) {
                     console.warn('Fout bij instellen helderheid:', error);
@@ -30,15 +27,15 @@ export default function QRDetailsScreen() {
 
             const restoreBrightness = async () => {
                 try {
-                    if (previousBrightness !== null) {
-                        await Brightness.setBrightnessAsync(previousBrightness);
+                    if (originalBrightness !== null) {
+                        await Brightness.setBrightnessAsync(originalBrightness);
                     }
                 } catch (error) {
                     console.warn('Fout bij herstellen helderheid:', error);
                 }
             };
 
-            setBrightness();
+            setBrightnessOnce();
 
             return () => {
                 restoreBrightness();
