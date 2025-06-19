@@ -24,7 +24,7 @@ import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
 import {useNavigation} from "@react-navigation/native";
 
-import { getUser, changeWalletValue, getUserWallet } from "../database";
+import { changeWalletValue, getUserWallet } from "../database";
 import * as SecureStore from 'expo-secure-store';
 
 const { width, height } = Dimensions.get("window");
