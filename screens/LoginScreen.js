@@ -1,19 +1,9 @@
 import React, { useState } from 'react';
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-    Alert,
-    ActivityIndicator,
-    ImageBackground,
-    Platform,
-} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions, Alert, ActivityIndicator, ImageBackground, Platform,} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as SecureStore from 'expo-secure-store';
 import BackgroundImage from '../assets/images/background.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUser } from '../database';
 
 const { width, height } = Dimensions.get('window');

@@ -4,9 +4,9 @@ import { useFonts } from 'expo-font';
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {View, StyleSheet, Text, ActivityIndicator, Alert} from "react-native";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import * as SecureStore from "expo-secure-store";
+import * as SecureStore from 'expo-secure-store';
 
 import {getAllLists, getAllUsers, getItems, getList, getListItem, initDatabase} from "./database";
 
@@ -18,6 +18,8 @@ import PlanPickupScreen from './screens/PlanPickupScreen';
 import ScanScreen from './screens/ScanScreen';
 import AccountScreen from './screens/AccountScreen';
 import ScannedItemsDetails from "./screens/ScannedItemsDetails";
+import AddressPickerScreen from "./screens/AddressPickerScreen";
+import DateTimePickerScreen from "./screens/DateTimePickerScreen";
 
 import AdminScreen from './screens/adminscreens/AdminScreen';
 import CameraScreen from './screens/adminscreens/CameraScreen';
@@ -46,11 +48,39 @@ const AuthNavigator = ({ onLogin }) => (
 );
 
 const HomeNavigator = () => (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home', headerShown: false }} />
-      <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
-      <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
-      <HomeStack.Screen name="details" component={ScannedItemsDetails} options={{ title: 'Details', presentation: 'modal', animation: 'slide_from_right',}} />
+    <HomeStack.Navigator screenOptions={{headerShown: false}}>
+        <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{title: 'Home', headerShown: false}}/>
+        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{title: 'Details'}}/>
+        <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{title: 'Afspraak maken'}}/>
+        <HomeStack.Screen name="Admin" component={AdminScreen}/>
+        <HomeStack.Screen name="Camera" component={CameraScreen}/>
+        <HomeStack.Screen
+            name="details"
+            component={ScannedItemsDetails}
+            options={{
+                title: 'Details',
+                presentation: 'modal',
+                animation: 'slide_from_right',
+            }}
+        />
+        <HomeStack.Screen
+            name="AddressPicker"
+            component={AddressPickerScreen}
+            options={{
+                title: 'Adres',
+                presentation: 'modal',
+                animation: 'slide_from_right',
+            }}
+        />
+        <HomeStack.Screen
+            name="DateTimePicker"
+            component={DateTimePickerScreen}
+            options={{
+                title: 'Datum & Tijd',
+                presentation: 'modal',
+                animation: 'slide_from_right',
+            }}
+      />
     </HomeStack.Navigator>
 );
 
@@ -76,7 +106,7 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
                 }
             },
             tabBarStyle: {
-                backgroundColor: '#2F4538'
+                backgroundColor: '#2F4538',
             },
             tabBarActiveTintColor: '#597364',
             tabBarInactiveTintColor: '#FDFDFD',
