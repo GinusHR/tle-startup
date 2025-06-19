@@ -145,7 +145,7 @@ export default function AddressPickerScreen() {
 const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FDFDFD',
     },
     container: {
         paddingHorizontal: 30,

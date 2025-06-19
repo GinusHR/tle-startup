@@ -38,7 +38,7 @@ export default function CameraScreen({navigation}) {
 const styleSheet = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FDFDFD',
         alignItems: 'center',
         justifyContent: 'center',
         rowGap: 20
