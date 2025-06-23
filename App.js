@@ -8,7 +8,7 @@ import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from 'expo-secure-store';
 
-import {getAllLists, getAllUsers, getItems, getListItem, initDatabase} from "./database";
+import {getAllAppointments, getAllLists, getAllUsers, getItems, getListItem, initDatabase} from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -180,7 +180,7 @@ export default function App() {
     const [lists, setLists] = useState([]);
     const [items, setItems] = useState([]);
     const [listItems, setListItems] = useState([])
-    // const [appointments, setAppointments] = useState([]);
+    const [appointments, setAppointments] = useState([]);
 
     useEffect(() => {
         const loadUser = async () => {
@@ -205,17 +205,19 @@ export default function App() {
                 console.log("Database geïnitialiseerd");
                 const itemData = await getItems();
                 const userData = await getAllUsers();
-                // const appoData = await
+                const appoData = await getAllAppointments()
                 const listsData = await getAllLists();
                 const listContentData = await getListItem();
                 setItems(itemData);
                 setUsers(userData);
                 setLists(listsData);
                 setListItems(listContentData);
+                setAppointments(appoData)
                 console.log("Items:", itemData)
                 console.log("Users:",userData)
                 console.log("Lists:", listsData)
                 console.log("list_item:", listContentData)
+                console.log("Appointments", appoData)
             } catch (error) {
                 console.error("Database initialisatie mislukt", error);
             }

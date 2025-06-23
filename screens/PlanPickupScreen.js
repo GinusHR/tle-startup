@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {useIsFocused, useNavigation, useRoute} from '@react-navigation/native';
-import {insertAppointment} from '../database';
+import {getListId, insertAppointment} from '../database';
 import RoundButton from '../components/roundButton';
 import DataBoxes from "../components/dataBoxes";
 
@@ -14,6 +14,7 @@ export default function PlanPickupScreen() {
     const [selectedAddress, setSelectedAddress] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
+    const [listId, setListId] = useState(null);
 
 
     const navigation = useNavigation();
@@ -28,9 +29,16 @@ export default function PlanPickupScreen() {
                     const user = JSON.parse(userData);
                     setUserId(user.id);
                     console.log('Opgehaalde userId uit SecureStore:', user.id);
+                    const list = await getListId(user.id);
+                    setListId(list.id)
+                    console.log("Opgehaald list id:", list.id)
+
                 } else {
                     console.warn('Geen gebruiker gevonden in SecureStore');
                 }
+
+
+
 
                 if (route.params?.address) {
                     setSelectedAddress(route.params.address);
@@ -43,7 +51,7 @@ export default function PlanPickupScreen() {
                 }
 
             } catch (error) {
-                console.error('Fout bij ophalen gebruiker of verwerken params:', error);
+                console.error('Fout bij verwerken params:', error);
             }
         };
 
@@ -54,10 +62,15 @@ export default function PlanPickupScreen() {
 
     const handleCreateAppointment = async () => {
         try {
+            console.log(listId)
             const userDataString = await SecureStore.getItemAsync('user');
             if (!userDataString) {
                 Alert.alert('Fout', 'Gebruikersgegevens niet gevonden. Log opnieuw in.');
                 return;
+            }
+
+            if (!listId) {
+                Alert.alert('Fout', 'Je hebt een lijst nodig om een afspraak te maken')
             }
 
             const user = JSON.parse(userDataString);
@@ -73,7 +86,8 @@ export default function PlanPickupScreen() {
             await insertAppointment({
                 customer_id: user.id,
                 customer_address: selectedAddress,
-                time: fullDateTime, // als YYYY-MM-DD HH:MM
+                time: fullDateTime, // als YYYY-MM-DD HH:MM,
+                list_id: listId
             });
 
             Alert.alert(
@@ -85,7 +99,7 @@ export default function PlanPickupScreen() {
                         onPress: () => {
                             navigation.reset({
                                 index: 0,
-                                routes: [{name: 'Home'}],
+                                routes: [{name: 'HOME'}],
                             });
                         },
                     },

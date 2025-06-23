@@ -86,7 +86,10 @@ export const initDatabase = async () => {
             appointment_status BOOLEAN  NOT NULL DEFAULT 0,
             driver             TEXT     NULL,
             customer_address   TEXT  NULL,
-            FOREIGN KEY (customer_id) REFERENCES users (id)
+            list_id            INTEGER,
+            done               BOOLEAN NULL,
+            FOREIGN KEY (customer_id) REFERENCES users (id),
+            FOREIGN KEY (list_id) REFERENCES lists (id)
         );
     `);
 };
@@ -218,6 +221,17 @@ export const getAllLists = async () => {
     }
 };
 
+    export const getListId = async (userId) => {
+        if(!db) return;
+        try{
+            const result = await db.getFirstAsync('SELECT id FROM lists WHERE user_id=? ORDER BY id DESC LIMIT 1', userId)
+            console.log(`Id opgehaalt ${result.id} voor gebruiker ${userId}`)
+            return result
+        } catch (error) {
+            console.error("Er ging iets fout:", error)
+        }
+    }
+
 export const insertIntoList = async (listId, itemId, quantity) => {
     try {
         if (!db) return;
@@ -300,18 +314,19 @@ export const updateUserAddress = async (userId, newAddress) => {
 };
 
 
-export const insertAppointment = async ({ customer_id, customer_address, time }) => {
+export const insertAppointment = async ({ customer_id, customer_address, time, list_id }) => {
     if (!db) return;
     try {
         console.log("Datum en tijd voor opslag:", time);
 
-        console.log("Waarden naar DB:", customer_id, customer_address, time); // ✅ debug check
+        console.log("Waarden naar DB:", customer_id, customer_address, time, list_id); // ✅ debug check
 
         await db.runAsync(
-            'INSERT INTO appointments (customer_id, customer_address, time) VALUES (?, ?, ?);',
+            'INSERT INTO appointments (customer_id, customer_address, time, list_id) VALUES (?, ?, ?, ?);',
             customer_id,
             customer_address,
-            time
+            time,
+            list_id
         );
 
         console.log("Afspraak succesvol opgeslagen");
@@ -334,6 +349,16 @@ export const getNextAppointmentForUser = async (customerId) => {
     }
 };
 
+export const updateAppointmentStatus = async (appId) => {
+    if (!db) return;
+    try {
+        const result = db.runAsync('UPDATE appointments SET done = NOT done WHERE id = ?;', appId);
+        console.log("Afspraak status succesvol geupdate", result);
+    } catch (error) {
+        console.error("Fout bij Afspraak aanpassen", error);
+    }
+}
+
 // export const deleteAllAppointments = async () => {
 //     try {
 //         if (!db) return;
@@ -344,17 +369,17 @@ export const getNextAppointmentForUser = async (customerId) => {
 //     }
 // };
 //
-// export const getAllAppointments = async () => {
-//     if (!db) return [];
-//     try {
-//         const appointments = await db.getAllAsync('SELECT * FROM appointments;');
-//         console.log("Afspraken succesvol opgehaald", appointments);
-//         return appointments;
-//     } catch (error) {
-//         console.log("Kon afspraken niet ophalen:", error);
-//         return [];
-//     }
-// };
+export const getAllAppointments = async () => {
+    if (!db) return [];
+    try {
+        const appointments = await db.getAllAsync('SELECT * FROM appointments;');
+        console.log("Afspraken succesvol opgehaald", appointments);
+        return appointments;
+    } catch (error) {
+        console.log("Kon afspraken niet ophalen:", error);
+        return [];
+    }
+};
 
 export const changeWalletValue = async (value, id) => {
     try {

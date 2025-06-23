@@ -16,6 +16,7 @@ import {Ionicons} from "@expo/vector-icons";
 import {createListForUser, getListItem, insertIntoList} from "../database";
 
 import Header from '../components/header';
+import {useNavigation} from "@react-navigation/native";
 
 const {width, height} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -68,7 +69,22 @@ export default function ListScreen({items, currentUser}) {
                 await insertIntoList(listId, item.id, item.quantity);
             }
 
-            Alert.alert("Succes", "Je lijst is opgeslagen!");
+            Alert.alert(
+                'Succes!',
+                'De lijst is succesvol opgeslagen.',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            useNavigation.reset({
+                                index: 0,
+                                routes: [{name: 'HOME'}],
+                            });
+                        },
+                    },
+                ],
+                {cancelable: false}
+            );
             setSelectedItems([]);
         } catch (error) {
             console.error("Fout bij bevestigen keuze:", error);
