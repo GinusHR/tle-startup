@@ -222,7 +222,7 @@ export const insertIntoList = async (listId, itemId, quantity) => {
     try {
         if (!db) return;
         await db.runAsync('INSERT INTO list_item (list_id, item_id, quantity) VALUES (?, ?, ?);', listId, itemId, quantity);
-        console.log("Inserting into list_items: listId =", listId, ", itemId =", itemId, ", quantity =", quantity);
+        console.log("Items toevoegen aan list_item: listId =", listId, ", itemId =", itemId, ", quantity =", quantity);
     } catch (error) {
         console.error("Kon item niet toevoegen aan de lijst", error);
     }
@@ -242,7 +242,7 @@ export const getListItem = async () => {
     try {
         if (!db) return;
         const result = await db.getAllAsync('SELECT * FROM list_item')
-        console.log("opgehaald uit de database", result)
+        console.log("Opgehaald uit de database", result)
         return result
     } catch (error) {
         console.error("Kon list_item niet ophalen")
@@ -274,6 +274,16 @@ export const getListItemsByListId = async (listId) => {
         return [];
     }
 };
+
+export const updateListStatus = async (listId) => {
+    if (!db) return;
+    try {
+        const result = db.runAsync('UPDATE lists SET done = NOT done WHERE id = ?;', listId);
+        console.log("Lijst status succesvol geupdate", result);
+    } catch (error) {
+        console.error("Fout bij lijst aanpassen", error);
+    }
+}
 
 export const updateUserAddress = async (userId, newAddress) => {
     if (!db) return;
