@@ -13,6 +13,7 @@ import {
     View
 } from "react-native";
 import { getList } from "../../database";
+import HeaderAdmin from "../../components/headerAdmin";
 
 const scaleFontSize = (figmaFontSize, width = 430) =>
     figmaFontSize * (width / 430);
@@ -64,8 +65,16 @@ export default function CheckListScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
+            <View
+                style={{
+                    paddingHorizontal: 30,
+                    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+                }}
+            >
+                    <HeaderAdmin title="Controleer de lijst" />
+            </View>
+
             <View style={styles.innerContainer}>
-                <Text style={styles.title}>Controleer de lijst</Text>
 
                 <View style={styles.inputGroup}>
                     <Text>aantal grote flessen €0,25:</Text>
@@ -132,14 +141,6 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 16,
         justifyContent: "center",
-    },
-    title: {
-        fontFamily: "Montserrat",
-        fontSize: scaleFontSize(24),
-        fontWeight: "bold",
-        marginBottom: 24,
-        textAlign: "center",
-        color: "#212529",
     },
     inputGroup: {
         flexDirection: "row",
