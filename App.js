@@ -155,6 +155,7 @@ export default function App() {
     const [fontsLoaded] = useFonts({
         'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
         'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+        'NeueMontreal-Bold': require('./assets/fonts/NeueMontreal-Bold.otf'),
     });
     const [users, setUsers] = useState([]);
     const [lists, setLists] = useState([]);

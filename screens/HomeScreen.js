@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
         color: "#212529",
     },
     title: {
-        fontFamily: "Montserrat",
+        fontFamily: "Nue",
         fontSize: scaleFontSize(24),
         fontWeight: "bold",
     },
