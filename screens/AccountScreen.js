@@ -12,12 +12,15 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../components/header';
+import HeaderAdmin from '../components/headerAdmin';
+
 
 
 const { width } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
-export default function AccountScreen({ onLogout }) {
+export default function AccountScreen({ onLogout, currentUser }) {
+
     const [darkMode, setDarkMode] = useState(false);
 
     const toggleDarkMode = () => setDarkMode(prev => !prev);
@@ -37,7 +40,11 @@ export default function AccountScreen({ onLogout }) {
                     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
                 }}
             >
-                <Header title="Account" />
+                {currentUser?.role === 1 ? (
+                    <HeaderAdmin title="Account" />
+                ) : (
+                    <Header title="Account" />
+                )}
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -92,6 +99,7 @@ const MenuItem = ({ title, icon, onPress, color, rightElement }) => (
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#FDFDFD',
     },
     scrollContainer: {
         paddingBottom: 40,

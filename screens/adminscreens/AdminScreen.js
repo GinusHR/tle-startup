@@ -55,7 +55,7 @@ const [permission, requestPermission] = useCameraPermissions();
 const styleSheet = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FDFDFD',
     alignItems: 'center',
     justifyContent: 'center',
     rowGap: 20

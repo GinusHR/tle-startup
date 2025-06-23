@@ -25,7 +25,7 @@ export default function CameraScreen({navigation}) {
                         // only go through if the qr is legit
                         // make warning popup for false codes
                         
-                        navigation.navigate('Admin', {code: data})
+                        navigation.navigate('CheckList', {code: data})
                     }
                 }
             />
@@ -38,7 +38,7 @@ export default function CameraScreen({navigation}) {
 const styleSheet = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#FDFDFD',
         alignItems: 'center',
         justifyContent: 'center',
         rowGap: 20

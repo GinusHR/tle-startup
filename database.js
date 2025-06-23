@@ -17,6 +17,8 @@ export const initDatabase = async () => {
     await db.execAsync(`PRAGMA foreign_keys = OFF`);
 
     await db.execAsync(` DROP TABLE IF EXISTS items;`)
+    // await db.execAsync(` DROP TABLE IF EXISTS appointments;`)
+
 
     await db.execAsync(`PRAGMA foreign_keys = ON;`);
 
@@ -83,7 +85,7 @@ export const initDatabase = async () => {
             customer_id        INTEGER  NOT NULL,
             appointment_status BOOLEAN  NOT NULL DEFAULT 0,
             driver             TEXT     NULL,
-            customer_address   INTEGER  NULL,
+            customer_address   TEXT  NULL,
             FOREIGN KEY (customer_id) REFERENCES users (id)
         );
     `);
@@ -279,17 +281,95 @@ export const getFullListItems = async () => {
     }
 };
 
-//updates list bool to true to mark list as done 
-export const markListAsDone = async (id) => {
+export const updateUserAddress = async (userId, newAddress) => {
+    if (!db) return;
     try {
-        if(!db) return [];
-        const result = await db.runAsync(`
-            UPDATE lists SET list.done = 1 WHERE list.list_id = ${id} 
-            `)
-            console.log("Lijst afgerond: ", result);
-            return result
+        await db.runAsync(
+            'UPDATE users SET address = ? WHERE id = ?;',
+            newAddress,
+            userId
+        );
+        console.log("Adres succesvol opgeslagen");
     } catch (error) {
-        console.log(error);
-        return [];
+        console.log("Fout bij opslaan adres:", error);
+    }
+};
+
+
+export const insertAppointment = async ({ customer_id, customer_address, time }) => {
+    if (!db) return;
+    try {
+        console.log("Datum en tijd voor opslag:", time);
+
+        console.log("Waarden naar DB:", customer_id, customer_address, time); // ✅ debug check
+
+        await db.runAsync(
+            'INSERT INTO appointments (customer_id, customer_address, time) VALUES (?, ?, ?);',
+            customer_id,
+            customer_address,
+            time
+        );
+
+        console.log("Afspraak succesvol opgeslagen");
+    } catch (error) {
+        console.log("Fout bij opslaan afspraak:", error);
+    }
+};
+
+export const getNextAppointmentForUser = async (customerId) => {
+    if (!db) return null;
+    try {
+        const result = await db.getFirstAsync(
+            'SELECT * FROM appointments WHERE customer_id = ? AND appointment_status = 0 ORDER BY time ASC LIMIT 1;',
+            customerId
+        );
+        return result;
+    } catch (error) {
+        console.log("Fout bij ophalen volgende afspraak:", error);
+        return null;
+    }
+};
+
+// export const deleteAllAppointments = async () => {
+//     try {
+//         if (!db) return;
+//         await db.runAsync('DELETE FROM appointments');
+//         console.log("Afspraken succesvol verwijderd");
+//     } catch (error) {
+//         console.log("Kon afspraken niet verwijderen:", error);
+//     }
+// };
+//
+// export const getAllAppointments = async () => {
+//     if (!db) return [];
+//     try {
+//         const appointments = await db.getAllAsync('SELECT * FROM appointments;');
+//         console.log("Afspraken succesvol opgehaald", appointments);
+//         return appointments;
+//     } catch (error) {
+//         console.log("Kon afspraken niet ophalen:", error);
+//         return [];
+//     }
+// };
+
+export const changeWalletValue = async (value, id) => {
+    try {
+        if(!db) return
+        const change = await db.runAsync(`UPDATE users SET wallet =? WHERE id = ?`, value, id)
+        console.log("Wallet waarde aangepast", change)
+    } catch (error) {
+        console.error("Kon wallet niet aanpassen", error)
     }
 }
+
+export const getUserWallet = async (id) => {
+    try {
+        if (!db) return
+        const results = await db.getFirstAsync(`SELECT wallet FROM users WHERE id = ?`, id);
+        console.log("Wallet opgehaald", results.wallet);
+        return results.wallet ?? 0;
+    } catch (error) {
+        console.error("Kon de wallet niet ophalen of het bestaat niet.", error);
+        return 0;
+    }
+};

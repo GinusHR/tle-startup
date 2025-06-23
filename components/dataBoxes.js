@@ -3,7 +3,7 @@ import {Pressable, Text, StyleSheet, View, Dimensions} from "react-native";
 
 const { width } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
-const DataBoxes = ({ onPress, title, body, subBody, button }) => (
+const DataBoxes = ({ onPress, title, body, subBody, button, bodyStyle, shrinkText }) => (
     <View style={style.container}>
         <View style={style.textContainer}>
             <Text style={style.title}>{title}</Text>
@@ -16,7 +16,15 @@ const DataBoxes = ({ onPress, title, body, subBody, button }) => (
                         { subBody }
                     </Text>
                 </View>
-            ) : <Text style={style.body}>{body}</Text> }
+            ) : <Text
+                style={[style.body, shrinkText && style.bodyShrink, bodyStyle]}
+                {...(shrinkText ? {
+                    numberOfLines: 2,
+                    adjustsFontSizeToFit: true,
+                } : {})}
+            >
+                {body}
+            </Text> }
         </View>
         <View style={style.buttonContainer}>
             { button ? (
@@ -65,6 +73,10 @@ const style = StyleSheet.create({
         fontWeight: '700',
         marginTop: 10,
         color: "#212529",
+    },
+    bodyShrink: {
+        flex: 1,
+        maxWidth: "80%",
     },
     subBody: {
         fontFamily: 'Montserrat',
