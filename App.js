@@ -18,6 +18,7 @@ import PlanPickupScreen from './screens/PlanPickupScreen';
 import ListScreen from './screens/ListScreen';
 import AccountScreen from './screens/AccountScreen';
 import ScannedItemsDetails from "./screens/ScannedItemsDetails";
+import Wallet from "./screens/WalletScreen";
 import AddressPickerScreen from "./screens/AddressPickerScreen";
 import DateTimePickerScreen from "./screens/DateTimePickerScreen";
 
@@ -54,9 +55,25 @@ const HomeNavigator = () => (
         <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{title: 'Afspraak maken'}}/>
         <HomeStack.Screen name="Admin" component={AdminScreen}/>
         <HomeStack.Screen name="Camera" component={CameraScreen}/>
-        <HomeStack.Screen name="details" component={ScannedItemsDetails} options={{title: 'Details', presentation: 'modal', animation: 'slide_from_right',}}/>
         <HomeStack.Screen name="AddressPicker" component={AddressPickerScreen} options={{title: 'Adres', presentation: 'modal', animation: 'slide_from_right',}}/>
         <HomeStack.Screen name="DateTimePicker" component={DateTimePickerScreen} options={{title: 'Datum & Tijd', presentation: 'modal', animation: 'slide_from_right',}}/>
+        <HomeStack.Screen
+            name="details"
+            component={ScannedItemsDetails}
+            options={{
+                title: 'Details',
+                presentation: 'modal',
+                animation: 'slide_from_right',
+            }}
+        />
+        <HomeStack.Screen
+            name="Wallet"
+            component={Wallet}
+            options={{
+                title: 'Wallet',
+                presentation: 'card',
+                animation: 'slide_from_right',
+            }}/>
     </HomeStack.Navigator>
 );
 

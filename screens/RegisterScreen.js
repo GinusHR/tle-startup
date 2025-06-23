@@ -89,17 +89,17 @@ export default function RegisterScreen({ navigation }) {
         navigation.navigate('Login');
     };
 
-    const renderHeader = () => (
-        <View style={styles.headerContainer}>
-            {Array.from({ length: 4 }).map((_, i) => (
-                <Text key={`top-${i}`} style={styles.headerText}>STATIESCAN</Text>
-            ))}
-            <Text style={styles.headerTextBold}>STATIESCAN</Text>
-            {Array.from({ length: 3 }).map((_, i) => (
-                <Text key={`bottom-${i}`} style={styles.headerText}>STATIESCAN</Text>
-            ))}
-        </View>
-    );
+    // const renderHeader = () => (
+    //     <View style={styles.headerContainer}>
+    //         {Array.from({ length: 4 }).map((_, i) => (
+    //             <Text key={`top-${i}`} style={styles.headerText}>STATIESCAN</Text>
+    //         ))}
+    //         <Text style={styles.headerTextBold}>STATIESCAN</Text>
+    //         {Array.from({ length: 3 }).map((_, i) => (
+    //             <Text key={`bottom-${i}`} style={styles.headerText}>STATIESCAN</Text>
+    //         ))}
+    //     </View>
+    // );
 
     const renderStep1 = () => (
         <>
@@ -203,7 +203,7 @@ export default function RegisterScreen({ navigation }) {
         <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
             <View style={styles.overlay} />
             <SafeAreaView style={styles.container}>
-                {renderHeader()}
+                {/*{renderHeader()}*/}
                 <View style={styles.contentContainer}>
                     <View style={styles.formContainer}>
                         {currentStep === 1 && renderStep1()}

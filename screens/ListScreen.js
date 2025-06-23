@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
     Dimensions,
     SafeAreaView,
-    Platform
+    Platform, StatusBar
 } from 'react-native';
 import {Ionicons} from "@expo/vector-icons";
 import {createListForUser, getListItem, insertIntoList} from "../database";
