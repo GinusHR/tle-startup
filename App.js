@@ -8,7 +8,7 @@ import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from 'expo-secure-store';
 
-import {getAllLists, getAllUsers, getItems, getList, getListItem, initDatabase} from "./database";
+import {getAllLists, getAllUsers, getItems, getListItem, initDatabase} from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -206,15 +206,15 @@ export default function App() {
                 const itemData = await getItems();
                 const userData = await getAllUsers();
                 // const appoData = await
-                const listData = await getAllLists();
+                const listsData = await getAllLists();
                 const listContentData = await getListItem();
                 setItems(itemData);
                 setUsers(userData);
-                setLists(listData);
-                setListItems(listContentData)
+                setLists(listsData);
+                setListItems(listContentData);
                 console.log("Items:", itemData)
                 console.log("Users:",userData)
-                console.log("Lists:", listData)
+                console.log("Lists:", listsData)
                 console.log("list_item:", listContentData)
             } catch (error) {
                 console.error("Database initialisatie mislukt", error);

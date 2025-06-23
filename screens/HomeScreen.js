@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar, Image } from 'react-native';
 import { Entypo, FontAwesome5, FontAwesome6, Ionicons } from '@expo/vector-icons';
-import { getNextAppointmentForUser, getUserWallet } from "../database";
+import { getNextAppointmentForUser, getUserWallet, getUserLists, getListItemsByListId } from "../database";
 import { useFonts } from 'expo-font';
 import * as SecureStore from 'expo-secure-store';
 
@@ -16,15 +16,22 @@ const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 export default function HomeScreen({navigation}) {
     const [lastAppointment, setLastAppointment] = useState(null);
     const [balance, setBalance] = useState(0);
+    const [user, setUser] = useState(null)
+    const [totalBottles, setTotalBottles] = useState(0);
+    const [totalValue, setTotalValue] = useState(0)
+    const [listItems, setListItems] = useState([])
 
     useEffect(() => {
-        const fetchAppointment = async () => {
+        const fetchAppointmentAndLists = async () => {
             const userData = await SecureStore.getItemAsync("user");
             if (userData) {
-                const user = JSON.parse(userData);
-                const appointment = await getNextAppointmentForUser(user.id);
-                const updateBalance = await getUserWallet(user.id);
+                const parsedUser = JSON.parse(userData);
+                setUser(parsedUser);
+
+                const appointment = await getNextAppointmentForUser(parsedUser.id);
                 setLastAppointment(appointment);
+
+                const updateBalance = await getUserWallet(user.id);
                 const parsedBalance = Number(updateBalance);
                 if (!isNaN(parsedBalance)) {
                     setBalance(parsedBalance);
@@ -32,10 +39,32 @@ export default function HomeScreen({navigation}) {
                     console.warn("Saldo kon niet worden geconverteerd naar getal:", updateBalance);
                     setBalance(0);
                 }
+
+                const fetchedLists = await getUserLists(parsedUser.id);
+                const allListItems = [];
+
+                for (const list of fetchedLists) {
+                    const items = await getListItemsByListId(list.id);
+                    items.forEach((item) => {
+                        allListItems.push({
+                            listId: list.id,
+                            itemName: item.item_name,
+                            quantity: item.quantity,
+                            value: item.item_value,
+                        });
+                    });
+                }
+
+                const totalB= allListItems.reduce((sum, item) => sum + item.quantity, 0);
+                const totalV = allListItems.reduce((sum, item) => sum + item.quantity * item.value, 0);
+
+                setTotalBottles(totalB);
+                setTotalValue(totalV);
+                setListItems(allListItems);
             }
         };
 
-        const unsubscribe = navigation.addListener('focus', fetchAppointment);
+        const unsubscribe = navigation.addListener('focus', fetchAppointmentAndLists);
         return unsubscribe;
     }, [navigation]);
 
@@ -65,14 +94,18 @@ export default function HomeScreen({navigation}) {
 
             <View style={styles.main}>
                 <Text style={styles.title}>In te leveren</Text>
-                <Text style={styles.bottleCounter}>00000</Text>
+                <Text style={styles.bottleCounter}>{totalBottles.toString().padStart(5, '0')}</Text>
             </View>
 
             <View style={styles.buttonsContainerContainer}>
                 <View style={styles.buttonsContainer}>
                     <RoundButton
                         title={"FLESSEN OVERZICHT"}
-                        onPress={() => navigation.navigate("details")}
+                        onPress={() => navigation.navigate("details", {
+                            listItems,
+                            totalValue,
+                            totalBottles
+                        })}
                         icon={<FontAwesome5 name="th-list" size={15} color="white" />}
                     />
                     {/*<RoundButton*/}

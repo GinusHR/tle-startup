@@ -117,7 +117,7 @@ export default function ListScreen({items, currentUser}) {
                     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
                 }}
             >
-                <Header title="Scan" />
+                <Header title="List" />
             </View>
             <View style={{flex: 1, paddingHorizontal: 16, backgroundColor: '#FDFDFD'}}>
             <Text style={styles.title}>Kies uw statiegeld</Text>
