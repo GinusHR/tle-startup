@@ -31,7 +31,7 @@ export default function HomeScreen({navigation}) {
                 const appointment = await getNextAppointmentForUser(parsedUser.id);
                 setLastAppointment(appointment);
 
-                const updateBalance = await getUserWallet(user.id);
+                const updateBalance = await getUserWallet(parsedUser.id);
                 const parsedBalance = Number(updateBalance);
                 if (!isNaN(parsedBalance)) {
                     setBalance(parsedBalance);
