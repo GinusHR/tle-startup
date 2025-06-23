@@ -221,7 +221,7 @@ export default function Wallet() {
 
     return (
         <SafeAreaView>
-            <View style={{ paddingHorizontal: 30 }}>
+            <View style={{ paddingHorizontal: 20 }}>
 
                 {/*Header*/}
 
@@ -231,7 +231,8 @@ export default function Wallet() {
                 </View>
                 <DataBoxes
                     title={"Huidige saldo"}
-                    body={`€ ${balance.toFixed(2).replace('.', ',')}`}/>
+                    body={`€ ${(Number(balance) || 0).toFixed(2).replace('.', ',')}`}
+                    />
 
                 {/*<View style={styles.container}>*/}
                 {/*    <Text style={styles.label}>Naam</Text>*/}

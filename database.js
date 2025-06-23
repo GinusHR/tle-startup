@@ -121,7 +121,7 @@ export const getUser = async (email, password) => {
 export const getAllUsers = async () => {
     if (!db) return [];
     try {
-        return await db.getAllAsync('SELECT id, name, email FROM users;');
+        return await db.getAllAsync('SELECT id, name, email, wallet FROM users;');
     } catch (error) {
         console.error("Fout bij ophalen gebruikers:", error);
         return [];
