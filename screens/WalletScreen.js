@@ -509,7 +509,7 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                         <View>
                             <Text style={styles.label}>Bedrag</Text>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ fontWeight: 800, fontSize: 18 }}>€ </Text>
+                                <Text style={{ fontWeight: '800', fontSize: 18 }}>€ </Text>
                                 <TextInput
                                     style={styles.input}
                                     placeholder={"0,00"}
@@ -628,6 +628,7 @@ export default function Wallet() {
                     <DataBoxes
                         title={"Huidige saldo"}
                         body={`€ ${(Number(balance) || 0).toFixed(2).replace('.', ',')}`}
+                    />
 
                     {/* Tabs */}
                     <View style={styles.toggleContainer}
@@ -764,3 +765,4 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 });
+
