@@ -48,7 +48,7 @@ export default function QRDetailsScreen() {
             <HeaderQR title="QR totaal" />
             <View style={styles.qrWrapper}>
                 <QRCode
-                    value="https://www.npmjs.com/package/react-native-qrcode-svg"
+                    value="3"
                     size={310}
                 />
             </View>

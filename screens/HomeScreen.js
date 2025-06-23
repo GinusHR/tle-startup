@@ -1,15 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar} from 'react-native';
-import {FontAwesome5, FontAwesome6, Ionicons} from '@expo/vector-icons';
-import {getListItemsByListId, getNextAppointmentForUser, getUserLists} from "../database";
+import {Dimensions, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar, Image} from 'react-native';
+import {Entypo, FontAwesome5, FontAwesome6, Ionicons} from '@expo/vector-icons';
+import {getListItemsByListId, getNextAppointmentForUser} from "../database";
 import * as SecureStore from 'expo-secure-store';
 
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
 import Header from '../components/header';
+import { changeWalletValue, getUserWallet } from "../database";
 
 const {width, height} = Dimensions.get("window");
+
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
+
 export default function HomeScreen({navigation}) {
     const [lastAppointment, setLastAppointment] = useState(null);
     const [user, setUser] = useState(null)
@@ -56,10 +59,6 @@ export default function HomeScreen({navigation}) {
         return unsubscribe;
     }, [navigation]);
 
-
-
-
-
     const formatAppoinmentDate = (isoString) => {
         if (!isoString) return "Onbekend";
         const date = new Date(isoString);
@@ -100,10 +99,10 @@ export default function HomeScreen({navigation}) {
                         })}
                         icon={<FontAwesome5 name="th-list" size={15} color="white" />}
                     />
-                    <RoundButton
-                        title={"DATA"}
-                        icon={<FontAwesome6 name="chart-simple" size={15} color="white" />}
-                    />
+                    {/*<RoundButton*/}
+                    {/*    title={"DATA"}*/}
+                    {/*    icon={<FontAwesome6 name="chart-simple" size={15} color="white" />}*/}
+                    {/*/>*/}
                 </View>
             </View>
 
@@ -113,7 +112,8 @@ export default function HomeScreen({navigation}) {
                     body={"€0"}
                     button={
                         <RoundButton
-                            icon={<FontAwesome5 name="th-list" size={15} color="white" />}
+                            onPress={() => navigation.navigate('Wallet')}
+                            icon={<Entypo name="wallet" size={15} color="white" />}
                         />
                     }
                 />
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     },
     buttonsContainer: {
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignItems: "center",
         width: "40%",
     },

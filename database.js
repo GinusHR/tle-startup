@@ -17,6 +17,8 @@ export const initDatabase = async () => {
     await db.execAsync(`PRAGMA foreign_keys = OFF`);
 
     await db.execAsync(` DROP TABLE IF EXISTS items;`)
+    // await db.execAsync(` DROP TABLE IF EXISTS appointments;`)
+
 
     await db.execAsync(`PRAGMA foreign_keys = ON;`);
 
@@ -343,3 +345,25 @@ export const getNextAppointmentForUser = async (customerId) => {
 //         return [];
 //     }
 // };
+
+export const changeWalletValue = async (value, id) => {
+    try {
+        if(!db) return
+        const change = await db.runAsync(`UPDATE users SET wallet =? WHERE id = ?`, value, id)
+        console.log("Wallet waarde aangepast", change)
+    } catch (error) {
+        console.error("Kon wallet niet aanpassen", error)
+    }
+}
+
+export const getUserWallet = async (id) => {
+    try {
+        if (!db) return
+        const results = await db.getFirstAsync(`SELECT wallet FROM users WHERE id = ?`, id);
+        console.log("Wallet opgehaald", results.wallet);
+        return results.wallet ?? 0;
+    } catch (error) {
+        console.error("Kon de wallet niet ophalen of het bestaat niet.", error);
+        return 0;
+    }
+};
