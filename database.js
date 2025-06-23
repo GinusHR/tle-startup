@@ -233,6 +233,17 @@ export const getAllLists = async () => {
     }
 };
 
+export const getListId = async (userId) => {
+    if(!db) return;
+    try{
+        const result = await db.getFirstAsync('SELECT id FROM lists WHERE user_id=? ORDER BY id DESC LIMIT 1', userId)
+        console.log("Id opgehaalt", result)
+        return result
+    } catch (error) {
+        console.error("Er ging iets fout:", error)
+    }
+}
+
 export const insertIntoList = async (listId, itemId, quantity) => {
     try {
         if (!db) return;

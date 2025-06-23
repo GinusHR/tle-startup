@@ -57,6 +57,7 @@ export default function CheckListScreen({ navigation }) {
     if (wrong === 0){
       //mark list as done
       Alert.alert('lijst succesvol afgerond');
+      navigation.navigate()
     } else {
       Alert.alert(`${wrong} komen niet overeen met de ingestuurde lijst`);
       wrong = 0;

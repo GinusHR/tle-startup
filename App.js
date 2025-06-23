@@ -48,10 +48,10 @@ const AuthNavigator = ({ onLogin }) => (
     </AuthStack.Navigator>
 );
 
-const HomeNavigator = () => (
+const HomeNavigator = (currentUser) => (
     <HomeStack.Navigator screenOptions={{headerShown: false}}>
         <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{title: 'Home', headerShown: false}}/>
-        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{title: 'Details'}}/>
+        <HomeStack.Screen name="QRDetail" options={{title: 'Details', }}>{() => <QRDetailScreen currentUser={currentUser} />}</HomeStack.Screen>
         <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{title: 'Afspraak maken'}}/>
         <HomeStack.Screen name="Admin" component={AdminScreen}/>
         <HomeStack.Screen name="Camera" component={CameraScreen}/>
@@ -105,7 +105,7 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-        <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
+        <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}}  >{() => <HomeNavigator currentUser={currentUser}/>}</Tab.Screen>
         <Tab.Screen name="List" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
         <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
             {() => (
