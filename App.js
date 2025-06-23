@@ -78,36 +78,56 @@ const HomeNavigator = () => (
 );
 
 const AdminNavigator = () => (
-    <AdminStack.Navigator screenOptions={{ headerShown: false }}>
+    <AdminStack.Navigator screenOptions={{headerShown: false}}>
         <AdminStack.Screen name="AdminMain" component={AdminScreen}/>
-         <AdminStack.Screen name="Camera" component={CameraScreen}/>
+        <AdminStack.Screen name="Camera" component={CameraScreen}/>
         <AdminStack.Screen name="CheckList" component={CheckListScreen}/>
-   </AdminStack.Navigator>
+    </AdminStack.Navigator>
 )
 
 const AppTabs = ({ onLogout, currentUser, items }) => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
             headerShown: false,
-            tabBarIcon: ({ color, size }) => {
-                if (route.name === 'Home') {
-                    return <MaterialIcons name="dashboard" size={size} color={color} />;
-                } else if (route.name === 'List') {
-                    return <MaterialIcons name="format-list-numbered-rtl" size={size} color={color} />;
-                } else if (route.name === 'Account') {
-                    return <Ionicons name="person" size={size} color={color} />;
+            tabBarIcon: ({ color }) => {
+                let iconName;
+                let IconComponent;
+
+                if (route.name === 'HOME') {
+                    iconName = 'dashboard';
+                    IconComponent = MaterialIcons;
+                } else if (route.name === 'LIJST') {
+                    iconName = 'format-list-numbered-rtl';
+                    IconComponent = MaterialIcons;
+                } else if (route.name === 'ACCOUNT') {
+                    iconName = 'person';
+                    IconComponent = Ionicons;
                 }
+
+                return (
+                    <View>
+                        <IconComponent name={iconName} size={30} color={color} />
+                    </View>
+                );
             },
             tabBarStyle: {
                 backgroundColor: '#2F4538',
+                paddingTop: 8,
+                height: "11%",
             },
             tabBarActiveTintColor: '#597364',
             tabBarInactiveTintColor: '#FDFDFD',
+            tabBarLabelStyle: {
+                fontSize: 12,
+                fontFamily: 'Montserrat',
+                fontWeight: 'bold',
+                marginTop: 3,
+            },
         })}
     >
-        <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}} component={HomeNavigator} />
-        <Tab.Screen name="List" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
-        <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
+        <Tab.Screen name="HOME" options={{ headerShown: false }} component={HomeNavigator} />
+        <Tab.Screen name="LIJST" options={{ headerShown: false }}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
+        <Tab.Screen name="ACCOUNT" options={{ headerShown: false  }}>
             {() => (
                 <AccountScreen currentUser={currentUser} onLogout={onLogout} />
             )}

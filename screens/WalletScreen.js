@@ -612,7 +612,7 @@ export default function Wallet() {
     return (
         <KeyboardAwareScrollView
             style={{ flex: 1, backgroundColor: "#fff" }}
-            contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 30, paddingBottom: 50 }}
+            contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 50 }}
             enableOnAndroid={true}
             keyboardShouldPersistTaps="handled"
             extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
@@ -627,7 +627,7 @@ export default function Wallet() {
 
                     <DataBoxes
                         title={"Huidige saldo"}
-                        body={`€ ${balance.toFixed(2).replace('.', ',')}`} />
+                        body={`€ ${(Number(balance) || 0).toFixed(2).replace('.', ',')}`}
 
                     {/* Tabs */}
                     <View style={styles.toggleContainer}
