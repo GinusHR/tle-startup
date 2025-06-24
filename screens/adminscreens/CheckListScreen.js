@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRoute } from "@react-navigation/native";
 import {
     Alert,
@@ -21,12 +21,6 @@ const scaleFontSize = (figmaFontSize, width = 430) =>
 export default function CheckListScreen({ navigation }) {
     const route = useRoute();
     const code = route.params?.code;
-
-    // get list by qrcode from the camerascreen page
-    const list = getListItemsByListId(code);
-    console.log("====================================");
-    console.log(list);
-    console.log("====================================");
 
     const list25 = 4;
     const list20 = 4;
@@ -77,6 +71,20 @@ export default function CheckListScreen({ navigation }) {
     }
   }
 
+   useEffect(() => {
+          const init = async() => {
+              try {
+                // get list by qrcode from the camerascreen page
+                const list = await getListItemsByListId(code);
+                console.log('====================================');
+                console.log(list);
+                console.log('====================================');
+              } catch (error) {
+                  console.error("AAAAAAAAAAAAAAAAAAAAAAIK HAAT DIT", error)
+              }
+          }
+          init()
+      },[])
     return (
         <SafeAreaView style={styles.container}>
             <View
