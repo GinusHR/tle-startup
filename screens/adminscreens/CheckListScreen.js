@@ -11,7 +11,7 @@ import {
     TextInput,
     View
 } from "react-native";
-import { getList, getListItemsByListId } from "../../database";
+import { getListItemsByListId } from "../../database";
 import HeaderAdmin from "../../components/headerAdmin";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
