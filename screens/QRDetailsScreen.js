@@ -44,7 +44,6 @@ export default function QRDetailsScreen({currentUser}) {
             };
         }, [])
     );
-    // setList(await getListId(currentUser.currentUser.id))
 
     useEffect(() => {
         const init = async() => {
@@ -59,9 +58,6 @@ export default function QRDetailsScreen({currentUser}) {
         init()
     },[])
 
-    console.log('====================================');
-    console.log(JSON.stringify(list));
-    console.log('====================================');
 
     return (
         <View style={styles.container}>
