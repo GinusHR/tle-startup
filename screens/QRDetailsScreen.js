@@ -44,12 +44,14 @@ export default function QRDetailsScreen({currentUser}) {
             };
         }, [])
     );
+    // setList(await getListId(currentUser.currentUser.id))
 
     useEffect(() => {
         const init = async() => {
             try {
-                 console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa", currentUser.currentUser.id)
-                setList(await getListId(currentUser.currentUser.id))
+                const result = await getListId(currentUser.currentUser.id);
+                const listId = JSON.stringify(result.id) 
+                setList(result.id);
             } catch (error) {
                 console.error("AAAAAAAAAAAAAAAAAAAAAAIK HAAT DIT", error)
             }
@@ -57,15 +59,20 @@ export default function QRDetailsScreen({currentUser}) {
         init()
     },[])
 
+    console.log('====================================');
+    console.log(JSON.stringify(list));
+    console.log('====================================');
+
     return (
         <View style={styles.container}>
             <HeaderQR title="QR totaal" />
             <View style={styles.qrWrapper}>
                 <QRCode
-                    value='tet'
+                    value={JSON.stringify(list)}
                     size={310}
                 />
             </View>
+            
         </View>
     );
 }
