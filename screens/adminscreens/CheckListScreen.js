@@ -70,7 +70,7 @@ export default function CheckListScreen({ navigation }) {
       //mark list as done
       Alert.alert('lijst succesvol afgerond');
       updateListStatus(code)
-      navigation.navigate('HOME')
+      navigation.navigate('Home')
     } else {
       Alert.alert(`${wrong} komen niet overeen met de ingestuurde lijst`);
       wrong = 0;
