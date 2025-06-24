@@ -69,7 +69,7 @@ const style = StyleSheet.create({
     },
     body: {
         fontFamily: 'Montserrat',
-        fontSize: scaleFontSize(36),
+        fontSize: scaleFontSize(32),
         fontWeight: '700',
         marginTop: 10,
         color: "#212529",

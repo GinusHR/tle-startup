@@ -1,40 +1,39 @@
 import {
     Alert,
     Animated,
-    Button,
-    Dimensions, Platform, Pressable,
-    SafeAreaView,
+    Dimensions,
+    Pressable,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    View
+    View,
+    SafeAreaView,
+    Platform
 } from 'react-native';
+
 import React, { useRef, useState, useEffect } from 'react';
 import {
     Entypo,
-    FontAwesome5,
     FontAwesome6,
-    Ionicons,
-    Fontisto,
-    Foundation,
     MaterialCommunityIcons
 } from "@expo/vector-icons";
-import RoundButton from "../components/roundButton";
-import DataBoxes from "../components/dataBoxes";
-import {useNavigation} from "@react-navigation/native";
 
+import { useNavigation } from "@react-navigation/native";
 import { changeWalletValue, getUserWallet } from "../database";
 import * as SecureStore from 'expo-secure-store';
 
-const { width, height } = Dimensions.get("window");
+import RoundButton from "../components/roundButton";
+import DataBoxes from "../components/dataBoxes";
 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+const { width, height } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 const TransactiesTab = () => (
     <View style={styles.tabContent}>
         <Text style={styles.tabContentText}>Transactie Geschiedenis</Text>
-        {/* Add your transactions list here */}
     </View>
 );
 
@@ -63,15 +62,12 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
             }
 
             const updatedBalance = (await getUserWallet(userId) - formattedAmount).toFixed(2);
-
             await changeWalletValue(updatedBalance, userId);
-
-            refreshBalance()
+            refreshBalance();
 
             setBedrag('');
             setRekeningnummer('');
             alert(`Aanvraag om €${formattedAmount.toFixed(2).replace('.', ',')} uit te betalen naar ${rekeningnummer} is verstuurd.`);
-
         } catch (error) {
             console.error("Fout tijdens uitbetalen:", error);
             alert("Er is iets misgegaan tijdens het verwerken.");
@@ -88,7 +84,7 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                         <View>
                             <Text style={styles.label}>Bedrag</Text>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ fontWeight: 800, fontSize: 18 }}>€ </Text>
+                                <Text style={{ fontWeight: '800', fontSize: 18 }}>€ </Text>
                                 <TextInput
                                     style={styles.input}
                                     placeholder={"0,00"}
@@ -101,12 +97,13 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                                         if (!isNaN(num)) {
                                             setBedrag(num.toFixed(2).replace('.', ','));
                                         }
-                                    }}/>
+                                    }} />
                             </View>
                         </View>
                         <FontAwesome6 name="euro-sign" size={24} color="#2F4538" />
                     </View>
                 </View>
+
                 <View style={styles.card}>
                     <View style={styles.row}>
                         <View>
@@ -118,12 +115,13 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                                     placeholderTextColor={"#7D8893"}
                                     keyboardType={"default"}
                                     onChangeText={setRekeningnummer}
-                                    value={rekeningnummer}  />
+                                    value={rekeningnummer} />
                             </View>
                         </View>
                         <MaterialCommunityIcons name="bank" size={24} color="#2F4538" />
                     </View>
                 </View>
+
                 <Pressable style={styles.button} onPress={handleUitbetalen}>
                     <Text style={styles.buttonText}>Volgende</Text>
                 </Pressable>
@@ -135,31 +133,15 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
 const BeloningenTab = () => (
     <View style={styles.tabContent}>
         <Text style={styles.tabContentText}>Jouw Beloningen</Text>
-        {/* Add your rewards content here */}
     </View>
 );
 
 export default function Wallet() {
-    const [userId, setUserId] = useState(null)
+    const [userId, setUserId] = useState(null);
     const [activeTab, setActiveTab] = useState("transacties");
-    const [balance, setBalance] = useState(0)
+    const [balance, setBalance] = useState(0);
     const translateX = useRef(new Animated.Value(0)).current;
     const tabWidth = useRef(0);
-
-    // const [newAmount, setNewAmount] = useState('')
-    // const [bankNumber, setNewBankNumber] = useState('')
-
-    const handleSubmit = async () => {
-        if (!newAmount) {
-            Alert.alert("Fout", "Vul een bedrag in.");
-            return;
-        }
-        Alert.alert("Formulier verzonden", `Naam: ${newAmount}`);
-        await changeWalletValue(newAmount, userId);
-        const updatedBalance = await getUserWallet(userId);
-        setBalance(updatedBalance);
-        setNewAmount('');
-    };
 
     const refreshBalance = async () => {
         if (userId) {
@@ -174,36 +156,19 @@ export default function Wallet() {
             if (userData) {
                 const user = JSON.parse(userData);
                 setUserId(user.id);
-                let wallet = await getUserWallet(user.id)
-
-                const walletNumber = wallet ? Number(wallet) : 0;
-
-                setBalance(walletNumber)
-                console.log("Raw balance:", balance, "Type:", typeof balance);
-                console.log('Opgehaalde userId uit SecureStore:', user.id);
-            } else {
-                console.warn('Geen gebruiker gevonden in SecureStore');
+                const wallet = await getUserWallet(user.id);
+                setBalance(wallet ? Number(wallet) : 0);
             }
         };
         fetchUserData();
     }, []);
 
-    useEffect(() => {
-        if (balance !== null) {
-            console.log("Geüpdatete balance:", balance, "Type:", typeof balance);
-        }
-    }, [balance]);
-
     const renderTabContent = () => {
         switch (activeTab) {
-            case "transacties":
-                return <TransactiesTab />;
-            case "uitbetalen":
-                return <UitbetalenTab userId={userId} balance={balance} setBalance={setBalance} refreshBalance={refreshBalance}/>;
-            case "beloningen":
-                return <BeloningenTab />;
-            default:
-                return <UitbetalenTab />;
+            case "transacties": return <TransactiesTab />;
+            case "uitbetalen": return <UitbetalenTab userId={userId} balance={balance} setBalance={setBalance} refreshBalance={refreshBalance} />;
+            case "beloningen": return <BeloningenTab />;
+            default: return <UitbetalenTab />;
         }
     };
 
@@ -220,98 +185,59 @@ export default function Wallet() {
     };
 
     return (
-        <SafeAreaView>
-            <View style={{ paddingHorizontal: 30 }}>
+        <KeyboardAwareScrollView
+            style={{ flex: 1, backgroundColor: "#fff" }}
+            contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 50 }}
+            enableOnAndroid={true}
+            keyboardShouldPersistTaps="handled"
+            extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
+        >
+            <SafeAreaView style={{ flex: 1 }}>
+                <View style={{ flexGrow: 1 }}>
+                    {/* Header */}
+                    <View style={styles.header}>
+                        <Entypo name="chevron-left" size={35} color="#212529" onPress={useNavigation().goBack} />
+                        <Text style={styles.pageTitle}>Saldo</Text>
+                    </View>
 
-                {/*Header*/}
-
-                <View style={styles.header}>
-                    <Entypo name="chevron-left" size={35} color="#212529" onPress={ useNavigation().goBack} />
-                    <Text style={styles.pageTitle}>Saldo</Text>
-                </View>
-                <DataBoxes
-                    title={"Huidige saldo"}
-                    body={`€ ${balance.toFixed(2).replace('.', ',')}`}/>
-
-                {/*<View style={styles.container}>*/}
-                {/*    <Text style={styles.label}>Naam</Text>*/}
-                {/*    <TextInput*/}
-                {/*        style={styles.input}*/}
-                {/*        value={newAmount}*/}
-                {/*        onChangeText={setNewAmount}*/}
-                {/*        placeholder="Voer een nieuwe bedrag in"*/}
-                {/*    />*/}
-
-                {/*    <Button title="Verstuur" onPress={handleSubmit} />*/}
-                {/*</View>*/}
-
-                {/*3 Tabs: Transacties, Uitbetalen, Beloningen.*/}
-
-                <View style={styles.toggleContainer}
-                    onLayout={(e) => {
-                        const fullWidth = e.nativeEvent.layout.width;
-                        tabWidth.current = fullWidth / 3;
-                    }}
-                >
-                    <Animated.View
-                        style={[
-                            styles.slider,
-                            {
-                                transform: [{ translateX }],
-                            },
-                        ]}
+                    <DataBoxes
+                        title={"Huidige saldo"}
+                        body={`€ ${(Number(balance) || 0).toFixed(2).replace('.', ',')}`}
                     />
 
-                    <TouchableOpacity
-                        style={styles.toggleTouchable}
-                        onPress={() => handleTabPress("transacties", 0)}
+                    {/* Tabs */}
+                    <View style={styles.toggleContainer}
+                          onLayout={(e) => {
+                              const fullWidth = e.nativeEvent.layout.width;
+                              tabWidth.current = fullWidth / 3;
+                          }}
                     >
-                        <Text
+                        <Animated.View
                             style={[
-                                styles.toggleText,
-                                activeTab === "transacties" && styles.toggleTextSelected,
+                                styles.slider,
+                                { transform: [{ translateX }] },
                             ]}
-                        >
-                            Transacties
-                        </Text>
-                    </TouchableOpacity>
+                        />
+                        {["transacties", "uitbetalen", "beloningen"].map((tab, index) => (
+                            <TouchableOpacity
+                                key={tab}
+                                style={styles.toggleTouchable}
+                                onPress={() => handleTabPress(tab, index)}
+                            >
+                                <Text style={[
+                                    styles.toggleText,
+                                    activeTab === tab && styles.toggleTextSelected,
+                                ]}>
+                                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
 
-                    <TouchableOpacity
-                        style={styles.toggleTouchable}
-                        onPress={() => handleTabPress("uitbetalen", 1)}
-                    >
-                        <Text
-                            style={[
-                                styles.toggleText,
-                                activeTab === "uitbetalen" && styles.toggleTextSelected,
-                            ]}
-                        >
-                            Uitbetalen
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.toggleTouchable}
-                        onPress={() => handleTabPress("beloningen", 2)}
-                    >
-                        <Text
-                            style={[
-                                styles.toggleText,
-                                activeTab === "beloningen" && styles.toggleTextSelected,
-                            ]}
-                        >
-                            Beloningen
-                        </Text>
-                    </TouchableOpacity>
+                    {renderTabContent()}
                 </View>
-
-                {/*Paginas worden gerendered in verband met de tabs*/}
-
-                <View>
-                    { renderTabContent() }
-                </View>
-            </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </KeyboardAwareScrollView>
     );
 }
 
@@ -353,7 +279,7 @@ const styles = StyleSheet.create({
         color: '#2F4538',
         fontSize: 18,
         fontFamily: 'montserrat-bold',
-        width: '200',
+        width: 200,
     },
     row: {
         flexDirection: 'row',
@@ -371,7 +297,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'montserrat-bold',
     },
-
     toggleContainer: {
         flexDirection: 'row',
         backgroundColor: '#2F4538',
@@ -379,18 +304,6 @@ const styles = StyleSheet.create({
         padding: 5,
         marginBottom: 30,
         overflow: 'hidden',
-    },
-    toggleButton: {
-        flex: 1,
-        paddingVertical: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 20,
-        borderWidth: 3,
-        borderColor: '#2F4538',
-    },
-    toggleSelected: {
-        backgroundColor: '#fff',
     },
     toggleText: {
         color: '#fff',
@@ -419,6 +332,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         zIndex: 1,
     },
-
-
-})
+    tabContent: {
+        marginBottom: 20,
+    },
+    tabContentText: {
+        fontFamily: 'montserrat-bold',
+        fontSize: 16,
+    },
+});

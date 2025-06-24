@@ -1,13 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar, Image} from 'react-native';
-import {Entypo, FontAwesome5, FontAwesome6, Ionicons} from '@expo/vector-icons';
-import {getNextAppointmentForUser} from "../database";
+import React, { useEffect, useState } from 'react';
+import { Dimensions, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar, Image } from 'react-native';
+import { Entypo, FontAwesome5, FontAwesome6, Ionicons } from '@expo/vector-icons';
+import { getListItemsByListId, getNextAppointmentForUser, getUserLists, getUserWallet } from "../database";
 import * as SecureStore from 'expo-secure-store';
 
 import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
 import Header from '../components/header';
-import { changeWalletValue, getUserWallet } from "../database";
 
 const {width, height} = Dimensions.get("window");
 
@@ -15,23 +14,61 @@ const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 export default function HomeScreen({navigation}) {
     const [lastAppointment, setLastAppointment] = useState(null);
+    const [user, setUser] = useState(null)
+    const [totalBottles, setTotalBottles] = useState(0);
+    const [totalValue, setTotalValue] = useState(0)
+    const [listItems, setListItems] = useState([])
+    const [balance, setBalance] = useState(0);
 
     useEffect(() => {
-        const fetchAppointment = async () => {
+        const fetchAppointmentAndLists = async () => {
             const userData = await SecureStore.getItemAsync("user");
             if (userData) {
-                const user = JSON.parse(userData);
-                const appointment = await getNextAppointmentForUser(user.id);
+                const parsedUser = JSON.parse(userData);
+                setUser(parsedUser);
+
+                const appointment = await getNextAppointmentForUser(parsedUser.id);
                 setLastAppointment(appointment);
+
+                const updateBalance = await getUserWallet(parsedUser.id);
+                const parsedBalance = Number(updateBalance);
+                if (!isNaN(parsedBalance)) {
+                    setBalance(parsedBalance);
+                } else {
+                    console.warn("Saldo kon niet worden geconverteerd naar getal:", updateBalance);
+                    setBalance(0);
+                }
+
+                const fetchedLists = await getUserLists(parsedUser.id);
+                const allListItems = [];
+
+                for (const list of fetchedLists) {
+                    const items = await getListItemsByListId(list.id);
+                    items.forEach((item) => {
+                        allListItems.push({
+                            listId: list.id,
+                            itemName: item.item_name,
+                            quantity: item.quantity,
+                            value: item.item_value,
+                        });
+                    });
+                }
+
+                const totalB= allListItems.reduce((sum, item) => sum + item.quantity, 0);
+                const totalV = allListItems.reduce((sum, item) => sum + item.quantity * item.value, 0);
+
+                setTotalBottles(totalB);
+                setTotalValue(totalV);
+                setListItems(allListItems);
             }
         };
 
-        const unsubscribe = navigation.addListener('focus', fetchAppointment);
+        const unsubscribe = navigation.addListener('focus', fetchAppointmentAndLists);
         return unsubscribe;
     }, [navigation]);
 
     const formatAppoinmentDate = (isoString) => {
-        if (!isoString) return "Onbekend";
+        if (!isoString) return "Geen afspraak";
         const date = new Date(isoString);
         return date.toLocaleString('nl-NL', {
             weekday: 'short',
@@ -47,7 +84,7 @@ export default function HomeScreen({navigation}) {
         <SafeAreaView style={styles.container}>
             <View
                 style={{
-                    paddingHorizontal: 30,
+                    paddingHorizontal: 20,
                     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
                 }}
             >
@@ -56,14 +93,18 @@ export default function HomeScreen({navigation}) {
 
             <View style={styles.main}>
                 <Text style={styles.title}>In te leveren</Text>
-                <Text style={styles.bottleCounter}>00000</Text>
+                <Text style={styles.bottleCounter}>{totalBottles.toString().padStart(5, '0')}</Text>
             </View>
 
             <View style={styles.buttonsContainerContainer}>
                 <View style={styles.buttonsContainer}>
                     <RoundButton
-                        title={"DETAILS"}
-                        onPress={() => navigation.navigate("details")}
+                        title={"FLESSEN OVERZICHT"}
+                        onPress={() => navigation.navigate("details", {
+                            listItems,
+                            totalValue,
+                            totalBottles
+                        })}
                         icon={<FontAwesome5 name="th-list" size={15} color="white" />}
                     />
                     {/*<RoundButton*/}
@@ -73,10 +114,10 @@ export default function HomeScreen({navigation}) {
                 </View>
             </View>
 
-            <View style={{ paddingHorizontal: 30 }}>
+            <View style={{ paddingHorizontal: 20 }}>
                 <DataBoxes
                     title={"Saldo"}
-                    body={"€0"}
+                    body={`€ ${(Number(balance) || 0).toFixed(2).replace('.', ',')}`}
                     button={
                         <RoundButton
                             onPress={() => navigation.navigate('Wallet')}
@@ -87,6 +128,11 @@ export default function HomeScreen({navigation}) {
                 <DataBoxes
                     title={"Ophaal moment"}
                     body={formatAppoinmentDate(lastAppointment?.time)}
+                    bodyStyle={
+                        lastAppointment?.time
+                            ? styles.appointmentTextBlack
+                            : styles.appointmentTextGrey
+                    }
                     button={
                         <RoundButton
                             onPress={() => navigation.navigate('PlanPickup')}
@@ -133,5 +179,12 @@ const styles = StyleSheet.create({
         fontWeight: "800",
         color: "#212529",
         marginTop: 10,
+    },
+
+    appointmentTextGrey: {
+        color: '#6B7780',
+    },
+    appointmentTextBlack: {
+        color: '#212529',
     },
 })

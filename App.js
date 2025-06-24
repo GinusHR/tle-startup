@@ -8,7 +8,7 @@ import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import * as SecureStore from 'expo-secure-store';
 
-import {getAllLists, getAllUsers, getItems, getList, getListItem, initDatabase} from "./database";
+import {getAllLists, getAllUsers, getItems, getListItem, initDatabase} from "./database";
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -78,36 +78,56 @@ const HomeNavigator = (currentUser) => (
 );
 
 const AdminNavigator = () => (
-    <AdminStack.Navigator screenOptions={{ headerShown: false }}>
+    <AdminStack.Navigator screenOptions={{headerShown: false}}>
         <AdminStack.Screen name="AdminMain" component={AdminScreen}/>
-         <AdminStack.Screen name="Camera" component={CameraScreen}/>
+        <AdminStack.Screen name="Camera" component={CameraScreen}/>
         <AdminStack.Screen name="CheckList" component={CheckListScreen}/>
-   </AdminStack.Navigator>
+    </AdminStack.Navigator>
 )
 
 const AppTabs = ({ onLogout, currentUser, items }) => (
     <Tab.Navigator
         screenOptions={({ route }) => ({
             headerShown: false,
-            tabBarIcon: ({ color, size }) => {
-                if (route.name === 'Home') {
-                    return <MaterialIcons name="dashboard" size={size} color={color} />;
-                } else if (route.name === 'List') {
-                    return <MaterialIcons name="format-list-numbered-rtl" size={size} color={color} />;
-                } else if (route.name === 'Account') {
-                    return <Ionicons name="person" size={size} color={color} />;
+            tabBarIcon: ({ color }) => {
+                let iconName;
+                let IconComponent;
+
+                if (route.name === 'HOME') {
+                    iconName = 'dashboard';
+                    IconComponent = MaterialIcons;
+                } else if (route.name === 'LIJST') {
+                    iconName = 'format-list-numbered-rtl';
+                    IconComponent = MaterialIcons;
+                } else if (route.name === 'ACCOUNT') {
+                    iconName = 'person';
+                    IconComponent = Ionicons;
                 }
+
+                return (
+                    <View>
+                        <IconComponent name={iconName} size={30} color={color} />
+                    </View>
+                );
             },
             tabBarStyle: {
                 backgroundColor: '#2F4538',
+                paddingTop: 8,
+                height: "11%",
             },
             tabBarActiveTintColor: '#597364',
             tabBarInactiveTintColor: '#FDFDFD',
+            tabBarLabelStyle: {
+                fontSize: 12,
+                fontFamily: 'Montserrat',
+                fontWeight: 'bold',
+                marginTop: 3,
+            },
         })}
     >
-        <Tab.Screen name="Home" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}}  >{() => <HomeNavigator currentUser={currentUser}/>}</Tab.Screen>
-        <Tab.Screen name="List" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
-        <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
+        <Tab.Screen name="HOME" options={{ headerShown: false, headerTitle: '' , headerShadowVisible: false}}  >{() => <HomeNavigator currentUser={currentUser}/>}</Tab.Screen>
+        <Tab.Screen name="LIJST" options={{ headerTitle: '' , headerShadowVisible: false}}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
+        <Tab.Screen name="ACCOUNT" options={{ headerTitle: '', headerShadowVisible: false }}>
             {() => (
                 <AccountScreen currentUser={currentUser} onLogout={onLogout} />
             )}
@@ -186,15 +206,15 @@ export default function App() {
                 const itemData = await getItems();
                 const userData = await getAllUsers();
                 // const appoData = await
-                const listData = await getAllLists();
+                const listsData = await getAllLists();
                 const listContentData = await getListItem();
                 setItems(itemData);
                 setUsers(userData);
-                setLists(listData);
-                setListItems(listContentData)
+                setLists(listsData);
+                setListItems(listContentData);
                 console.log("Items:", itemData)
                 console.log("Users:",userData)
-                console.log("Lists:", listData)
+                console.log("Lists:", listsData)
                 console.log("list_item:", listContentData)
             } catch (error) {
                 console.error("Database initialisatie mislukt", error);
