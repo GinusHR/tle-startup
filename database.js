@@ -280,16 +280,16 @@ export const getListItemsByListId = async (listId) => {
         if (!db) return [];
         const result = await db.getAllAsync(
             `
-                SELECT list.id,
-                       list.list_id,
-                       list.item_id,
+                SELECT lists.id,
+                       lists.list_id,
+                       lists.item_id,
                        item.name AS item_name,
                        item.value AS item_value,
-                       list.quantity
-                FROM list_item list
-                         JOIN items item ON list.item_id = item.id
-                WHERE list.list_id = ?
-                ORDER BY list.item_id;
+                       lists.quantity
+                FROM list_item lists
+                         JOIN items item ON lists.item_id = item.id
+                WHERE lists.list_id = ?
+                ORDER BY lists.item_id;
             `,
             [listId]
         );

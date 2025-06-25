@@ -20,6 +20,7 @@ const scaleFontSize = (figmaFontSize, width = 430) =>
 
 export default function CheckListScreen({ navigation }) {
     const route = useRoute();
+    // const code = 1;
     const code = route.params?.code;
 
     const list25 = 4;
