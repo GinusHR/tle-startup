@@ -1,18 +1,13 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
-import {Ionicons} from '@expo/vector-icons';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import MonthDayDropdowns from '../components/MonthDayDropdowns';
 import TimePicker from '../components/TimePicker';
 
 export default function DateTimePickerScreen() {
     const navigation = useNavigation();
     const route = useRoute();
-
-    const now = new Date();
-    const isoString = now.toISOString(); // "2025-06-18T13:30:00.000Z"
-    const [selectedDateString, timeWithMs] = isoString.split('T');
-    const selectedTimeString = timeWithMs.slice(0, 5); // "13:30"
 
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedDay, setSelectedDay] = useState(null);
@@ -27,35 +22,33 @@ export default function DateTimePickerScreen() {
         date.setDate(selectedDay);
         date.setHours(selectedHour);
         date.setMinutes(selectedMinute);
-        date.setSeconds(0);
-        date.setMilliseconds(0);
 
-        const formattedDate = date.toISOString(); // bv: "2025-06-18T13:30:00.000Z"
+        const pad = (num) => String(num).padStart(2, '0');
 
-        const [selectedDateString, selectedTimeString] = formattedDate.split('T'); // "2025-06-18", "13:30:00.000Z"
+        const formattedDate = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`; // "2025-06-18"
+        const formattedTime = `${pad(date.getHours())}:${pad(date.getMinutes())}`; // "13:30"
 
-        console.log('✅ Geselecteerde datum:', formattedDate);
+        console.log('Geselecteerde lokale datum+tijd:', formattedDate, formattedTime);
 
         if (route.params?.onDateSelected) {
             route.params.onDateSelected({
-                date: selectedDateString,            // "2025-06-18"
-                time: selectedTimeString.slice(0, 5), // "13:30"
+                date: formattedDate,
+                time: formattedTime,
             });
         }
 
         navigation.goBack();
     };
 
-
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="chevron-back" size={28} color="#1C1F1E"/>
+                <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
             </TouchableOpacity>
 
             <Text style={styles.title}>Kies datum en tijd</Text>
 
-            <View style={{flex: 1, justifyContent: 'flex-start'}}>
+            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
                 <MonthDayDropdowns
                     selectedMonth={selectedMonth}
                     setSelectedMonth={setSelectedMonth}

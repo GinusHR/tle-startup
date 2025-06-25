@@ -93,13 +93,13 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
                 let iconName;
                 let IconComponent;
 
-                if (route.name === 'HOME') {
+                if (route.name === 'Home') {
                     iconName = 'dashboard';
                     IconComponent = MaterialIcons;
-                } else if (route.name === 'LIJST') {
+                } else if (route.name === 'List') {
                     iconName = 'format-list-numbered-rtl';
                     IconComponent = MaterialIcons;
-                } else if (route.name === 'ACCOUNT') {
+                } else if (route.name === 'Account') {
                     iconName = 'person';
                     IconComponent = Ionicons;
                 }
@@ -125,9 +125,9 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
             },
         })}
     >
-        <Tab.Screen name="HOME" options={{ headerShown: false }} component={HomeNavigator} />
-        <Tab.Screen name="LIJST" options={{ headerShown: false }}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
-        <Tab.Screen name="ACCOUNT" options={{ headerShown: false  }}>
+        <Tab.Screen name="Home" options={{ headerShown: false }} component={HomeNavigator} />
+        <Tab.Screen name="List" options={{ headerShown: false }}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
+        <Tab.Screen name="Account" options={{ headerShown: false  }}>
             {() => (
                 <AccountScreen currentUser={currentUser} onLogout={onLogout} />
             )}

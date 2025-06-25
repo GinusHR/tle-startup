@@ -1,14 +1,22 @@
 import React from "react";
-import {Pressable, Text, StyleSheet, View, Dimensions} from "react-native";
+import {Pressable, Text, StyleSheet, View, Dimensions, TouchableOpacity} from "react-native";
 
 const { width, height } = Dimensions.get("window");
-const RoundButton = ({ onPress, title, icon}) => (
+const RoundButton = ({ onPress, title, icon, a11yLabel }) => (
     <View style={styles.buttonAndTextContainer}>
-        <Pressable style={styles.roundButton} onPress={ onPress }>
-            { icon }
-        </Pressable>
-        { title ? (
-            <Text style={styles.buttonText}>{ title }</Text>
+        <TouchableOpacity
+            style={styles.roundButton}
+            onPress={onPress}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityLabel={a11yLabel}
+        >
+            <View accessible={false} style={{ width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' }} >
+                {icon}
+            </View>
+        </TouchableOpacity>
+        {title ? (
+            <Text style={styles.buttonText}>{title}</Text>
         ) : null}
     </View>
 );
@@ -18,8 +26,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     roundButton: {
-        width: 35,
-        height: 35,
+        width: 45,
+        height: 45,
         backgroundColor: "#2F4538",
         borderRadius: 100,
         padding: 10,

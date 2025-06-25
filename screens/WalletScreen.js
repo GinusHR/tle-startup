@@ -81,7 +81,7 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
             <View style={styles.container}>
                 <View style={styles.card}>
                     <View style={styles.row}>
-                        <View>
+                        <View accessible={false}>
                             <Text style={styles.label}>Bedrag</Text>
                             <View style={{ flexDirection: 'row' }}>
                                 <Text style={{ fontWeight: '800', fontSize: 18 }}>€ </Text>
@@ -92,6 +92,7 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                                     keyboardType={"numeric"}
                                     onChangeText={setBedrag}
                                     value={bedrag}
+                                    accessibilityLabel={"Bedrag"}
                                     onBlur={() => {
                                         const num = parseFloat(bedrag.replace(',', '.'));
                                         if (!isNaN(num)) {
@@ -100,7 +101,7 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                                     }} />
                             </View>
                         </View>
-                        <FontAwesome6 name="euro-sign" size={24} color="#2F4538" />
+                        <FontAwesome6 name="euro-sign" size={24} color="#2F4538" alt="Icoon van een euroteken" />
                     </View>
                 </View>
 
@@ -115,10 +116,13 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                                     placeholderTextColor={"#7D8893"}
                                     keyboardType={"default"}
                                     onChangeText={setRekeningnummer}
-                                    value={rekeningnummer} />
+                                    value={rekeningnummer}
+                                    accessibilityLabel={"Rekeningnummer"}
+                                    autoComplete="off"
+                                />
                             </View>
                         </View>
-                        <MaterialCommunityIcons name="bank" size={24} color="#2F4538" />
+                        <MaterialCommunityIcons name="bank" size={24} color="#2F4538" alt="Icoon van een bank gebouw"/>
                     </View>
                 </View>
 

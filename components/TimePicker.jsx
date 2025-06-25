@@ -22,6 +22,7 @@ export default function TimePicker({ selectedHour, setSelectedHour, selectedMinu
                             label={hour.toString().padStart(2, '0')}
                             value={hour}
                             color="#000"
+                            accessibilityLabel={"Uren kiezer"}
                         />
                     ))}
                 </Picker>
@@ -38,6 +39,7 @@ export default function TimePicker({ selectedHour, setSelectedHour, selectedMinu
                             label={minute.toString().padStart(2, '0')}
                             value={minute}
                             color="#000"
+                            accessibilityLabel={"Minuten kiezer"}
                         />
                     ))}
                 </Picker>

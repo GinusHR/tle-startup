@@ -122,7 +122,7 @@ export default function PlanPickupScreen() {
                     <View style={styles.container}>
                         <View style={styles.headerRow}>
                             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                                <Ionicons name="chevron-back" size={28} color="#1C1F1E"/>
+                                <Ionicons name="chevron-back" size={28} color="#1C1F1E" alt="Icoon van terugknop"/>
                             </TouchableOpacity>
                             <Text style={styles.title}>Ophalen</Text>
                         </View>
@@ -134,7 +134,7 @@ export default function PlanPickupScreen() {
                             shrinkText={true}
                             button={
                                 <RoundButton
-                                    icon={<Ionicons name="home" size={16} color="white"/>}
+                                    icon={<Ionicons name="home" size={25} color="white" alt="Icoon van een huis"/>}
                                     onPress={() =>
                                         navigation.navigate('AddressPicker', {
                                             onAddressSelected: (address) => {
@@ -150,22 +150,15 @@ export default function PlanPickupScreen() {
                         <DataBoxes
                             title="Datum"
                             body={
-                                selectedDate
-                                    ? selectedDate.toLocaleString('nl-NL', {
-                                        day: 'numeric',
-                                        month: 'long',
-                                        year: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false,
-                                    })
+                                selectedDate && selectedTime
+                                    ? `${selectedDate.split('-')[2]}-${selectedDate.split('-')[1]}-${selectedDate.split('-')[0]} om ${selectedTime}`
                                     : '...'
                             }
                             bodyStyle={{fontSize: 18}}
                             shrinkText={false}
                             button={
                                 <RoundButton
-                                    icon={<Ionicons name="calendar-clear" size={15} color="white"/>}
+                                    icon={<Ionicons name="calendar-clear" size={22} color="white" alt="Icoon van een kalender"/>}
                                     onPress={() =>
                                         navigation.navigate('DateTimePicker', {
                                             currentDate: selectedDate,
@@ -218,7 +211,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        padding: 20,
+        padding                 : 20,
         backgroundColor: '#fff',
         justifyContent: 'space-between',
     },

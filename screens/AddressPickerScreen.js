@@ -107,6 +107,7 @@ export default function AddressPickerScreen() {
                             onChangeText={setPostal}
                             placeholder="1234 AB"
                             autoCapitalize="characters"
+                            accessibilityLabel={"Postcode invoeren"}
                         />
 
                         <Text style={styles.label}>Huisnummer</Text>
@@ -116,6 +117,7 @@ export default function AddressPickerScreen() {
                             onChangeText={setHouseNumber}
                             placeholder="12"
                             keyboardType="numeric"
+                            accessibilityLabel={"Huisnummer invoeren"}
                         />
 
                         <TouchableOpacity style={styles.button} onPress={handleFetchAddress}>
