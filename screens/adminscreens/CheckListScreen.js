@@ -71,21 +71,35 @@ export default function CheckListScreen({ navigation }) {
       wrong = 0;
     }
   }
-
-   useEffect(() => {
-          const init = async() => {
-              try {
-                // get list by qrcode from the camerascreen page
-                const list = await getListItemsByListId(code);
-                console.log('====================================');
-                console.log(list);
-                console.log('====================================');
-              } catch (error) {
-                  console.error("AAAAAAAAAAAAAAAAAAAAAAIK HAAT DIT", error)
-              }
+        //   const init = async() => {
+        //       try {
+        //         // get list by qrcode from the camerascreen page
+        //         const list = await getListItemsByListId(code);
+        //         console.log('====================================');
+        //         console.log(list);
+        //         console.log('====================================');
+        //       } catch (error) {
+        //           console.error("AAAAAAAAAAAAAAAAAAAAAAIK HAAT DIT", error)
+        //       }
+        //   }
+        const allListItems = []
+           const init = async() => {
+           const items = await getListItemsByListId(20);
+                            items.forEach((item) => {
+                                allListItems.push({
+                                    listId: 20,
+                                    itemName: item.item_name,
+                                    quantity: item.quantity,
+                                    value: item.item_value,
+                                });
+                            });
+                            console.log('====================================');
+                            console.log(allListItems);
+                            console.log('ITEMS!!', items);
+                            console.log('====================================');
           }
+         
           init()
-      },[])
     return (
         <SafeAreaView style={styles.container}>
             <View
