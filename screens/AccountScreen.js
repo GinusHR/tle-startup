@@ -51,17 +51,17 @@ export default function AccountScreen({ onLogout, currentUser }) {
                     <MenuItem title="Account" icon="person-outline" color={textColor} />
                     <MenuItem title="Help" icon="help-circle-outline" color={textColor} />
                     <MenuItem title="Leren" icon="book-outline" color={textColor} />
-                    <MenuItem
-                        title="Uiterlijk"
-                        icon="color-palette-outline"
-                        color={textColor}
-                        onPress={toggleDarkMode}
-                        rightElement={
-                            <Text style={{ color: textColor, fontSize: 16 }}>
-                                {darkMode ? 'Dark' : 'Light'}
-                            </Text>
-                        }
-                    />
+                    {/*<MenuItem*/}
+                    {/*    title="Uiterlijk"*/}
+                    {/*    icon="color-palette-outline"*/}
+                    {/*    color={textColor}*/}
+                    {/*    onPress={toggleDarkMode}*/}
+                    {/*    rightElement={*/}
+                    {/*        <Text style={{ color: textColor, fontSize: 16 }}>*/}
+                    {/*            {darkMode ? 'Dark' : 'Light'}*/}
+                    {/*        </Text>*/}
+                    {/*    }*/}
+                    {/*/>*/}
                 </View>
 
                 <View style={[styles.card, { borderColor }]}>
