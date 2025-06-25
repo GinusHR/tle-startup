@@ -13,8 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../components/header';
 import HeaderAdmin from '../components/headerAdmin';
-
-
+import {getAllAppointments, deleteAllAppointments} from "../database";
 
 const { width } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -49,21 +48,20 @@ export default function AccountScreen({ onLogout, currentUser }) {
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={[styles.card, { borderColor }]}>
-                    <MenuItem title="Account" icon="person-outline" color={textColor} altText="Icoon van een man" />
+                    <MenuItem title="Account" icon="person-outline" color={textColor} altText="Icoon van een man"/>
                     <MenuItem title="Help" icon="help-circle-outline" color={textColor} altText="Icoon van een een vraagteken in een cirkel" />
                     <MenuItem title="Leren" icon="book-outline" color={textColor} altText="Icoon van een open boek" />
-                    <MenuItem
-                        title="Uiterlijk"
-                        icon="color-palette-outline"
-                        color={textColor}
-                        onPress={toggleDarkMode}
-                        rightElement={
-                            <Text style={{ color: textColor, fontSize: 16 }}>
-                                {darkMode ? 'Dark' : 'Light'}
-                            </Text>
-                        }
-                        altText="Icoon van een verf palette"
-                    />
+                    {/*<MenuItem*/}
+                    {/*    title="Uiterlijk"*/}
+                    {/*    icon="color-palette-outline"*/}
+                    {/*    color={textColor}*/}
+                    {/*    onPress={toggleDarkMode}*/}
+                    {/*    rightElement={*/}
+                    {/*        <Text style={{ color: textColor, fontSize: 16 }}>*/}
+                    {/*            {darkMode ? 'Dark' : 'Light'}*/}
+                    {/*        </Text>*/}
+                    {/*    }*/}
+                    {/*/>*/}
                 </View>
 
                 <View style={[styles.card, { borderColor }]}>
@@ -79,6 +77,18 @@ export default function AccountScreen({ onLogout, currentUser }) {
                         color={textColor}
                         onPress={onLogout}
                         altText="Icoon van een pijltje die uit de deur gaat"
+                    />
+                    <MenuItem
+                        title="Delete All Appointments"
+                        icon="log-out-outline"
+                        color={textColor}
+                        onPress={deleteAllAppointments}
+                    />
+                    <MenuItem
+                        title="Log All Appointments"
+                        icon="log-out-outline"
+                        color={textColor}
+                        onPress={getAllAppointments}
                     />
                 </View>
             </ScrollView>

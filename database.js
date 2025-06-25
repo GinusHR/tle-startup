@@ -334,27 +334,78 @@ export const getNextAppointmentForUser = async (customerId) => {
     }
 };
 
-// export const deleteAllAppointments = async () => {
-//     try {
-//         if (!db) return;
-//         await db.runAsync('DELETE FROM appointments');
-//         console.log("Afspraken succesvol verwijderd");
-//     } catch (error) {
-//         console.log("Kon afspraken niet verwijderen:", error);
-//     }
-// };
-//
-// export const getAllAppointments = async () => {
-//     if (!db) return [];
-//     try {
-//         const appointments = await db.getAllAsync('SELECT * FROM appointments;');
-//         console.log("Afspraken succesvol opgehaald", appointments);
-//         return appointments;
-//     } catch (error) {
-//         console.log("Kon afspraken niet ophalen:", error);
-//         return [];
-//     }
-// };
+export const deleteAllAppointments = async () => {
+    try {
+        if (!db) return;
+        await db.runAsync('DELETE FROM appointments');
+        console.log("Afspraken succesvol verwijderd");
+    } catch (error) {
+        console.log("Kon afspraken niet verwijderen:", error);
+    }
+};
+
+export const deleteAllListItems = async () => {
+    try {
+        if (!db) return;
+        await db.runAsync('DELETE FROM list_item');
+        console.log("Items uit de lijst succesvol verwijderd");
+    } catch (error) {
+        console.log("Kon items uit de lijst niet verwijderen:", error);
+    }
+};
+
+export const deleteAllLists = async () => {
+    try {
+        if (!db) return;
+        await db.runAsync('DELETE FROM lists');
+        console.log("Lijsten succesvol verwijderd");
+    } catch (error) {
+        console.log("Kon lijsten niet verwijderen:", error);
+    }
+};
+
+export const getAllAppointments = async () => {
+    if (!db) return [];
+    try {
+        const appointments = await db.getAllAsync('SELECT * FROM appointments;');
+        console.log("Afspraken succesvol opgehaald", appointments);
+        return appointments;
+    } catch (error) {
+        console.log("Kon afspraken niet ophalen:", error);
+        return [];
+    }
+};
+
+export const checkIfUserCanPlanPickup = async (userId) => {
+    if (!db) return false;
+
+    try {
+        const result = await db.getFirstAsync(`
+            SELECT 
+                l.id AS list_id,
+                SUM(li.quantity) AS total_items
+            FROM lists l
+            LEFT JOIN list_item li ON l.id = li.list_id
+            WHERE l.user_id = ? AND l.done = 0
+            GROUP BY l.id
+            ORDER BY l.id DESC
+            LIMIT 1;
+        `, [userId]);
+
+        if (!result) {
+            console.log("Geen openstaande lijst gevonden.");
+            return false;
+        }
+
+        const canSchedule = result.total_items >= 10;
+        console.log(`Gebruiker mag afspraak maken: ${canSchedule}`);
+        return canSchedule;
+    } catch (error) {
+        console.error("Fout bij controleren van lijststatus:", error);
+        return false;
+    }
+};
+
 
 export const changeWalletValue = async (value, id) => {
     try {

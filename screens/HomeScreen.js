@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {
-    Dimensions,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    View,
-    Platform,
-    StatusBar,
-    Image,
-    Button,
-    Pressable
-} from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar, Image, Alert } from 'react-native';
 import { Entypo, FontAwesome5, FontAwesome6, Ionicons } from '@expo/vector-icons';
-import { getListItemsByListId, getNextAppointmentForUser, getUserLists, getUserWallet } from "../database";
+import { getListItemsByListId, getNextAppointmentForUser, getUserLists, getUserWallet, checkIfUserCanPlanPickup } from "../database";
 import * as SecureStore from 'expo-secure-store';
 
 import RoundButton from "../components/roundButton";
@@ -161,8 +150,21 @@ export default function HomeScreen({navigation}) {
                     }
                     button={
                         <RoundButton
-                            onPress={() => navigation.navigate('PlanPickup')}
-                            icon={<FontAwesome5 name="truck" size={17} color="white"/>}
+                            onPress={async () => {
+                                const userData = await SecureStore.getItemAsync('user');
+                                const user = JSON.parse(userData);
+                                const canSchedule = await checkIfUserCanPlanPickup(user.id);
+
+                                if (canSchedule) {
+                                    navigation.navigate('PlanPickup');
+                                } else {
+                                    Alert.alert(
+                                        'Nog niet klaar',
+                                        'Je hebt minstens 10 items nodig in je huidige lijst om een afspraak te maken.'
+                                    );
+                                }
+                            }}
+                            icon={<FontAwesome5 name="truck" size={17} color="white" />}
                             alt="Icoon van een truck"
                         />
                     }
