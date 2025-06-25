@@ -291,7 +291,7 @@ export const getListItemsByListId = async (listId) => {
                 WHERE lists.list_id = ?
                 ORDER BY lists.item_id;
             `,
-            [listId]
+            listId
         );
         console.log(`Items voor lijst ${listId}:`, result);
         return result;

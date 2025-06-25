@@ -72,20 +72,20 @@ export default function CheckListScreen({ navigation }) {
     }
   }
 
-   useEffect(() => {
+
           const init = async() => {
               try {
                 // get list by qrcode from the camerascreen page
                 const list = await getListItemsByListId(code);
                 console.log('====================================');
-                console.log(list);
-                console.log('====================================');
+                  console.log(code);
+                  console.log('====================================');
+                  console.log(list);
               } catch (error) {
                   console.error("AAAAAAAAAAAAAAAAAAAAAAIK HAAT DIT", error)
               }
           }
           init()
-      },[])
     return (
         <SafeAreaView style={styles.container}>
             <View
