@@ -1,36 +1,37 @@
 import React from "react";
-import {Pressable, Text, StyleSheet, View, Dimensions} from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
+
 const DataBoxes = ({ onPress, title, body, subBody, button, bodyStyle, shrinkText }) => (
-    <View style={style.container}>
+    <View style={style.container} accessible={false}>
         <View style={style.textContainer}>
             <Text style={style.title}>{title}</Text>
-            { subBody ? (
+            {subBody ? (
                 <View style={style.bodySubBodyContainer}>
                     <Text style={style.body}>
-                        { body }
+                        {body}
                     </Text>
                     <Text style={style.subBody}>
-                        { subBody }
+                        {subBody}
                     </Text>
                 </View>
-            ) : <Text
-                style={[style.body, shrinkText && style.bodyShrink, bodyStyle]}
-                {...(shrinkText ? {
-                    numberOfLines: 2,
-                    adjustsFontSizeToFit: true,
-                } : {})}
-            >
-                {body}
-            </Text> }
+            ) : (
+                <Text
+                    style={[style.body, shrinkText && style.bodyShrink, bodyStyle]}
+                    {...(shrinkText ? {
+                        numberOfLines: 2,
+                        adjustsFontSizeToFit: true,
+                    } : {})}
+                >
+                    {body}
+                </Text>
+            )}
         </View>
         <View style={style.buttonContainer}>
-            { button ? (
-                <View style={style.line}/>
-            ) : null }
-            { button }
+            {button ? <View style={style.line} /> : null}
+            {button}
         </View>
     </View>
 );
@@ -69,7 +70,7 @@ const style = StyleSheet.create({
     },
     body: {
         fontFamily: 'Montserrat',
-        fontSize: scaleFontSize(32),
+        fontSize: scaleFontSize(29),
         fontWeight: '700',
         marginTop: 10,
         color: "#212529",
@@ -92,6 +93,6 @@ const style = StyleSheet.create({
         borderRadius: 1,
         marginRight: 20,
     },
-})
+});
 
 export default DataBoxes;

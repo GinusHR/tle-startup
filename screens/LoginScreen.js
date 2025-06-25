@@ -342,6 +342,7 @@ export default function LoginScreen({ navigation, route }) {
                                     keyboardType="email-address"
                                     autoCapitalize="none"
                                     editable={!isLoading}
+                                    autoComplete="email"
                                 />
                             </View>
 
@@ -354,6 +355,7 @@ export default function LoginScreen({ navigation, route }) {
                                     onChangeText={setPassword}
                                     secureTextEntry
                                     editable={!isLoading}
+                                    autoComplete="password"
                                 />
                             </View>
 

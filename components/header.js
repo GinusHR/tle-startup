@@ -10,12 +10,13 @@ export default function Header({
                                    title = 'Titel',
                                    showQR = true,
                                    textColor = '#212529',
+                                   a11yLabel,
                                }) {
     const navigation = useNavigation();
 
     return (
         <View style={styles.header}>
-            <Text style={[styles.pageTitle, { color: textColor }]}>{title}</Text>
+            <Text style={[styles.pageTitle, { color: textColor }]} accessible={true} accessibilityRole="Header" accessibilityLabel={a11yLabel}>{title}</Text>
             {showQR && (
                 <Ionicons
                     name="qr-code"
@@ -26,6 +27,7 @@ export default function Header({
                         screen: 'QRDetail',
                     })
                     }
+                    alt="Icoon van een qr code"
                 />
             )}
         </View>

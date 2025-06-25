@@ -455,6 +455,7 @@ export default function RegisterScreen({ navigation }) {
                 value={formData.naam}
                 onChangeText={(text) => updateFormData('naam', text)}
                 editable={!isLoading}
+                autoComplete="name"
             />
             <TextInput
                 style={styles.input}
@@ -463,6 +464,7 @@ export default function RegisterScreen({ navigation }) {
                 value={formData.achternaam}
                 onChangeText={(text) => updateFormData('achternaam', text)}
                 editable={!isLoading}
+                autoComplete="family-name"
             />
             <View style={styles.countryPhoneContainer}>
                 <View style={styles.countryCode}>
@@ -476,6 +478,7 @@ export default function RegisterScreen({ navigation }) {
                     value={formData.telefoon}
                     onChangeText={(text) => updateFormData('telefoon', text)}
                     editable={!isLoading}
+                    autoComplete="tel"
                 />
             </View>
             <TouchableOpacity
@@ -499,6 +502,7 @@ export default function RegisterScreen({ navigation }) {
                 keyboardType="email-address"
                 autoCapitalize="none"
                 editable={!isLoading}
+                autoComplete="email"
             />
             <TextInput
                 style={styles.input}

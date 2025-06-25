@@ -49,9 +49,9 @@ export default function AccountScreen({ onLogout, currentUser }) {
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={[styles.card, { borderColor }]}>
-                    <MenuItem title="Account" icon="person-outline" color={textColor} />
-                    <MenuItem title="Help" icon="help-circle-outline" color={textColor} />
-                    <MenuItem title="Leren" icon="book-outline" color={textColor} />
+                    <MenuItem title="Account" icon="person-outline" color={textColor} altText="Icoon van een man" />
+                    <MenuItem title="Help" icon="help-circle-outline" color={textColor} altText="Icoon van een een vraagteken in een cirkel" />
+                    <MenuItem title="Leren" icon="book-outline" color={textColor} altText="Icoon van een open boek" />
                     <MenuItem
                         title="Uiterlijk"
                         icon="color-palette-outline"
@@ -62,13 +62,14 @@ export default function AccountScreen({ onLogout, currentUser }) {
                                 {darkMode ? 'Dark' : 'Light'}
                             </Text>
                         }
+                        altText="Icoon van een verf palette"
                     />
                 </View>
 
                 <View style={[styles.card, { borderColor }]}>
-                    <MenuItem title="Over ons" icon="information-circle-outline" color={textColor} />
-                    <MenuItem title="FAQ’s" icon="chatbubble-ellipses-outline" color={textColor} />
-                    <MenuItem title="Algemene voorwaarden" icon="document-text-outline" color={textColor} />
+                    <MenuItem title="Over ons" icon="information-circle-outline" color={textColor} altText="Icoon van een informatie I in een cirkel" />
+                    <MenuItem title="FAQ’s" icon="chatbubble-ellipses-outline" color={textColor} altText="Icoon van een spraakwolk met 3 puntjes" />
+                    <MenuItem title="Algemene voorwaarden" icon="document-text-outline" color={textColor} altText="Icoon van papier met lijnen die dienen als tekst" />
                 </View>
 
                 <View style={[styles.logoutCard, { borderColor }]}>
@@ -77,6 +78,7 @@ export default function AccountScreen({ onLogout, currentUser }) {
                         icon="log-out-outline"
                         color={textColor}
                         onPress={onLogout}
+                        altText="Icoon van een pijltje die uit de deur gaat"
                     />
                 </View>
             </ScrollView>
@@ -84,11 +86,11 @@ export default function AccountScreen({ onLogout, currentUser }) {
     );
 }
 
-const MenuItem = ({ title, icon, onPress, color, rightElement }) => (
+const MenuItem = ({ title, altText, icon, onPress, color, rightElement }) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
         <View style={styles.menuRow}>
             <View style={styles.menuLeft}>
-                <Ionicons name={icon} size={22} color={color} style={styles.icon} />
+                <Ionicons name={icon} size={22} color={color} style={styles.icon} alt={altText} />
                 <Text style={[styles.menuText, { color }]}>{title}</Text>
             </View>
             {rightElement && <View>{rightElement}</View>}

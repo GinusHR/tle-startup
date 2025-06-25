@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar, Image } from 'react-native';
+import {
+    Dimensions,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    View,
+    Platform,
+    StatusBar,
+    Image,
+    Button,
+    Pressable
+} from 'react-native';
 import { Entypo, FontAwesome5, FontAwesome6, Ionicons } from '@expo/vector-icons';
 import { getListItemsByListId, getNextAppointmentForUser, getUserLists, getUserWallet } from "../database";
 import * as SecureStore from 'expo-secure-store';
@@ -88,12 +99,24 @@ export default function HomeScreen({navigation}) {
                     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
                 }}
             >
-                <Header title="Home" />
+                <Header title="Home"  a11yLabel={"Startpagina koptekst"}/>
             </View>
 
             <View style={styles.main}>
                 <Text style={styles.title}>In te leveren</Text>
-                <Text style={styles.bottleCounter}>{totalBottles.toString().padStart(5, '0')}</Text>
+                <View style={styles.bottleCounterContainer}>
+                    {(() => {
+                        const padded = totalBottles.toString().padStart(5, '0');
+                        const actual = totalBottles === 0 ? '' : totalBottles.toString();
+                        const leadingZeros = padded.slice(0, padded.length - actual.length);
+                        return (
+                            <Text style={styles.bottleCounter}>
+                                <Text style={styles.leadingZeros}>{leadingZeros}</Text>
+                                <Text style={styles.bottleCounter}>{actual}</Text>
+                            </Text>
+                        );
+                    })()}
+                </View>
             </View>
 
             <View style={styles.buttonsContainerContainer}>
@@ -105,7 +128,8 @@ export default function HomeScreen({navigation}) {
                             totalValue,
                             totalBottles
                         })}
-                        icon={<FontAwesome5 name="th-list" size={15} color="white" />}
+                        a11yLabel={"Knop om naar de flessen overzicht te gaan"}
+                        icon={<FontAwesome5 name="th-list" color="white" alt="knop met een lijst icoon" size={20} />}
                     />
                     {/*<RoundButton*/}
                     {/*    title={"DATA"}*/}
@@ -121,7 +145,9 @@ export default function HomeScreen({navigation}) {
                     button={
                         <RoundButton
                             onPress={() => navigation.navigate('Wallet')}
-                            icon={<Entypo name="wallet" size={15} color="white" />}
+                            icon={<Entypo name="wallet" size={25} color="white" />}
+                            a11yLabel={"Knop om naar de wallet te gaan"}
+                            alt="Icoon van een portemonee"
                         />
                     }
                 />
@@ -136,7 +162,8 @@ export default function HomeScreen({navigation}) {
                     button={
                         <RoundButton
                             onPress={() => navigation.navigate('PlanPickup')}
-                            icon={<FontAwesome5 name="truck" size={12.5} color="white" />}
+                            icon={<FontAwesome5 name="truck" size={17} color="white"/>}
+                            alt="Icoon van een truck"
                         />
                     }
                 />
@@ -173,12 +200,18 @@ const styles = StyleSheet.create({
         fontSize: scaleFontSize(24),
         fontWeight: "bold",
     },
+    bottleCounterContainer: {
+        flexDirection: 'row',
+    },
     bottleCounter: {
         fontFamily: "Montserrat",
         fontSize: scaleFontSize(36),
         fontWeight: "800",
         color: "#212529",
         marginTop: 10,
+    },
+    leadingZeros: {
+        color: "#BDC5C7",
     },
 
     appointmentTextGrey: {
