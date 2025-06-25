@@ -2,7 +2,6 @@ import {openDatabaseAsync} from "expo-sqlite";
 import bcrypt from 'bcryptjs';
 
 bcrypt.setRandomFallback((len) => {
-    // alleen voor test, NIET productie, niet veilig
     const random = [];
     for (let i = 0; i < len; i++) {
         random.push(Math.floor(Math.random() * 256));
@@ -17,8 +16,7 @@ export const initDatabase = async () => {
     await db.execAsync(`PRAGMA foreign_keys = OFF`);
 
     await db.execAsync(` DROP TABLE IF EXISTS items;`)
-    // await db.execAsync(` DROP TABLE IF EXISTS appointments;`)
-
+    await db.execAsync(` DROP TABLE IF EXISTS appointments;`)
 
     await db.execAsync(`PRAGMA foreign_keys = ON;`);
 
@@ -62,7 +60,7 @@ export const initDatabase = async () => {
             user_id INTEGER NOT NULL,
             done    BOOLEAN DEFAULT 0,
             FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
-        );
+            );
     `);
 
     await db.execAsync(`
@@ -74,7 +72,7 @@ export const initDatabase = async () => {
             quantity INTEGER DEFAULT 1,
             FOREIGN KEY (list_id) REFERENCES lists (id),
             FOREIGN KEY (item_id) REFERENCES items (id)
-        );
+            );
     `);
 
     await db.execAsync(`
@@ -90,7 +88,7 @@ export const initDatabase = async () => {
             done               BOOLEAN NULL,
             FOREIGN KEY (customer_id) REFERENCES users (id),
             FOREIGN KEY (list_id) REFERENCES lists (id)
-        );
+            );
     `);
 };
 
@@ -100,7 +98,6 @@ export const insertUser = async (name, email, plainPassword) => {
         const passwordHash = bcrypt.hashSync(plainPassword, salt);
         if (!db) return;
         await db.runAsync('INSERT INTO users (name, email, password) VALUES (?, ?, ?);', name, email, passwordHash);
-        console.log("User toegevoegd:", name, email, passwordHash);
     } catch (error) {
         console.error("Kon user niet toevoegen:", error);
     }
@@ -137,7 +134,6 @@ export const deleteUser = async (id) => {
     try {
         if (!db) return;
         await db.runAsync('DELETE FROM users WHERE id = ?;', id);
-        console.log("User verwijderd");
     } catch (error) {
         console.error("Kon user niet verwijderen", error);
     }
@@ -147,7 +143,6 @@ export const insertItem = async (name, value) => {
     try {
         if (!db) return;
         await db.runAsync('INSERT INTO items (name, value) VALUES (?, ?);', name, value);
-        console.log("Item toegevoegd aan database");
     } catch (error) {
         console.error("Item kon niet worden toegevoegd", error);
     }
@@ -157,7 +152,6 @@ export const getItems = async () => {
     try {
         if (!db) return [];
         const items = await db.getAllAsync('SELECT * FROM items;');
-        console.log("Items succesvol opgehaald");
         return items;
     } catch (error) {
         console.error("Kon items niet ophalen", error);
@@ -169,7 +163,6 @@ export const deleteItem = async (id) => {
     try {
         if (!db) return;
         await db.runAsync('DELETE FROM items WHERE id = ?;', id);
-        console.log("Item succesvol verwijderd");
     } catch (error) {
         console.error("Kon item niet verwijderen:", error);
     }
@@ -180,7 +173,6 @@ export const createListForUser = async (userId) => {
         if (!db) return null;
         const result = await db.runAsync('INSERT INTO lists (user_id) VALUES (?);', userId);
         const listId = result.lastInsertRowId;
-        console.log("Lijst aangemaakt voor user:", userId, "met lijst ID:", listId);
         return listId;
     } catch (error) {
         console.error("Kon lijst niet aanmaken:", error);
@@ -192,7 +184,6 @@ export const getList = async (id) => {
     try {
         if (!db) return []
         await db.getFirstAsync('SELECT * FROM lists WHERE id =?', id);
-        console.log("Lijst opgehaald")
     } catch (error) {
         console.error("Kon lijst niet ophalen", error)
     }
@@ -202,7 +193,6 @@ export const getUserLists = async (id) => {
     try {
         if (!db) return [];
         const lists = await db.getAllAsync('SELECT * FROM lists WHERE user_id=? AND done=?', id, 0);
-        console.log("Lijst(en) succesvol opgehaald", lists);
         return lists;
     } catch (error) {
         console.error("Kon de lijst(en) niet ophalen:", error);
@@ -221,22 +211,20 @@ export const getAllLists = async () => {
     }
 };
 
-    export const getListId = async (userId) => {
-        if(!db) return;
-        try{
-            const result = await db.getFirstAsync('SELECT id FROM lists WHERE user_id=? ORDER BY id DESC LIMIT 1', userId)
-            console.log(`Id opgehaalt ${result.id} voor gebruiker ${userId}`)
-            return result
-        } catch (error) {
-            console.error("Er ging iets fout:", error)
-        }
+export const getListId = async (userId) => {
+    if (!db) return;
+    try {
+        const result = await db.getFirstAsync('SELECT id FROM lists WHERE user_id=? ORDER BY id DESC LIMIT 1', userId)
+        return result
+    } catch (error) {
+        console.error("Er ging iets fout:", error)
     }
+}
 
 export const insertIntoList = async (listId, itemId, quantity) => {
     try {
         if (!db) return;
         await db.runAsync('INSERT INTO list_item (list_id, item_id, quantity) VALUES (?, ?, ?);', listId, itemId, quantity);
-        console.log("Items toevoegen aan list_item: listId =", listId, ", itemId =", itemId, ", quantity =", quantity);
     } catch (error) {
         console.error("Kon item niet toevoegen aan de lijst", error);
     }
@@ -246,7 +234,6 @@ export const deleteList = async (id) => {
     try {
         if (!db) return;
         await db.runAsync('DELETE FROM lists WHERE id = ?', id);
-        console.log("Item succesvol verwijderd uit de lijst");
     } catch (error) {
         console.error("Kon item niet verwijderen uit de lijst:", error);
     }
@@ -256,7 +243,6 @@ export const getListItem = async () => {
     try {
         if (!db) return;
         const result = await db.getAllAsync('SELECT * FROM list_item')
-        console.log("Opgehaald uit de database", result)
         return result
     } catch (error) {
         console.error("Kon list_item niet ophalen")
@@ -271,7 +257,7 @@ export const getListItemsByListId = async (listId) => {
                 SELECT list.id,
                        list.list_id,
                        list.item_id,
-                       item.name AS item_name,
+                       item.name  AS item_name,
                        item.value AS item_value,
                        list.quantity
                 FROM list_item list
@@ -281,23 +267,12 @@ export const getListItemsByListId = async (listId) => {
             `,
             [listId]
         );
-        console.log(`Items voor lijst ${listId}:`, result);
         return result;
     } catch (error) {
         console.error("Kon lijst items niet ophalen:", error);
         return [];
     }
 };
-
-export const updateListStatus = async (listId) => {
-    if (!db) return;
-    try {
-        const result = db.runAsync('UPDATE lists SET done = NOT done WHERE id = ?;', listId);
-        console.log("Lijst status succesvol geupdate", result);
-    } catch (error) {
-        console.error("Fout bij lijst aanpassen", error);
-    }
-}
 
 export const updateUserAddress = async (userId, newAddress) => {
     if (!db) return;
@@ -307,20 +282,14 @@ export const updateUserAddress = async (userId, newAddress) => {
             newAddress,
             userId
         );
-        console.log("Adres succesvol opgeslagen");
     } catch (error) {
-        console.log("Fout bij opslaan adres:", error);
+        console.error("Fout bij opslaan adres:", error);
     }
 };
 
-
-export const insertAppointment = async ({ customer_id, customer_address, time, list_id }) => {
+export const insertAppointment = async ({customer_id, customer_address, time, list_id}) => {
     if (!db) return;
     try {
-        console.log("Datum en tijd voor opslag:", time);
-
-        console.log("Waarden naar DB:", customer_id, customer_address, time, list_id); // ✅ debug check
-
         await db.runAsync(
             'INSERT INTO appointments (customer_id, customer_address, time, list_id) VALUES (?, ?, ?, ?);',
             customer_id,
@@ -329,9 +298,8 @@ export const insertAppointment = async ({ customer_id, customer_address, time, l
             list_id
         );
 
-        console.log("Afspraak succesvol opgeslagen");
     } catch (error) {
-        console.log("Fout bij opslaan afspraak:", error);
+        console.error("Fout bij opslaan afspraak:", error);
     }
 };
 
@@ -344,38 +312,8 @@ export const getNextAppointmentForUser = async (customerId) => {
         );
         return result;
     } catch (error) {
-        console.log("Fout bij ophalen volgende afspraak:", error);
+        console.error("Fout bij ophalen volgende afspraak:", error);
         return null;
-    }
-};
-
-export const deleteAllAppointments = async () => {
-    try {
-        if (!db) return;
-        await db.runAsync('DELETE FROM appointments');
-        console.log("Afspraken succesvol verwijderd");
-    } catch (error) {
-        console.log("Kon afspraken niet verwijderen:", error);
-    }
-};
-
-export const deleteAllListItems = async () => {
-    try {
-        if (!db) return;
-        await db.runAsync('DELETE FROM list_item');
-        console.log("Items uit de lijst succesvol verwijderd");
-    } catch (error) {
-        console.log("Kon items uit de lijst niet verwijderen:", error);
-    }
-};
-
-export const deleteAllLists = async () => {
-    try {
-        if (!db) return;
-        await db.runAsync('DELETE FROM lists');
-        console.log("Lijsten succesvol verwijderd");
-    } catch (error) {
-        console.log("Kon lijsten niet verwijderen:", error);
     }
 };
 
@@ -383,10 +321,9 @@ export const getAllAppointments = async () => {
     if (!db) return [];
     try {
         const appointments = await db.getAllAsync('SELECT * FROM appointments;');
-        console.log("Afspraken succesvol opgehaald", appointments);
         return appointments;
     } catch (error) {
-        console.log("Kon afspraken niet ophalen:", error);
+        console.error("Kon afspraken niet ophalen:", error);
         return [];
     }
 };
@@ -396,24 +333,21 @@ export const checkIfUserCanPlanPickup = async (userId) => {
 
     try {
         const result = await db.getFirstAsync(`
-            SELECT 
-                l.id AS list_id,
-                SUM(li.quantity) AS total_items
+            SELECT l.id             AS list_id,
+                   SUM(li.quantity) AS total_items
             FROM lists l
-            LEFT JOIN list_item li ON l.id = li.list_id
-            WHERE l.user_id = ? AND l.done = 0
+                     LEFT JOIN list_item li ON l.id = li.list_id
+            WHERE l.user_id = ?
+              AND l.done = 0
             GROUP BY l.id
-            ORDER BY l.id DESC
-            LIMIT 1;
+            ORDER BY l.id DESC LIMIT 1;
         `, [userId]);
 
         if (!result) {
-            console.log("Geen openstaande lijst gevonden.");
             return false;
         }
 
         const canSchedule = result.total_items >= 10;
-        console.log(`Gebruiker mag afspraak maken: ${canSchedule}`);
         return canSchedule;
     } catch (error) {
         console.error("Fout bij controleren van lijststatus:", error);
@@ -421,53 +355,23 @@ export const checkIfUserCanPlanPickup = async (userId) => {
     }
 };
 
-export const updateAppointmentStatus = async (appId) => {
-    if (!db) return;
-    try {
-        const result = db.runAsync('UPDATE appointments SET done = NOT done WHERE id = ?;', appId);
-        console.log("Afspraak status succesvol geupdate", result);
-    } catch (error) {
-        console.error("Fout bij Afspraak aanpassen", error);
-    }
-}
-
-// export const deleteAllAppointments = async () => {
-//     try {
-//         if (!db) return;
-//         await db.runAsync('DELETE FROM appointments');
-//         console.log("Afspraken succesvol verwijderd");
-//     } catch (error) {
-//         console.log("Kon afspraken niet verwijderen:", error);
-//     }
-// };
-//
-export const getAllAppointments = async () => {
-    if (!db) return [];
-    try {
-        const appointments = await db.getAllAsync('SELECT * FROM appointments;');
-        console.log("Afspraken succesvol opgehaald", appointments);
-        return appointments;
-    } catch (error) {
-        console.log("Kon afspraken niet ophalen:", error);
-        return [];
-    }
-};
-
 export const changeWalletValue = async (value, id) => {
     try {
-        if(!db) return
-        const change = await db.runAsync(`UPDATE users SET wallet =? WHERE id = ?`, value, id)
-        console.log("Wallet waarde aangepast", change)
+        if (!db) return
+        const change = await db.runAsync(`UPDATE users
+                                          SET wallet =?
+                                          WHERE id = ?`, value, id)
     } catch (error) {
         console.error("Kon wallet niet aanpassen", error)
     }
-}
+};
 
 export const getUserWallet = async (id) => {
     try {
         if (!db) return
-        const results = await db.getFirstAsync(`SELECT wallet FROM users WHERE id = ?`, id);
-        console.log("Wallet opgehaald", results.wallet);
+        const results = await db.getFirstAsync(`SELECT wallet
+                                                FROM users
+                                                WHERE id = ?`, id);
         return results.wallet ?? 0;
     } catch (error) {
         console.error("Kon de wallet niet ophalen of het bestaat niet.", error);

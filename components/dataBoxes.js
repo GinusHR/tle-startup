@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import {Dimensions, StyleSheet, Text, View} from "react-native";
 
-const { width } = Dimensions.get("window");
+const {width} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
-const DataBoxes = ({ onPress, title, body, subBody, button, bodyStyle, shrinkText }) => (
+const DataBoxes = ({title, body, subBody, button, bodyStyle, shrinkText}) => (
     <View style={style.container} accessible={false}>
         <View style={style.textContainer}>
             <Text style={style.title}>{title}</Text>
@@ -30,7 +30,7 @@ const DataBoxes = ({ onPress, title, body, subBody, button, bodyStyle, shrinkTex
             )}
         </View>
         <View style={style.buttonContainer}>
-            {button ? <View style={style.line} /> : null}
+            {button ? <View style={style.line}/> : null}
             {button}
         </View>
     </View>

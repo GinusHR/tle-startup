@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { useFonts } from 'expo-font';
-
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import React, {useEffect, useState} from "react";
+import {NavigationContainer} from "@react-navigation/native";
+import {useFonts} from 'expo-font';
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
+import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import * as SecureStore from 'expo-secure-store';
-
 import {getAllAppointments, getAllLists, getAllUsers, getItems, getListItem, initDatabase} from "./database";
-
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -21,7 +18,6 @@ import ScannedItemsDetails from "./screens/ScannedItemsDetails";
 import Wallet from "./screens/WalletScreen";
 import AddressPickerScreen from "./screens/AddressPickerScreen";
 import DateTimePickerScreen from "./screens/DateTimePickerScreen";
-
 import AdminScreen from './screens/adminscreens/AdminScreen';
 import CameraScreen from './screens/adminscreens/CameraScreen';
 import CheckListScreen from './screens/adminscreens/CheckListScreen';
@@ -32,19 +28,22 @@ const AdminStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 if (!__DEV__) {
-    console.log = () => {};
-    console.warn = () => {};
-    console.error = () => {};
+    console.log = () => {
+    };
+    console.warn = () => {
+    };
+    console.error = () => {
+    };
 }
 
-const AuthNavigator = ({ onLogin }) => (
-    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+const AuthNavigator = ({onLogin}) => (
+    <AuthStack.Navigator screenOptions={{headerShown: false}}>
         <AuthStack.Screen
             name="Login"
             component={LoginScreen}
-            initialParams={{ onLogin }}
+            initialParams={{onLogin}}
         />
-        <AuthStack.Screen name="Register" component={RegisterScreen} />
+        <AuthStack.Screen name="Register" component={RegisterScreen}/>
     </AuthStack.Navigator>
 );
 
@@ -55,8 +54,10 @@ const HomeNavigator = () => (
         <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{title: 'Afspraak maken'}}/>
         <HomeStack.Screen name="Admin" component={AdminScreen}/>
         <HomeStack.Screen name="Camera" component={CameraScreen}/>
-        <HomeStack.Screen name="AddressPicker" component={AddressPickerScreen} options={{title: 'Adres', presentation: 'modal', animation: 'slide_from_right',}}/>
-        <HomeStack.Screen name="DateTimePicker" component={DateTimePickerScreen} options={{title: 'Datum & Tijd', presentation: 'modal', animation: 'slide_from_right',}}/>
+        <HomeStack.Screen name="AddressPicker" component={AddressPickerScreen}
+                          options={{title: 'Adres', presentation: 'modal', animation: 'slide_from_right',}}/>
+        <HomeStack.Screen name="DateTimePicker" component={DateTimePickerScreen}
+                          options={{title: 'Datum & Tijd', presentation: 'modal', animation: 'slide_from_right',}}/>
         <HomeStack.Screen
             name="details"
             component={ScannedItemsDetails}
@@ -85,11 +86,11 @@ const AdminNavigator = () => (
     </AdminStack.Navigator>
 )
 
-const AppTabs = ({ onLogout, currentUser, items }) => (
+const AppTabs = ({onLogout, currentUser, items}) => (
     <Tab.Navigator
-        screenOptions={({ route }) => ({
+        screenOptions={({route}) => ({
             headerShown: false,
-            tabBarIcon: ({ color }) => {
+            tabBarIcon: ({color}) => {
                 let iconName;
                 let IconComponent;
 
@@ -106,7 +107,7 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
 
                 return (
                     <View>
-                        <IconComponent name={iconName} size={30} color={color} />
+                        <IconComponent name={iconName} size={30} color={color}/>
                     </View>
                 );
             },
@@ -125,29 +126,30 @@ const AppTabs = ({ onLogout, currentUser, items }) => (
             },
         })}
     >
-        <Tab.Screen name="Home" options={{ headerShown: false }} component={HomeNavigator} />
-        <Tab.Screen name="List" options={{ headerShown: false }}>{()=> <ListScreen items={items} currentUser={currentUser}/>}</Tab.Screen>
-        <Tab.Screen name="Account" options={{ headerShown: false  }}>
+        <Tab.Screen name="Home" options={{headerShown: false}} component={HomeNavigator}/>
+        <Tab.Screen name="List" options={{headerShown: false}}>{() => <ListScreen items={items}
+                                                                                  currentUser={currentUser}/>}</Tab.Screen>
+        <Tab.Screen name="Account" options={{headerShown: false}}>
             {() => (
-                <AccountScreen currentUser={currentUser} onLogout={onLogout} />
+                <AccountScreen currentUser={currentUser} onLogout={onLogout}/>
             )}
         </Tab.Screen>
     </Tab.Navigator>
 );
 
-const AdminTabs = ({ onLogout, currentUser }) => (
+const AdminTabs = ({onLogout, currentUser}) => (
     <Tab.Navigator
-        screenOptions={({ route }) => ({
+        screenOptions={({route}) => ({
             headerShown: false,
-            tabBarIcon: ({ color, size }) => {
+            tabBarIcon: ({color, size}) => {
                 if (route.name === 'Admin') {
-                    return <MaterialIcons name="admin-panel-settings" size={size} color={color} />;
+                    return <MaterialIcons name="admin-panel-settings" size={size} color={color}/>;
                 } else if (route.name === 'Camera') {
-                    return <MaterialIcons name="camera" size={size} color={color} />;
+                    return <MaterialIcons name="camera" size={size} color={color}/>;
                 } else if (route.name === 'CheckList') {
-                    return <MaterialIcons name="checklist" size={size} color={color} />;
+                    return <MaterialIcons name="checklist" size={size} color={color}/>;
                 } else if (route.name === 'Account') {
-                    return <Ionicons name="person" size={size} color={color} />;
+                    return <Ionicons name="person" size={size} color={color}/>;
                 }
             },
             tabBarStyle: {
@@ -157,12 +159,14 @@ const AdminTabs = ({ onLogout, currentUser }) => (
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-        <Tab.Screen name="Admin" options={{ headerShown: false, headerTitle: '', headerShadowVisible: false}} component={AdminNavigator} />
-        <Tab.Screen name="Camera" options={{ headerTitle: '', headerShadowVisible: false}} component={CameraScreen} />
-        <Tab.Screen name="CheckList" options={{ headerTitle: '', headerShadowVisible: false}} component={CheckListScreen} />
-        <Tab.Screen name="Account" options={{ headerTitle: '', headerShadowVisible: false }}>
+        <Tab.Screen name="Admin" options={{headerShown: false, headerTitle: '', headerShadowVisible: false}}
+                    component={AdminNavigator}/>
+        <Tab.Screen name="Camera" options={{headerTitle: '', headerShadowVisible: false}} component={CameraScreen}/>
+        <Tab.Screen name="CheckList" options={{headerTitle: '', headerShadowVisible: false}}
+                    component={CheckListScreen}/>
+        <Tab.Screen name="Account" options={{headerTitle: '', headerShadowVisible: false}}>
             {() => (
-                <AccountScreen currentUser={currentUser} onLogout={onLogout} />
+                <AccountScreen currentUser={currentUser} onLogout={onLogout}/>
             )}
         </Tab.Screen>
     </Tab.Navigator>
@@ -202,7 +206,6 @@ export default function App() {
             try {
                 await initDatabase();
                 setIsDbInitialized(true);
-                console.log("Database geïnitialiseerd");
                 const itemData = await getItems();
                 const userData = await getAllUsers();
                 const appoData = await getAllAppointments()
@@ -213,11 +216,6 @@ export default function App() {
                 setLists(listsData);
                 setListItems(listContentData);
                 setAppointments(appoData)
-                console.log("Items:", itemData)
-                console.log("Users:",userData)
-                console.log("Lists:", listsData)
-                console.log("list_item:", listContentData)
-                console.log("Appointments", appoData)
             } catch (error) {
                 console.error("Database initialisatie mislukt", error);
             }
@@ -239,7 +237,7 @@ export default function App() {
     if (!fontsLoaded || !isDbInitialized) {
         return (
             <View style={[styles.container, styles.centered]}>
-                <ActivityIndicator size="large" color="#2F4538" />
+                <ActivityIndicator size="large" color="#2F4538"/>
                 <Text style={styles.loadingText}>Laden...</Text>
             </View>
         )
@@ -247,7 +245,7 @@ export default function App() {
 
     const renderAppNavigation = () => {
         if (currentUser && currentUser.role === 1) {
-            return <AdminTabs onLogout={handleLogout} currentUser={currentUser} />;
+            return <AdminTabs onLogout={handleLogout} currentUser={currentUser}/>;
         } else {
             return <AppTabs onLogout={handleLogout} currentUser={currentUser} items={items}/>;
         }
@@ -258,7 +256,7 @@ export default function App() {
             {userIsLoggedIn ? (
                 renderAppNavigation()
             ) : (
-                <AuthNavigator onLogin={handleLogin} />
+                <AuthNavigator onLogin={handleLogin}/>
             )}
         </NavigationContainer>
     );

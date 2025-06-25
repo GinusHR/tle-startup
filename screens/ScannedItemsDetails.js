@@ -1,22 +1,22 @@
 import React from 'react';
-import { View, StyleSheet, Text, SafeAreaView, Dimensions, ScrollView } from 'react-native';
-import { Entypo } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import {Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Entypo} from "@expo/vector-icons";
+import {useNavigation, useRoute} from "@react-navigation/native";
 import DataBoxes from "../components/dataBoxes";
 
-const { width } = Dimensions.get("window");
+const {width} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 export default function ScannedItemsDetail() {
     const navigation = useNavigation();
     const route = useRoute();
-    const { listItems, totalBottles, totalValue } = route.params;
+    const {listItems, totalBottles, totalValue} = route.params;
 
     return (
         <SafeAreaView>
-            <View style={{ paddingHorizontal: 30, paddingTop: 30 }}>
+            <View style={{paddingHorizontal: 30, paddingTop: 30}}>
                 <View style={styles.header}>
-                    <Entypo name="chevron-left" size={35} color="#212529" onPress={navigation.goBack} />
+                    <Entypo name="chevron-left" size={35} color="#212529" onPress={navigation.goBack}/>
                     <Text style={styles.pageTitle}>Details</Text>
                 </View>
 

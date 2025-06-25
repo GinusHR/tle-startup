@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
-    View, Text, TextInput, TouchableOpacity, StyleSheet,
-    SafeAreaView, Dimensions, ImageBackground, Image, Alert, ActivityIndicator
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    Image,
+    ImageBackground,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BackgroundImage from '../assets/images/background.png';
 import PicnicLogo from '../assets/images/picnic.png';
-import { insertUser } from "../database";
+import {insertUser} from "../database";
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
-export default function RegisterScreen({ navigation }) {
+export default function RegisterScreen({navigation}) {
     const insets = useSafeAreaInsets();
     const [currentStep, setCurrentStep] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +35,7 @@ export default function RegisterScreen({ navigation }) {
     });
 
     const updateFormData = (field, value) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
+        setFormData(prev => ({...prev, [field]: value}));
     };
 
     const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -70,7 +78,6 @@ export default function RegisterScreen({ navigation }) {
         try {
             const fullName = `${formData.naam} ${formData.achternaam}`;
             await insertUser(fullName, formData.email, formData.wachtwoord);
-            console.log('Gebruiker succesvol geregistreerd:', formData.email);
             setCurrentStep(3);
         } catch (error) {
             console.error('Registratie error:', error);
@@ -164,7 +171,7 @@ export default function RegisterScreen({ navigation }) {
                 disabled={isLoading}
             >
                 {isLoading ? (
-                    <ActivityIndicator color="#FDFDFD" />
+                    <ActivityIndicator color="#FDFDFD"/>
                 ) : (
                     <Text style={styles.buttonText}>Registreer</Text>
                 )}
@@ -181,18 +188,18 @@ export default function RegisterScreen({ navigation }) {
             </TouchableOpacity>
             <View style={styles.partnerContainer}>
                 <Text style={styles.partnerText}>Partners met</Text>
-                <Image source={PicnicLogo} style={styles.partnerLogo} resizeMode="contain" />
+                <Image source={PicnicLogo} style={styles.partnerLogo} resizeMode="contain"/>
             </View>
         </>
     );
 
     return (
         <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
-            <View style={styles.overlay} />
-            <View style={styles.overlay} />
+            <View style={styles.overlay}/>
+            <View style={styles.overlay}/>
 
-            <View style={[styles.decorationContainer, { paddingTop: insets.top + 10 }]}>
-                {Array.from({ length: 15 }, (_, i) => (
+            <View style={[styles.decorationContainer, {paddingTop: insets.top + 10}]}>
+                {Array.from({length: 15}, (_, i) => (
                     <Text
                         key={i}
                         style={i % 2 === 0 ? styles.headerText : styles.headerTextBold}
@@ -216,9 +223,9 @@ export default function RegisterScreen({ navigation }) {
                             {currentStep !== 3 && (
                                 <>
                                     <View style={styles.dividerContainer}>
-                                        <View style={styles.dividerLine} />
+                                        <View style={styles.dividerLine}/>
                                         <Text style={styles.dividerText}>of</Text>
-                                        <View style={styles.dividerLine} />
+                                        <View style={styles.dividerLine}/>
                                     </View>
                                     <TouchableOpacity
                                         style={[styles.secondaryButton, isLoading && styles.disabledButton]}
@@ -229,7 +236,7 @@ export default function RegisterScreen({ navigation }) {
                                     </TouchableOpacity>
                                     <View style={styles.partnerContainer}>
                                         <Text style={styles.partnerText}>Partners met</Text>
-                                        <Image source={PicnicLogo} style={styles.partnerLogo} resizeMode="contain" />
+                                        <Image source={PicnicLogo} style={styles.partnerLogo} resizeMode="contain"/>
                                     </View>
                                 </>
                             )}
@@ -295,7 +302,7 @@ const styles = StyleSheet.create({
         padding: 30,
         elevation: 5,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
     },

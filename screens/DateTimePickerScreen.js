@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import MonthDayDropdowns from '../components/MonthDayDropdowns';
 import TimePicker from '../components/TimePicker';
 
@@ -25,10 +25,8 @@ export default function DateTimePickerScreen() {
 
         const pad = (num) => String(num).padStart(2, '0');
 
-        const formattedDate = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`; // "2025-06-18"
-        const formattedTime = `${pad(date.getHours())}:${pad(date.getMinutes())}`; // "13:30"
-
-        console.log('Geselecteerde lokale datum+tijd:', formattedDate, formattedTime);
+        const formattedDate = `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+        const formattedTime = `${pad(date.getHours())}:${pad(date.getMinutes())}`;
 
         if (route.params?.onDateSelected) {
             route.params.onDateSelected({
@@ -43,12 +41,12 @@ export default function DateTimePickerScreen() {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                <Ionicons name="chevron-back" size={28} color="#1C1F1E" />
+                <Ionicons name="chevron-back" size={28} color="#1C1F1E"/>
             </TouchableOpacity>
 
             <Text style={styles.title}>Kies datum en tijd</Text>
 
-            <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+            <View style={{flex: 1, justifyContent: 'flex-start'}}>
                 <MonthDayDropdowns
                     selectedMonth={selectedMonth}
                     setSelectedMonth={setSelectedMonth}

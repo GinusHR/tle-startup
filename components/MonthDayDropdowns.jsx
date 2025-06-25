@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, {useState} from 'react';
+import {ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
 
 const months = [
     'Januari', 'Februari', 'Maart', 'April', 'Mei', 'Juni',
     'Juli', 'Augustus', 'September', 'Oktober', 'November', 'December'
 ];
-const days = Array.from({ length: 31 }, (_, i) => i + 1);
+const days = Array.from({length: 31}, (_, i) => i + 1);
 
-export default function MonthDayDropdowns({ selectedMonth, setSelectedMonth, selectedDay, setSelectedDay }) {
+export default function MonthDayDropdowns({selectedMonth, setSelectedMonth, selectedDay, setSelectedDay}) {
     const [monthOpen, setMonthOpen] = useState(false);
     const [dayOpen, setDayOpen] = useState(false);
 
     return (
         <View style={styles.dropdownRow}>
-            {/* Maand dropdown */}
             <View style={styles.dropdownSection}>
                 <Text style={styles.label}>Maand</Text>
                 <TouchableOpacity
@@ -24,7 +23,7 @@ export default function MonthDayDropdowns({ selectedMonth, setSelectedMonth, sel
                     <Text style={styles.dropdownText}>
                         {selectedMonth !== null ? months[selectedMonth] : 'Selecteer Maand'}
                     </Text>
-                    <Ionicons name={monthOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
+                    <Ionicons name={monthOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E"/>
                 </TouchableOpacity>
                 {monthOpen && (
                     <ScrollView style={styles.dropdownList}>
@@ -44,8 +43,7 @@ export default function MonthDayDropdowns({ selectedMonth, setSelectedMonth, sel
                 )}
             </View>
 
-            {/* Dag dropdown */}
-            <View style={[styles.dropdownSection, { marginLeft: 12 }]}>
+            <View style={[styles.dropdownSection, {marginLeft: 12}]}>
                 <Text style={styles.label}>Dag</Text>
                 <TouchableOpacity
                     onPress={() => setDayOpen(!dayOpen)}
@@ -54,7 +52,7 @@ export default function MonthDayDropdowns({ selectedMonth, setSelectedMonth, sel
                     <Text style={styles.dropdownText}>
                         {selectedDay !== null ? selectedDay : 'Selecteer Dag'}
                     </Text>
-                    <Ionicons name={dayOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E" />
+                    <Ionicons name={dayOpen ? 'chevron-up' : 'chevron-down'} size={20} color="#1C1F1E"/>
                 </TouchableOpacity>
                 {dayOpen && (
                     <ScrollView style={styles.dropdownList}>

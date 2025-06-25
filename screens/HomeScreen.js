@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, View, Platform, StatusBar, Image, Alert } from 'react-native';
-import { Entypo, FontAwesome5, FontAwesome6, Ionicons } from '@expo/vector-icons';
-import { getListItemsByListId, getNextAppointmentForUser, getUserLists, getUserWallet, checkIfUserCanPlanPickup } from "../database";
+import React, {useEffect, useState} from 'react';
+import {Alert, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {Entypo, FontAwesome5} from '@expo/vector-icons';
+import {
+    checkIfUserCanPlanPickup,
+    getListItemsByListId,
+    getNextAppointmentForUser,
+    getUserLists,
+    getUserWallet
+} from "../database";
 import * as SecureStore from 'expo-secure-store';
 
 import RoundButton from "../components/roundButton";
@@ -54,7 +60,7 @@ export default function HomeScreen({navigation}) {
                     });
                 }
 
-                const totalB= allListItems.reduce((sum, item) => sum + item.quantity, 0);
+                const totalB = allListItems.reduce((sum, item) => sum + item.quantity, 0);
                 const totalV = allListItems.reduce((sum, item) => sum + item.quantity * item.value, 0);
 
                 setTotalBottles(totalB);
@@ -88,7 +94,7 @@ export default function HomeScreen({navigation}) {
                     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
                 }}
             >
-                <Header title="Home"  a11yLabel={"Startpagina koptekst"}/>
+                <Header title="Home" a11yLabel={"Startpagina koptekst"}/>
             </View>
 
             <View style={styles.main}>
@@ -118,23 +124,19 @@ export default function HomeScreen({navigation}) {
                             totalBottles
                         })}
                         a11yLabel={"Knop om naar de flessen overzicht te gaan"}
-                        icon={<FontAwesome5 name="th-list" color="white" alt="knop met een lijst icoon" size={20} />}
+                        icon={<FontAwesome5 name="th-list" color="white" alt="knop met een lijst icoon" size={20}/>}
                     />
-                    {/*<RoundButton*/}
-                    {/*    title={"DATA"}*/}
-                    {/*    icon={<FontAwesome6 name="chart-simple" size={15} color="white" />}*/}
-                    {/*/>*/}
                 </View>
             </View>
 
-            <View style={{ paddingHorizontal: 20 }}>
+            <View style={{paddingHorizontal: 20}}>
                 <DataBoxes
                     title={"Saldo"}
                     body={`€ ${(Number(balance) || 0).toFixed(2).replace('.', ',')}`}
                     button={
                         <RoundButton
                             onPress={() => navigation.navigate('Wallet')}
-                            icon={<Entypo name="wallet" size={25} color="white" />}
+                            icon={<Entypo name="wallet" size={25} color="white"/>}
                             a11yLabel={"Knop om naar de wallet te gaan"}
                             alt="Icoon van een portemonee"
                         />
@@ -164,7 +166,7 @@ export default function HomeScreen({navigation}) {
                                     );
                                 }
                             }}
-                            icon={<FontAwesome5 name="truck" size={17} color="white" />}
+                            icon={<FontAwesome5 name="truck" size={17} color="white"/>}
                             alt="Icoon van een truck"
                         />
                     }

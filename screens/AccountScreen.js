@@ -1,38 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-    View,
+    Dimensions,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
-    ScrollView,
-    SafeAreaView,
-    Dimensions,
-    Platform,
-    StatusBar,
+    View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import {Ionicons} from '@expo/vector-icons';
 import Header from '../components/header';
 import HeaderAdmin from '../components/headerAdmin';
-import {getAllAppointments, deleteAllAppointments} from "../database";
 
-const { width } = Dimensions.get("window");
+const {width} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
-export default function AccountScreen({ onLogout, currentUser }) {
-
-    const [darkMode, setDarkMode] = useState(false);
-
-    const toggleDarkMode = () => setDarkMode(prev => !prev);
-
-    const backgroundColor = darkMode ? '#1D1F21' : '#fff';
-    const textColor = darkMode ? '#fff' : '#1D1F21';
-    const borderColor = darkMode ? '#444' : '#ddd';
-
+export default function AccountScreen({onLogout, currentUser}) {
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor }]}>
-            {/*<View style={{ paddingHorizontal: 30, paddingTop: 0 }}>*/}
-            {/*    <Header title="Account" />*/}
-            {/*</View>*/}
+        <SafeAreaView style={styles.container}>
             <View
                 style={{
                     paddingHorizontal: 30,
@@ -40,55 +27,36 @@ export default function AccountScreen({ onLogout, currentUser }) {
                 }}
             >
                 {currentUser?.role === 1 ? (
-                    <HeaderAdmin title="Account" />
+                    <HeaderAdmin title="Account"/>
                 ) : (
-                    <Header title="Account" />
+                    <Header title="Account"/>
                 )}
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={[styles.card, { borderColor }]}>
-                    <MenuItem title="Account" icon="person-outline" color={textColor} altText="Icoon van een man"/>
-                    <MenuItem title="Help" icon="help-circle-outline" color={textColor} altText="Icoon van een een vraagteken in een cirkel" />
-                    <MenuItem title="Leren" icon="book-outline" color={textColor} altText="Icoon van een open boek" />
-                    {/*<MenuItem*/}
-                    {/*    title="Uiterlijk"*/}
-                    {/*    icon="color-palette-outline"*/}
-                    {/*    color={textColor}*/}
-                    {/*    onPress={toggleDarkMode}*/}
-                    {/*    rightElement={*/}
-                    {/*        <Text style={{ color: textColor, fontSize: 16 }}>*/}
-                    {/*            {darkMode ? 'Dark' : 'Light'}*/}
-                    {/*        </Text>*/}
-                    {/*    }*/}
-                    {/*/>*/}
+                <View style={styles.card}>
+                    <MenuItem title="Account" icon="person-outline" color={'#1D1F21'} altText="Icoon van een man"/>
+                    <MenuItem title="Help" icon="help-circle-outline" color={'#1D1F21'}
+                              altText="Icoon van een een vraagteken in een cirkel"/>
+                    <MenuItem title="Leren" icon="book-outline" color={'#1D1F21'} altText="Icoon van een open boek"/>
                 </View>
 
-                <View style={[styles.card, { borderColor }]}>
-                    <MenuItem title="Over ons" icon="information-circle-outline" color={textColor} altText="Icoon van een informatie I in een cirkel" />
-                    <MenuItem title="FAQ’s" icon="chatbubble-ellipses-outline" color={textColor} altText="Icoon van een spraakwolk met 3 puntjes" />
-                    <MenuItem title="Algemene voorwaarden" icon="document-text-outline" color={textColor} altText="Icoon van papier met lijnen die dienen als tekst" />
+                <View style={styles.card}>
+                    <MenuItem title="Over ons" icon="information-circle-outline" color={'#1D1F21'}
+                              altText="Icoon van een informatie I in een cirkel"/>
+                    <MenuItem title="FAQ’s" icon="chatbubble-ellipses-outline" color={'#1D1F21'}
+                              altText="Icoon van een spraakwolk met 3 puntjes"/>
+                    <MenuItem title="Algemene voorwaarden" icon="document-text-outline" color={'#1D1F21'}
+                              altText="Icoon van papier met lijnen die dienen als tekst"/>
                 </View>
 
-                <View style={[styles.logoutCard, { borderColor }]}>
+                <View style={styles.logoutCard}>
                     <MenuItem
                         title="Uitloggen"
                         icon="log-out-outline"
-                        color={textColor}
+                        color={'#1D1F21'}
                         onPress={onLogout}
                         altText="Icoon van een pijltje die uit de deur gaat"
-                    />
-                    <MenuItem
-                        title="Delete All Appointments"
-                        icon="log-out-outline"
-                        color={textColor}
-                        onPress={deleteAllAppointments}
-                    />
-                    <MenuItem
-                        title="Log All Appointments"
-                        icon="log-out-outline"
-                        color={textColor}
-                        onPress={getAllAppointments}
                     />
                 </View>
             </ScrollView>
@@ -96,12 +64,12 @@ export default function AccountScreen({ onLogout, currentUser }) {
     );
 }
 
-const MenuItem = ({ title, altText, icon, onPress, color, rightElement }) => (
+const MenuItem = ({title, altText, icon, onPress, color, rightElement}) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
         <View style={styles.menuRow}>
             <View style={styles.menuLeft}>
-                <Ionicons name={icon} size={22} color={color} style={styles.icon} alt={altText} />
-                <Text style={[styles.menuText, { color }]}>{title}</Text>
+                <Ionicons name={icon} size={22} color={color} style={styles.icon} alt={altText}/>
+                <Text style={[styles.menuText, {color}]}>{title}</Text>
             </View>
             {rightElement && <View>{rightElement}</View>}
         </View>

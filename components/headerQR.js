@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/native';
 
 export default function HeaderQR({
                                      title = 'Titel',
@@ -15,8 +15,8 @@ export default function HeaderQR({
                 onPress={() => navigation.goBack()}
                 style={styles.left}
             >
-                <Ionicons name="close" size={24} color={textColor} />
-                <Text style={[styles.title, { color: textColor }]}>{title}</Text>
+                <Ionicons name="close" size={24} color={textColor}/>
+                <Text style={[styles.title, {color: textColor}]}>{title}</Text>
             </TouchableOpacity>
         </View>
     );

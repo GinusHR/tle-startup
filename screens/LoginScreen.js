@@ -1,28 +1,27 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
-    View,
+    ActivityIndicator,
+    Alert,
+    Dimensions,
+    Image,
+    ImageBackground,
+    Platform,
+    StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-    Alert,
-    ActivityIndicator,
-    ImageBackground,
-    Image,
-    Platform,
+    View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import * as SecureStore from 'expo-secure-store';
 import BackgroundImage from '../assets/images/background.png';
 import PicnicLogo from '../assets/images/picnic.png';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUser } from '../database';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {getUser} from '../database';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-const { width, height } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
-export default function LoginScreen({ navigation, route }) {
+export default function LoginScreen({navigation, route}) {
     const insets = useSafeAreaInsets();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -67,16 +66,16 @@ export default function LoginScreen({ navigation, route }) {
 
     return (
         <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
-            <View style={styles.overlay} />
+            <View style={styles.overlay}/>
 
             <KeyboardAwareScrollView
-                contentContainerStyle={{ flexGrow: 1 }}
+                contentContainerStyle={{flexGrow: 1}}
                 enableOnAndroid={true}
                 extraScrollHeight={20}
                 keyboardShouldPersistTaps="handled"
             >
-                <View style={[styles.decorationContainer, { paddingTop: insets.top + 10 }]}>
-                    {Array.from({ length: 15 }, (_, i) => (
+                <View style={[styles.decorationContainer, {paddingTop: insets.top + 10}]}>
+                    {Array.from({length: 15}, (_, i) => (
                         <Text
                             key={i}
                             style={i % 2 === 0 ? styles.headerText : styles.headerTextBold}
@@ -86,7 +85,7 @@ export default function LoginScreen({ navigation, route }) {
                     ))}
                 </View>
 
-                <View style={[styles.container, { paddingTop: insets.top }]}>
+                <View style={[styles.container, {paddingTop: insets.top}]}>
                     <View style={styles.contentContainer}>
                         <View style={styles.formContainer}>
                             <View style={styles.inputContainer}>
@@ -122,16 +121,16 @@ export default function LoginScreen({ navigation, route }) {
                                 disabled={isLoading}
                             >
                                 {isLoading ? (
-                                    <ActivityIndicator color="#FDFDFD" />
+                                    <ActivityIndicator color="#FDFDFD"/>
                                 ) : (
                                     <Text style={styles.loginButtonText}>Login</Text>
                                 )}
                             </TouchableOpacity>
 
                             <View style={styles.dividerContainer}>
-                                <View style={styles.dividerLine} />
+                                <View style={styles.dividerLine}/>
                                 <Text style={styles.dividerText}>of</Text>
-                                <View style={styles.dividerLine} />
+                                <View style={styles.dividerLine}/>
                             </View>
 
                             <TouchableOpacity
@@ -152,7 +151,7 @@ export default function LoginScreen({ navigation, route }) {
 
                             <View style={styles.partnerContainer}>
                                 <Text style={styles.partnerText}>Partners met</Text>
-                                <Image source={PicnicLogo} style={styles.partnerLogo} resizeMode="contain" />
+                                <Image source={PicnicLogo} style={styles.partnerLogo} resizeMode="contain"/>
                             </View>
                         </View>
                     </View>
@@ -211,7 +210,7 @@ const styles = StyleSheet.create({
         padding: 30,
         elevation: 5,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
     },

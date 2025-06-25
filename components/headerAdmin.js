@@ -1,13 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
-export default function HeaderAdmin({ title = 'Titel', textColor = '#212529' }) {
+export default function HeaderAdmin({title = 'Titel', textColor = '#212529'}) {
     return (
         <View style={styles.header}>
-                <Text style={[styles.pageTitle, { color: textColor }]}>{title}</Text>
+            <Text style={[styles.pageTitle, {color: textColor}]}>{title}</Text>
         </View>
     );
 }

@@ -1,26 +1,24 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
-    View,
+    Alert,
+    Dimensions,
+    FlatList,
+    Platform,
+    Pressable,
+    SafeAreaView,
+    StatusBar,
     StyleSheet,
     Text,
-    FlatList,
-    Pressable,
-    Alert,
-    Button,
     TouchableOpacity,
-    Dimensions,
-    SafeAreaView,
-    Platform, StatusBar
+    View
 } from 'react-native';
-import {Ionicons} from "@expo/vector-icons";
-import {createListForUser, getListItem, insertIntoList} from "../database";
+import {createListForUser, insertIntoList} from "../database";
 
 import Header from '../components/header';
 import {useNavigation} from "@react-navigation/native";
 
-const {width, height} = Dimensions.get("window");
+const {width} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
-
 
 export default function ListScreen({items, currentUser}) {
     const [selectedItems, setSelectedItems] = useState([]);
@@ -34,11 +32,11 @@ export default function ListScreen({items, currentUser}) {
                     return prev.filter((i) => i.id !== itemId);
                 }
                 return prev.map((item) =>
-                    item.id === itemId ? { ...item, quantity: newQuantity } : item
+                    item.id === itemId ? {...item, quantity: newQuantity} : item
                 );
             } else if (delta > 0) {
                 const newItem = items.find((i) => i.id === itemId);
-                return [...prev, { ...newItem, quantity: 1 }];
+                return [...prev, {...newItem, quantity: 1}];
             }
             return prev;
         });
@@ -55,9 +53,7 @@ export default function ListScreen({items, currentUser}) {
             return;
         }
 
-
         try {
-            console.log("Huidige gebruiker ID:", currentUser.id);
             const listId = await createListForUser(currentUser.id);
             if (!listId) {
                 Alert.alert("Fout", "Kon geen lijst aanmaken.");
@@ -65,7 +61,6 @@ export default function ListScreen({items, currentUser}) {
             }
 
             for (const item of selectedItems) {
-                console.log("Voeg toe aan list_id:", listId, "item:", item.id, "qty:", item.quantity);
                 await insertIntoList(listId, item.id, item.quantity);
             }
 
@@ -121,10 +116,6 @@ export default function ListScreen({items, currentUser}) {
         );
     };
 
-    const dbChecker =  async () => {
-        const response =  await getListItem()
-        console.log(response);
-    }
     return (
         <SafeAreaView style={styles.container}>
             <View
@@ -133,24 +124,24 @@ export default function ListScreen({items, currentUser}) {
                     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
                 }}
             >
-                <Header title="List" />
+                <Header title="List"/>
             </View>
             <View style={{flex: 1, paddingHorizontal: 16, backgroundColor: '#FDFDFD'}}>
-            <Text style={styles.title}>Kies uw statiegeld</Text>
-            <FlatList
-                data={items}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderItem}
-            />
-            <View>
-                <Pressable
-                    onPress={confirmChoice}
-                    style={styles.confirmButton}
-                >
-                    <Text style={styles.confirmText}>Bevestig selectie</Text>
-                </Pressable>
+                <Text style={styles.title}>Kies uw statiegeld</Text>
+                <FlatList
+                    data={items}
+                    keyExtractor={(item) => item.id.toString()}
+                    renderItem={renderItem}
+                />
+                <View>
+                    <Pressable
+                        onPress={confirmChoice}
+                        style={styles.confirmButton}
+                    >
+                        <Text style={styles.confirmText}>Bevestig selectie</Text>
+                    </Pressable>
+                </View>
             </View>
-        </View>
         </SafeAreaView>
 
     );

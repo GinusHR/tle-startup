@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import HeaderQR from '../components/headerQR';
 import QRCode from 'react-native-qrcode-svg';
 import * as Brightness from 'expo-brightness';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function QRDetailsScreen() {
     useFocusEffect(
@@ -12,7 +12,7 @@ export default function QRDetailsScreen() {
 
             const setBrightnessOnce = async () => {
                 try {
-                    const { status } = await Brightness.requestPermissionsAsync();
+                    const {status} = await Brightness.requestPermissionsAsync();
                     if (status !== 'granted') {
                         Alert.alert('Toestemming vereist', 'Schermhelderheid kan niet worden aangepast.');
                         return;
@@ -45,7 +45,7 @@ export default function QRDetailsScreen() {
 
     return (
         <View style={styles.container}>
-            <HeaderQR title="QR totaal" />
+            <HeaderQR title="QR totaal"/>
             <View style={styles.qrWrapper}>
                 <QRCode
                     value="3"

@@ -9,13 +9,11 @@ import DataBoxes from "../components/dataBoxes";
 import * as SecureStore from 'expo-secure-store';
 
 export default function PlanPickupScreen() {
-    const [isOneTime, setIsOneTime] = useState(true);
     const [userId, setUserId] = useState(null);
     const [selectedAddress, setSelectedAddress] = useState('');
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTime, setSelectedTime] = useState('');
     const [listId, setListId] = useState(null);
-
 
     const navigation = useNavigation();
     const isFocused = useIsFocused();
@@ -28,17 +26,12 @@ export default function PlanPickupScreen() {
                 if (userData) {
                     const user = JSON.parse(userData);
                     setUserId(user.id);
-                    console.log('Opgehaalde userId uit SecureStore:', user.id);
                     const list = await getListId(user.id);
                     setListId(list.id)
-                    console.log("Opgehaald list id:", list.id)
 
                 } else {
                     console.warn('Geen gebruiker gevonden in SecureStore');
                 }
-
-
-
 
                 if (route.params?.address) {
                     setSelectedAddress(route.params.address);
@@ -62,7 +55,6 @@ export default function PlanPickupScreen() {
 
     const handleCreateAppointment = async () => {
         try {
-            console.log(listId)
             const userDataString = await SecureStore.getItemAsync('user');
             if (!userDataString) {
                 Alert.alert('Fout', 'Gebruikersgegevens niet gevonden. Log opnieuw in.');
@@ -81,7 +73,6 @@ export default function PlanPickupScreen() {
             }
 
             const fullDateTime = `${selectedDate}T${selectedTime}`; // bijv. '2025-06-20T14:15'
-            console.log("Volledige timestamp die wordt opgeslagen:", fullDateTime);
 
             await insertAppointment({
                 customer_id: user.id,
@@ -107,13 +98,11 @@ export default function PlanPickupScreen() {
                 {cancelable: false}
             );
 
-
         } catch (error) {
             console.error('Fout bij aanmaken afspraak:', error);
             Alert.alert('Fout', 'Er ging iets mis bij het opslaan van de afspraak.');
         }
     };
-
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -139,7 +128,6 @@ export default function PlanPickupScreen() {
                                         navigation.navigate('AddressPicker', {
                                             onAddressSelected: (address) => {
                                                 setSelectedAddress(address)
-                                                console.log("Gekozen adres:", address)
                                             },
                                         })
                                     }
@@ -158,13 +146,12 @@ export default function PlanPickupScreen() {
                             shrinkText={false}
                             button={
                                 <RoundButton
-                                    icon={<Ionicons name="calendar-clear" size={22} color="white" alt="Icoon van een kalender"/>}
+                                    icon={<Ionicons name="calendar-clear" size={22} color="white"
+                                                    alt="Icoon van een kalender"/>}
                                     onPress={() =>
                                         navigation.navigate('DateTimePicker', {
                                             currentDate: selectedDate,
                                             onDateSelected: ({date, time}) => {
-                                                console.log("Gekozen date:", date);
-                                                console.log("Gekozen time:", time);
                                                 setSelectedDate(date);
                                                 setSelectedTime(time);
                                             },
@@ -211,7 +198,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        padding                 : 20,
+        padding: 20,
         backgroundColor: '#fff',
         justifyContent: 'space-between',
     },

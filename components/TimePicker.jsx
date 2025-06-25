@@ -1,9 +1,9 @@
 import React from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 
-export default function TimePicker({ selectedHour, setSelectedHour, selectedMinute, setSelectedMinute }) {
-    const hours = Array.from({ length: 24 }, (_, i) => i);
+export default function TimePicker({selectedHour, setSelectedHour, selectedMinute, setSelectedMinute}) {
+    const hours = Array.from({length: 24}, (_, i) => i);
     const minutes = [0, 15, 30, 45];
 
     return (

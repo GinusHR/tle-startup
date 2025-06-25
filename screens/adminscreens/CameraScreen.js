@@ -1,13 +1,12 @@
-import { CameraView } from "expo-camera";
-import { Platform, SafeAreaView, StatusBar, StyleSheet, Text, View } from "react-native";
-
+import {CameraView} from "expo-camera";
+import {Platform, SafeAreaView, StatusBar, StyleSheet} from "react-native";
 
 export default function CameraScreen({navigation}) {
 
     return (
         <SafeAreaView style={styleSheet.container}>
 
-            {Platform.OS === "android" ? <StatusBar hidden /> : null}
+            {Platform.OS === "android" ? <StatusBar hidden/> : null}
 
             <CameraView
                 style={styleSheet.camStyle}
@@ -20,11 +19,7 @@ export default function CameraScreen({navigation}) {
                 }
 
                 onBarcodeScanned={
-                    ({ data }) => {
-                        // write check for security
-                        // only go through if the qr is legit
-                        // make warning popup for false codes
-                        
+                    ({data}) => {
                         navigation.navigate('CheckList', {code: data})
                     }
                 }

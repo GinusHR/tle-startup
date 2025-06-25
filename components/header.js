@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {useNavigation} from '@react-navigation/native';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 export default function Header({
@@ -16,7 +16,8 @@ export default function Header({
 
     return (
         <View style={styles.header}>
-            <Text style={[styles.pageTitle, { color: textColor }]} accessible={true} accessibilityRole="Header" accessibilityLabel={a11yLabel}>{title}</Text>
+            <Text style={[styles.pageTitle, {color: textColor}]} accessible={true} accessibilityRole="Header"
+                  accessibilityLabel={a11yLabel}>{title}</Text>
             {showQR && (
                 <Ionicons
                     name="qr-code"
@@ -48,6 +49,6 @@ const styles = StyleSheet.create({
         letterSpacing: -1,
     },
     qrIcon: {
-        transform: [{ translateY: 1 }],
+        transform: [{translateY: 1}],
     },
 });

@@ -1,34 +1,25 @@
 import {
-    Alert,
     Animated,
     Dimensions,
+    Platform,
     Pressable,
+    SafeAreaView,
     StyleSheet,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
-    SafeAreaView,
-    Platform
+    View
 } from 'react-native';
 
-import React, { useRef, useState, useEffect } from 'react';
-import {
-    Entypo,
-    FontAwesome6,
-    MaterialCommunityIcons
-} from "@expo/vector-icons";
-
-import { useNavigation } from "@react-navigation/native";
-import { changeWalletValue, getUserWallet } from "../database";
+import React, {useEffect, useRef, useState} from 'react';
+import {Entypo, FontAwesome6, MaterialCommunityIcons} from "@expo/vector-icons";
+import {useNavigation} from "@react-navigation/native";
+import {changeWalletValue, getUserWallet} from "../database";
 import * as SecureStore from 'expo-secure-store';
-
-import RoundButton from "../components/roundButton";
 import DataBoxes from "../components/dataBoxes";
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
-const { width, height } = Dimensions.get("window");
+const {width, height} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 const TransactiesTab = () => (
@@ -37,7 +28,7 @@ const TransactiesTab = () => (
     </View>
 );
 
-const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
+const UitbetalenTab = ({userId, balance, setBalance, refreshBalance}) => {
     const [bedrag, setBedrag] = useState('');
     const [rekeningnummer, setRekeningnummer] = useState('');
 
@@ -83,8 +74,8 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                     <View style={styles.row}>
                         <View accessible={false}>
                             <Text style={styles.label}>Bedrag</Text>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ fontWeight: '800', fontSize: 18 }}>€ </Text>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={{fontWeight: '800', fontSize: 18}}>€ </Text>
                                 <TextInput
                                     style={styles.input}
                                     placeholder={"0,00"}
@@ -98,10 +89,10 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                                         if (!isNaN(num)) {
                                             setBedrag(num.toFixed(2).replace('.', ','));
                                         }
-                                    }} />
+                                    }}/>
                             </View>
                         </View>
-                        <FontAwesome6 name="euro-sign" size={24} color="#2F4538" alt="Icoon van een euroteken" />
+                        <FontAwesome6 name="euro-sign" size={24} color="#2F4538" alt="Icoon van een euroteken"/>
                     </View>
                 </View>
 
@@ -109,7 +100,7 @@ const UitbetalenTab = ({ userId, balance, setBalance, refreshBalance }) => {
                     <View style={styles.row}>
                         <View>
                             <Text style={styles.label}>Ontvanger</Text>
-                            <View style={{ flexDirection: 'row' }}>
+                            <View style={{flexDirection: 'row'}}>
                                 <TextInput
                                     style={styles.input}
                                     placeholder={"Rekeningnummer"}
@@ -169,10 +160,15 @@ export default function Wallet() {
 
     const renderTabContent = () => {
         switch (activeTab) {
-            case "transacties": return <TransactiesTab />;
-            case "uitbetalen": return <UitbetalenTab userId={userId} balance={balance} setBalance={setBalance} refreshBalance={refreshBalance} />;
-            case "beloningen": return <BeloningenTab />;
-            default: return <UitbetalenTab />;
+            case "transacties":
+                return <TransactiesTab/>;
+            case "uitbetalen":
+                return <UitbetalenTab userId={userId} balance={balance} setBalance={setBalance}
+                                      refreshBalance={refreshBalance}/>;
+            case "beloningen":
+                return <BeloningenTab/>;
+            default:
+                return <UitbetalenTab/>;
         }
     };
 
@@ -190,17 +186,17 @@ export default function Wallet() {
 
     return (
         <KeyboardAwareScrollView
-            style={{ flex: 1, backgroundColor: "#fff" }}
-            contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 50 }}
+            style={{flex: 1, backgroundColor: "#fff"}}
+            contentContainerStyle={{flexGrow: 1, paddingHorizontal: 20, paddingBottom: 50}}
             enableOnAndroid={true}
             keyboardShouldPersistTaps="handled"
             extraScrollHeight={Platform.OS === 'ios' ? 20 : 0}
         >
-            <SafeAreaView style={{ flex: 1 }}>
-                <View style={{ flexGrow: 1 }}>
+            <SafeAreaView style={{flex: 1}}>
+                <View style={{flexGrow: 1}}>
                     {/* Header */}
                     <View style={styles.header}>
-                        <Entypo name="chevron-left" size={35} color="#212529" onPress={useNavigation().goBack} />
+                        <Entypo name="chevron-left" size={35} color="#212529" onPress={useNavigation().goBack}/>
                         <Text style={styles.pageTitle}>Saldo</Text>
                     </View>
 
@@ -219,7 +215,7 @@ export default function Wallet() {
                         <Animated.View
                             style={[
                                 styles.slider,
-                                { transform: [{ translateX }] },
+                                {transform: [{translateX}]},
                             ]}
                         />
                         {["transacties", "uitbetalen", "beloningen"].map((tab, index) => (
