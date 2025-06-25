@@ -334,27 +334,27 @@ export const getNextAppointmentForUser = async (customerId) => {
     }
 };
 
-// export const deleteAllAppointments = async () => {
-//     try {
-//         if (!db) return;
-//         await db.runAsync('DELETE FROM appointments');
-//         console.log("Afspraken succesvol verwijderd");
-//     } catch (error) {
-//         console.log("Kon afspraken niet verwijderen:", error);
-//     }
-// };
-//
-// export const getAllAppointments = async () => {
-//     if (!db) return [];
-//     try {
-//         const appointments = await db.getAllAsync('SELECT * FROM appointments;');
-//         console.log("Afspraken succesvol opgehaald", appointments);
-//         return appointments;
-//     } catch (error) {
-//         console.log("Kon afspraken niet ophalen:", error);
-//         return [];
-//     }
-// };
+export const deleteAllAppointments = async () => {
+    try {
+        if (!db) return;
+        await db.runAsync('DELETE FROM appointments');
+        console.log("Afspraken succesvol verwijderd");
+    } catch (error) {
+        console.log("Kon afspraken niet verwijderen:", error);
+    }
+};
+
+export const getAllAppointments = async () => {
+    if (!db) return [];
+    try {
+        const appointments = await db.getAllAsync('SELECT * FROM appointments;');
+        console.log("Afspraken succesvol opgehaald", appointments);
+        return appointments;
+    } catch (error) {
+        console.log("Kon afspraken niet ophalen:", error);
+        return [];
+    }
+};
 
 export const changeWalletValue = async (value, id) => {
     try {

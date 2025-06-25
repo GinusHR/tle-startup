@@ -136,15 +136,8 @@ export default function PlanPickupScreen() {
                         <DataBoxes
                             title="Datum"
                             body={
-                                selectedDate
-                                    ? selectedDate.toLocaleString('nl-NL', {
-                                        day: 'numeric',
-                                        month: 'long',
-                                        year: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit',
-                                        hour12: false,
-                                    })
+                                selectedDate && selectedTime
+                                    ? `${selectedDate.split('-')[2]}-${selectedDate.split('-')[1]}-${selectedDate.split('-')[0]} om ${selectedTime}`
                                     : '...'
                             }
                             bodyStyle={{fontSize: 18}}

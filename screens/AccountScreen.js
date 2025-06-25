@@ -13,8 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import Header from '../components/header';
 import HeaderAdmin from '../components/headerAdmin';
-
-
+import {getAllAppointments, deleteAllAppointments} from "../database";
 
 const { width } = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -77,6 +76,18 @@ export default function AccountScreen({ onLogout, currentUser }) {
                         icon="log-out-outline"
                         color={textColor}
                         onPress={onLogout}
+                    />
+                    <MenuItem
+                        title="Delete All Appointments"
+                        icon="log-out-outline"
+                        color={textColor}
+                        onPress={deleteAllAppointments}
+                    />
+                    <MenuItem
+                        title="Log All Appointments"
+                        icon="log-out-outline"
+                        color={textColor}
+                        onPress={getAllAppointments}
                     />
                 </View>
             </ScrollView>
