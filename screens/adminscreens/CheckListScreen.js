@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import {
     Alert,
@@ -82,24 +82,60 @@ export default function CheckListScreen({ navigation }) {
         //           console.error("AAAAAAAAAAAAAAAAAAAAAAIK HAAT DIT", error)
         //       }
         //   }
-        const allListItems = []
-           const init = async() => {
-           const items = await getListItemsByListId(20);
-                            items.forEach((item) => {
-                                allListItems.push({
-                                    listId: 20,
-                                    itemName: item.item_name,
-                                    quantity: item.quantity,
-                                    value: item.item_value,
-                                });
-                            });
-                            console.log('====================================');
-                            console.log(allListItems);
-                            console.log('ITEMS!!', items);
-                            console.log('====================================');
-          }
-         
-          init()
+
+        const [lastAppointment, setLastAppointment] = useState(null);
+            const [user, setUser] = useState(null)
+            const [totalBottles, setTotalBottles] = useState(0);
+            const [totalValue, setTotalValue] = useState(0)
+            const [listItems, setListItems] = useState([])
+            const [balance, setBalance] = useState(0);
+      
+      useEffect(() => {
+              const fetchAppointmentAndLists = async () => {
+                  const userData = await SecureStore.getItemAsync("user");
+                  if (userData) {
+                      const parsedUser = JSON.parse(userData);
+                      setUser(parsedUser);
+      
+                      const appointment = await getNextAppointmentForUser(parsedUser.id);
+                      setLastAppointment(appointment);
+      
+                      const updateBalance = await getUserWallet(parsedUser.id);
+                      const parsedBalance = Number(updateBalance);
+                      if (!isNaN(parsedBalance)) {
+                          setBalance(parsedBalance);
+                      } else {
+                          console.warn("Saldo kon niet worden geconverteerd naar getal:", updateBalance);
+                          setBalance(0);
+                      }
+      
+                      const fetchedLists = await getUserLists(parsedUser.id);
+                      const allListItems = [];
+      
+                      for (const list of fetchedLists) {
+                          const items = await getListItemsByListId(list.id);
+                          items.forEach((item) => {
+                              allListItems.push({
+                                  listId: list.id,
+                                  itemName: item.item_name,
+                                  quantity: item.quantity,
+                                  value: item.item_value,
+                              });
+                          });
+                      }
+      
+                      const totalB= allListItems.reduce((sum, item) => sum + item.quantity, 0);
+                      const totalV = allListItems.reduce((sum, item) => sum + item.quantity * item.value, 0);
+      
+                      setTotalBottles(totalB);
+                      setTotalValue(totalV);
+                      setListItems(allListItems);
+                  }
+              };
+      
+              const unsubscribe = navigation.addListener('focus', fetchAppointmentAndLists);
+              return unsubscribe;
+          }, [navigation]);
     return (
         <SafeAreaView style={styles.container}>
             <View
