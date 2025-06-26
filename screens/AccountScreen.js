@@ -1,6 +1,7 @@
 import React from 'react';
 import {
     Dimensions,
+    Linking,
     Platform,
     SafeAreaView,
     ScrollView,
@@ -9,10 +10,12 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Image,
 } from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import Header from '../components/header';
 import HeaderAdmin from '../components/headerAdmin';
+import PicnicLogo from '../assets/images/picnic.png';
 
 const {width} = Dimensions.get("window");
 const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
@@ -48,6 +51,18 @@ export default function AccountScreen({onLogout, currentUser}) {
                               altText="Icoon van een spraakwolk met 3 puntjes"/>
                     <MenuItem title="Algemene voorwaarden" icon="document-text-outline" color={'#1D1F21'}
                               altText="Icoon van papier met lijnen die dienen als tekst"/>
+                    <MenuItem
+                        title="Picnic"
+                        icon={
+                            <Image
+                                source={PicnicLogo}
+                                style={styles.partnerLogo}
+                                accessibilityLabel="Logo van Picnic"
+                            />
+                        }                        color={'#1D1F21'}
+                        onPress={() => Linking.openURL('https://www.picnic.nl')}
+                        altText="Logo van Picnic"
+                    />
                 </View>
 
                 <View style={styles.logoutCard}>
@@ -64,17 +79,22 @@ export default function AccountScreen({onLogout, currentUser}) {
     );
 }
 
-const MenuItem = ({title, altText, icon, onPress, color, rightElement}) => (
+const MenuItem = ({ title, altText, icon, onPress, color, rightElement }) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
         <View style={styles.menuRow}>
             <View style={styles.menuLeft}>
-                <Ionicons name={icon} size={22} color={color} style={styles.icon} alt={altText}/>
-                <Text style={[styles.menuText, {color}]}>{title}</Text>
+                {typeof icon === 'string' ? (
+                    <Ionicons name={icon} size={22} color={color} style={styles.icon} alt={altText} />
+                ) : (
+                    <View style={[styles.icon, { marginRight: 8 }]}>{icon}</View>
+                )}
+                <Text style={[styles.menuText, { color }]}>{title}</Text>
             </View>
             {rightElement && <View>{rightElement}</View>}
         </View>
     </TouchableOpacity>
 );
+
 
 const styles = StyleSheet.create({
     container: {
@@ -130,5 +150,10 @@ const styles = StyleSheet.create({
     menuText: {
         fontSize: 16,
         fontFamily: 'montserrat-regular',
+    },
+    partnerLogo: {
+        width: 22,
+        height: 22,
+        marginRight: 4,
     },
 });
