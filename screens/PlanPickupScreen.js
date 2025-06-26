@@ -90,7 +90,7 @@ export default function PlanPickupScreen() {
                         onPress: () => {
                             navigation.reset({
                                 index: 0,
-                                routes: [{name: 'HOME'}],
+                                routes: [{name: 'Home'}],
                             });
                         },
                     },
