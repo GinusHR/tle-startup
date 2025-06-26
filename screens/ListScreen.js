@@ -22,6 +22,7 @@ const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
 
 export default function ListScreen({items, currentUser}) {
     const [selectedItems, setSelectedItems] = useState([]);
+    const navigation = useNavigation(); // Call the hook to get the navigation object
 
     const updateQuantity = (itemId, delta) => {
         setSelectedItems((prev) => {
@@ -71,9 +72,9 @@ export default function ListScreen({items, currentUser}) {
                     {
                         text: 'OK',
                         onPress: () => {
-                            useNavigation.reset({
+                            navigation.reset({ // Use the navigation object, not the hook
                                 index: 0,
-                                routes: [{name: 'HOME'}],
+                                routes: [{name: 'Home'}],
                             });
                         },
                     },
