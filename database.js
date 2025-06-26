@@ -16,7 +16,7 @@ export const initDatabase = async () => {
     await db.execAsync(`PRAGMA foreign_keys = OFF`);
 
     await db.execAsync(` DROP TABLE IF EXISTS items;`)
-    await db.execAsync(` DROP TABLE IF EXISTS appointments;`)
+    // await db.execAsync(` DROP TABLE IF EXISTS appointments;`)
 
     await db.execAsync(`PRAGMA foreign_keys = ON;`);
 

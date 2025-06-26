@@ -155,16 +155,8 @@ export default function HomeScreen({navigation}) {
                             onPress={async () => {
                                 const userData = await SecureStore.getItemAsync('user');
                                 const user = JSON.parse(userData);
-                                const canSchedule = await checkIfUserCanPlanPickup(user.id);
 
-                                if (canSchedule) {
                                     navigation.navigate('PlanPickup');
-                                } else {
-                                    Alert.alert(
-                                        'Nog niet klaar',
-                                        'Je hebt minstens 10 items nodig in je huidige lijst om een afspraak te maken.'
-                                    );
-                                }
                             }}
                             icon={<FontAwesome5 name="truck" size={17} color="white"/>}
                             alt="Icoon van een truck"

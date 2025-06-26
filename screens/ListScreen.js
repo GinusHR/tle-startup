@@ -70,12 +70,6 @@ export default function ListScreen({items, currentUser}) {
                 [
                     {
                         text: 'OK',
-                        onPress: () => {
-                            useNavigation.reset({
-                                index: 0,
-                                routes: [{name: 'HOME'}],
-                            });
-                        },
                     },
                 ],
                 {cancelable: false}
