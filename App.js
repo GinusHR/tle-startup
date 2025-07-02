@@ -1,70 +1,263 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, StyleSheet, Text } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-
+import React, {useEffect, useState} from "react";
+import {NavigationContainer} from "@react-navigation/native";
+import {useFonts} from 'expo-font';
+import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {ActivityIndicator, StyleSheet, Text, View} from "react-native";
+import {Ionicons, MaterialIcons} from "@expo/vector-icons";
+import * as SecureStore from 'expo-secure-store';
+import {getAllAppointments, getAllLists, getAllUsers, getItems, getListItem, initDatabase} from "./database";
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import HomeScreen from './screens/HomeScreen';
 import QRDetailScreen from './screens/QRDetailsScreen';
 import PlanPickupScreen from './screens/PlanPickupScreen';
-import ScanScreen from './screens/ScanScreen';
+import ListScreen from './screens/ListScreen';
 import AccountScreen from './screens/AccountScreen';
+import ScannedItemsDetails from "./screens/ScannedItemsDetails";
+import Wallet from "./screens/WalletScreen";
+import AddressPickerScreen from "./screens/AddressPickerScreen";
+import DateTimePickerScreen from "./screens/DateTimePickerScreen";
+import AdminScreen from './screens/adminscreens/AdminScreen';
+import CameraScreen from './screens/adminscreens/CameraScreen';
+import CheckListScreen from './screens/adminscreens/CheckListScreen';
 
 const AuthStack = createNativeStackNavigator();
 const HomeStack = createNativeStackNavigator();
+const AdminStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const AuthNavigator = () => (
-    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-        <AuthStack.Screen name="Login" component={LoginScreen} />
-        <AuthStack.Screen name="Register" component={RegisterScreen} />
+if (!__DEV__) {
+    console.log = () => {
+    };
+    console.warn = () => {
+    };
+    console.error = () => {
+    };
+}
+
+const AuthNavigator = ({onLogin}) => (
+    <AuthStack.Navigator screenOptions={{headerShown: false}}>
+        <AuthStack.Screen
+            name="Login"
+            component={LoginScreen}
+            initialParams={{onLogin}}
+        />
+        <AuthStack.Screen name="Register" component={RegisterScreen}/>
     </AuthStack.Navigator>
 );
 
 const HomeNavigator = () => (
-    <HomeStack.Navigator>
-        <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home' }} />
-        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{ title: 'Details' }} />
-        <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{ title: 'Afspraak maken' }} />
+    <HomeStack.Navigator screenOptions={{headerShown: false}}>
+        <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{title: 'Home', headerShown: false}}/>
+        <HomeStack.Screen name="QRDetail" component={QRDetailScreen} options={{title: 'Details'}}/>
+        <HomeStack.Screen name="PlanPickup" component={PlanPickupScreen} options={{title: 'Afspraak maken'}}/>
+        <HomeStack.Screen name="Admin" component={AdminScreen}/>
+        <HomeStack.Screen name="Camera" component={CameraScreen}/>
+        <HomeStack.Screen name="AddressPicker" component={AddressPickerScreen}
+                          options={{title: 'Adres', presentation: 'modal', animation: 'slide_from_right',}}/>
+        <HomeStack.Screen name="DateTimePicker" component={DateTimePickerScreen}
+                          options={{title: 'Datum & Tijd', presentation: 'modal', animation: 'slide_from_right',}}/>
+        <HomeStack.Screen
+            name="details"
+            component={ScannedItemsDetails}
+            options={{
+                title: 'Details',
+                presentation: 'modal',
+                animation: 'slide_from_right',
+            }}
+        />
+        <HomeStack.Screen
+            name="Wallet"
+            component={Wallet}
+            options={{
+                title: 'Wallet',
+                presentation: 'card',
+                animation: 'slide_from_right',
+            }}/>
     </HomeStack.Navigator>
 );
 
-const AppTabs = () => (
+const AdminNavigator = () => (
+    <AdminStack.Navigator screenOptions={{headerShown: false}}>
+        <AdminStack.Screen name="AdminMain" component={AdminScreen}/>
+        <AdminStack.Screen name="Camera" component={CameraScreen}/>
+        <AdminStack.Screen name="CheckList" component={CheckListScreen}/>
+    </AdminStack.Navigator>
+)
+
+const AppTabs = ({onLogout, currentUser, items}) => (
     <Tab.Navigator
-        screenOptions={({ route }) => ({
+        screenOptions={({route}) => ({
             headerShown: false,
-            tabBarIcon: ({ color, size }) => {
+            tabBarIcon: ({color}) => {
+                let iconName;
+                let IconComponent;
+
                 if (route.name === 'Home') {
-                    return <MaterialIcons name="dashboard" size={size} color={color} />;
-                } else if (route.name === 'Scan') {
-                    return <MaterialIcons name="camera" size={size} color={color} />;
+                    iconName = 'dashboard';
+                    IconComponent = MaterialIcons;
+                } else if (route.name === 'List') {
+                    iconName = 'format-list-numbered-rtl';
+                    IconComponent = MaterialIcons;
                 } else if (route.name === 'Account') {
-                    return <Ionicons name="person" size={size} color={color} />;
+                    iconName = 'person';
+                    IconComponent = Ionicons;
+                }
+
+                return (
+                    <View>
+                        <IconComponent name={iconName} size={30} color={color}/>
+                    </View>
+                );
+            },
+            tabBarStyle: {
+                backgroundColor: '#2F4538',
+                paddingTop: 8,
+                height: "11%",
+            },
+            tabBarActiveTintColor: '#597364',
+            tabBarInactiveTintColor: '#FDFDFD',
+            tabBarLabelStyle: {
+                fontSize: 12,
+                fontFamily: 'Montserrat',
+                fontWeight: 'bold',
+                marginTop: 3,
+            },
+        })}
+    >
+        <Tab.Screen name="Home" options={{headerShown: false}} component={HomeNavigator}/>
+        <Tab.Screen name="List" options={{headerShown: false}}>{() => <ListScreen items={items}
+                                                                                  currentUser={currentUser}/>}</Tab.Screen>
+        <Tab.Screen name="Account" options={{headerShown: false}}>
+            {() => (
+                <AccountScreen currentUser={currentUser} onLogout={onLogout}/>
+            )}
+        </Tab.Screen>
+    </Tab.Navigator>
+);
+
+const AdminTabs = ({onLogout, currentUser}) => (
+    <Tab.Navigator
+        screenOptions={({route}) => ({
+            headerShown: false,
+            tabBarIcon: ({color, size}) => {
+                if (route.name === 'Admin') {
+                    return <MaterialIcons name="admin-panel-settings" size={size} color={color}/>;
+                } else if (route.name === 'Camera') {
+                    return <MaterialIcons name="camera" size={size} color={color}/>;
+                } else if (route.name === 'CheckList') {
+                    return <MaterialIcons name="checklist" size={size} color={color}/>;
+                } else if (route.name === 'Account') {
+                    return <Ionicons name="person" size={size} color={color}/>;
                 }
             },
             tabBarStyle: {
-                backgroundColor: '#2F4538'
+              backgroundColor: '#2F4538'
             },
             tabBarActiveTintColor: '#597364',
             tabBarInactiveTintColor: '#FDFDFD',
         })}
     >
-        <Tab.Screen name="Home" component={HomeNavigator} />
-        <Tab.Screen name="Scan" component={ScanScreen} />
-        <Tab.Screen name="Account" component={AccountScreen} />
+        <Tab.Screen name="Admin" options={{headerShown: false, headerTitle: '', headerShadowVisible: false}}
+                    component={AdminNavigator}/>
+        <Tab.Screen name="Camera" options={{headerTitle: '', headerShadowVisible: false}} component={CameraScreen}/>
+        <Tab.Screen name="CheckList" options={{headerTitle: '', headerShadowVisible: false}}
+                    component={CheckListScreen}/>
+        <Tab.Screen name="Account" options={{headerTitle: '', headerShadowVisible: false}}>
+            {() => (
+                <AccountScreen currentUser={currentUser} onLogout={onLogout}/>
+            )}
+        </Tab.Screen>
     </Tab.Navigator>
 );
 
-
 export default function App() {
-    const userIsLoggedIn = true; // ← veranderen dit later naar een echte auth-check
+    const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [isDbInitialized, setIsDbInitialized] = useState(false)
+    const [fontsLoaded] = useFonts({
+        'montserrat-regular': require('./assets/fonts/Montserrat-Regular.ttf'),
+        'montserrat-bold': require('./assets/fonts/Montserrat-Bold.ttf'),
+    });
+    const [users, setUsers] = useState([]);
+    const [lists, setLists] = useState([]);
+    const [items, setItems] = useState([]);
+    const [listItems, setListItems] = useState([])
+    const [appointments, setAppointments] = useState([]);
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const savedUser = await SecureStore.getItemAsync('user');
+                if (savedUser) {
+                    setCurrentUser(JSON.parse(savedUser));
+                    setUserIsLoggedIn(true);
+                }
+            } catch (error) {
+                console.error("Fout bij het ophalen van gebruiker uit SecureStore", error);
+            }
+        };
+        loadUser();
+    }, []);
+
+    useEffect(() => {
+        const initializeDatabase = async () => {
+            try {
+                await initDatabase();
+                setIsDbInitialized(true);
+                const itemData = await getItems();
+                const userData = await getAllUsers();
+                const appoData = await getAllAppointments()
+                const listsData = await getAllLists();
+                const listContentData = await getListItem();
+                setItems(itemData);
+                setUsers(userData);
+                setLists(listsData);
+                setListItems(listContentData);
+                setAppointments(appoData)
+            } catch (error) {
+                console.error("Database initialisatie mislukt", error);
+            }
+        };
+        initializeDatabase();
+    }, []);
+
+    const handleLogin = (user) => {
+        setCurrentUser(user);
+        setUserIsLoggedIn(true);
+    };
+
+    const handleLogout = async () => {
+        setCurrentUser(null);
+        setUserIsLoggedIn(false);
+        await SecureStore.deleteItemAsync('user')
+    };
+
+    if (!fontsLoaded || !isDbInitialized) {
+        return (
+            <View style={[styles.container, styles.centered]}>
+                <ActivityIndicator size="large" color="#2F4538"/>
+                <Text style={styles.loadingText}>Laden...</Text>
+            </View>
+        )
+    }
+
+    const renderAppNavigation = () => {
+        if (currentUser && currentUser.role === 1) {
+            return <AdminTabs onLogout={handleLogout} currentUser={currentUser}/>;
+        } else {
+            return <AppTabs onLogout={handleLogout} currentUser={currentUser} items={items}/>;
+        }
+    };
 
     return (
         <NavigationContainer>
-            {userIsLoggedIn ? <AppTabs /> : <AuthNavigator />}
+            {userIsLoggedIn ? (
+                renderAppNavigation()
+            ) : (
+                <AuthNavigator onLogin={handleLogin}/>
+            )}
         </NavigationContainer>
     );
 }
@@ -75,5 +268,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#FDFDFD',
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 16,
+    },
+    centered: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 24,
+        marginBottom: 20,
+    },
+    loadingText: {
+        marginTop: 10,
+        fontSize: 16,
+        color: '#2F4538',
     },
 });

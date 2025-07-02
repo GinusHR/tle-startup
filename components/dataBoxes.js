@@ -1,0 +1,98 @@
+import React from "react";
+import {Dimensions, StyleSheet, Text, View} from "react-native";
+
+const {width} = Dimensions.get("window");
+const scaleFontSize = (figmaFontSize) => figmaFontSize * (width / 430);
+
+const DataBoxes = ({title, body, subBody, button, bodyStyle, shrinkText}) => (
+    <View style={style.container} accessible={false}>
+        <View style={style.textContainer}>
+            <Text style={style.title}>{title}</Text>
+            {subBody ? (
+                <View style={style.bodySubBodyContainer}>
+                    <Text style={style.body}>
+                        {body}
+                    </Text>
+                    <Text style={style.subBody}>
+                        {subBody}
+                    </Text>
+                </View>
+            ) : (
+                <Text
+                    style={[style.body, shrinkText && style.bodyShrink, bodyStyle]}
+                    {...(shrinkText ? {
+                        numberOfLines: 2,
+                        adjustsFontSizeToFit: true,
+                    } : {})}
+                >
+                    {body}
+                </Text>
+            )}
+        </View>
+        <View style={style.buttonContainer}>
+            {button ? <View style={style.line}/> : null}
+            {button}
+        </View>
+    </View>
+);
+
+const style = StyleSheet.create({
+    container: {
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        borderColor: '#D9D9D9',
+        borderStyle: 'solid',
+        borderWidth: 2.5,
+        borderRadius: 10,
+        padding: width * 0.04,
+        paddingRight: 20,
+        marginBottom: 30,
+    },
+    textContainer: {
+        justifyContent: 'space-between',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    bodySubBodyContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        width: "100%"
+    },
+    title: {
+        fontFamily: 'Montserrat',
+        fontSize: scaleFontSize(24),
+        fontWeight: 'bold',
+        color: "#212529",
+    },
+    body: {
+        fontFamily: 'Montserrat',
+        fontSize: scaleFontSize(29),
+        fontWeight: '700',
+        marginTop: 10,
+        color: "#212529",
+    },
+    bodyShrink: {
+        flex: 1,
+        maxWidth: "80%",
+    },
+    subBody: {
+        fontFamily: 'Montserrat',
+        fontWeight: '600',
+        fontSize: scaleFontSize(24),
+        color: '#6B7780',
+    },
+    line: {
+        position: 'relative',
+        width: 2,
+        height: "85%",
+        backgroundColor: '#d9D9D9',
+        borderRadius: 1,
+        marginRight: 20,
+    },
+});
+
+export default DataBoxes;
